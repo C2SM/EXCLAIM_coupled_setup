@@ -125,13 +125,18 @@ oce_lag=1
 
 # Atmosphere settings
 # -------------------
-nproma_atm=6
+case "${TARGET}" in
+    "hybrid") nproma_atm=8000 ;;
+    "cpu") nproma_atm=16 ;;
+esac
+
 atmo_model_equations=3 # equation system
 #                     1=hydrost. atm. (T dynamics)
 #                     2=hydrost. atm. (theta dynamics)
 #                     3=non-hydrost. atm.,
 #                    -1=shallow water model
 #                    -2=hydrost. ocean
+
 nlev=130          # nlev = number of full levels
 iforcing=3        # 3 for inwp forcing; 0 for no forcing
 atmos_grid_target="icon_grid_${atmos_gridID}_${atmos_refinement}_G.nc"

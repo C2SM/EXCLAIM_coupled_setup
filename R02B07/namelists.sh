@@ -167,7 +167,7 @@ atmo_nml(){
 /
 !
 &parallel_nml
- nproma                  = 8000
+ nproma                  = ${nproma_atm}
  !nblocks_c               = 1
  !nproma_sub              = 1000
  p_test_run              = .false.
@@ -221,7 +221,7 @@ atmo_nml(){
 &nwp_phy_nml
  !icalc_reff              = 100         ! For Modis cdnc
  !icpl_rad_reff           = 0           ! For Modis cdnc
- inwp_gscp               = 1
+ inwp_gscp               = 2
  inwp_convection         = 1
  inwp_radiation          = 4
  inwp_cldcover           = 1
@@ -272,8 +272,11 @@ atmo_nml(){
 /
 &transport_nml
  ivadv_tracer            = 3,3,3,3,3
- itype_hlimit            = 3,4,4,4,4
- ihadv_tracer            = 20,20,20,20,20
+ itype_hlimit            = 4,4,4,4,4
+ ihadv_tracer            = 2,2,2,2,2
+ itype_vlimit            = 1,1,1,1,1
+ ivlimit_selective       = 1,1,1,1,1
+ llsq_svd                = .true.
 /
 &interpol_nml
  nudge_zone_width        = 8

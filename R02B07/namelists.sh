@@ -1056,11 +1056,11 @@ output_oce_def(){
   cat >> ${oce_namelist} << EOF
 &output_nml
   filetype                   = 5
-  output_filename            = "${EXPNAME}_oce_def"
-  filename_format            = "<output_filename>_<datetime2>"
+  filename_format            = "${stream}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  filename_format            = "${stream}/${stream}_<datetime2>"
+  output_interval            = "${oce_output_interval_def}"     ! interval in ISO-format
+  file_interval              = "${oce_file_interval}"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
   include_last               = .FALSE.

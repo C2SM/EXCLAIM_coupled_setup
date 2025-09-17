@@ -11,7 +11,7 @@ compute_tasks_distribution(){
    ((OCE_MAX_RANK = NTASKS - 1))
 
    # Write multi-prog distribution to file
-   if [[ "${target}" == "hybrid" ]]; then
+   if [[ "${TARGET}" == "hybrid" ]]; then
       cat > multi-prog.conf << EOF
 ${ATM_MIN_RANK}-${ATM_MAX_RANK} ../Common/hybrid_wrapper.sh ${icon_gpu_name}
 ${OCE_MIN_RANK}-${OCE_MAX_RANK} ../Common/hybrid_wrapper.sh ${icon_cpu_name}
@@ -32,7 +32,7 @@ set_environment(){
 
    # Libfabric / Slingshot
    # ---------------------
-   if [[ "${target}" == "hybrid" ]]; then
+   if [[ "${TARGET}" == "hybrid" ]]; then
       export FI_CXI_SAFE_DEVMEM_COPY_THRESHOLD=0
       export FI_CXI_RX_MATCH_MODE=software
       export FI_MR_CACHE_MONITOR=disabled
@@ -42,14 +42,14 @@ set_environment(){
 
    # MPICH
    # -----
-   if [[ "${target}" == "hybrid" ]]; then
-      # NOTE: it's in the wrapper now
-      # export MPICH_GPU_SUPPORT_ENABLED=1
-   fi
+   # NOTE: it's in the wrapper now
+   # if [[ "${TARGET}" == "hybrid" ]]; then
+   #    export MPICH_GPU_SUPPORT_ENABLED=1
+   # fi
 
    # NVHPC/CUDA
    # ----------
-   if [[ "${target}" == "hybrid" ]]; then
+   if [[ "${TARGET}" == "hybrid" ]]; then
       export NVCOMPILER_ACC_SYNCHRONOUS=1  # TODO: Check that, looks very suspicious
       export NVCOMPILER_ACC_DEFER_UPLOADS=1
       export NVCOMPILER_TERM=trace

@@ -33,6 +33,10 @@ source inputs.sh
 # -------------------
 TARGET=${TARGET:-"hybrid"}
 
+# Experiment name
+# ---------------
+EXPNAME="EXCLAIM_coupled_{TARGET}"
+
 # Executables
 # -----------
 icon_cpu="/capstor/store/cscs/userlab/cwd01/nbeech/icon_execs/cpu/icon"
@@ -73,7 +77,7 @@ end_year=$(( ${end_date%%-*} ))
 atmTimeStep="PT150S"            # atmos time step (for coupler)  (same as dtime!!)
 dtime=150                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
 dt_rad=300.                     # NWP radiation timestep (s) - must match coupling/ocean time step
-oceTimeStep="PT5M"              # corresponds to fromClimatology case, ocean time step (20min for r2b7)
+oceTimeStep="PT5M"              # corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
 ocecouplingTimeStep="PT10M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
 
 # Task distribution

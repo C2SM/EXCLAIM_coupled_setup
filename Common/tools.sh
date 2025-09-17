@@ -21,7 +21,7 @@ EOF
 }
 
 set_environment(){
-   # TODO: Mkae it target dependent
+   # TODO: Make wrapper target-specific and move environment settings there
 
    ulimit -s unlimited
    ulimit -c 0
@@ -32,21 +32,29 @@ set_environment(){
 
    # Libfabric / Slingshot
    # ---------------------
-   export FI_CXI_SAFE_DEVMEM_COPY_THRESHOLD=0
-   export FI_CXI_RX_MATCH_MODE=software
-   export FI_MR_CACHE_MONITOR=disabled
+   if [[ "${target}" == "hybrid" ]]; then
+      export FI_CXI_SAFE_DEVMEM_COPY_THRESHOLD=0
+      export FI_CXI_RX_MATCH_MODE=software
+      export FI_MR_CACHE_MONITOR=disabled
+   fi
    export FI_MR_CACHE_MAX_COUNT=0
    export FI_CXI_OFLOW_BUF_COUNT=10
 
    # MPICH
    # -----
-   # export MPICH_GPU_SUPPORT_ENABLED=1
+   if [[ "${target}" == "hybrid" ]]; then
+      # NOTE: it's in the wrapper now
+      # export MPICH_GPU_SUPPORT_ENABLED=1
+   fi
 
    # NVHPC/CUDA
    # ----------
-   export NVCOMPILER_ACC_DEFER_UPLOADS=1
-   export NVCOMPILER_TERM=trace
-   export CUDA_BUFFER_PAGE_IN_THRESHOLD_MS=0.001
+   if [[ "${target}" == "hybrid" ]]; then
+      export NVCOMPILER_ACC_SYNCHRONOUS=1  # TODO: Check that, looks very suspicious
+      export NVCOMPILER_ACC_DEFER_UPLOADS=1
+      export NVCOMPILER_TERM=trace
+      export CUDA_BUFFER_PAGE_IN_THRESHOLD_MS=0.001
+   fi
 
    # OpenMP
    # ------

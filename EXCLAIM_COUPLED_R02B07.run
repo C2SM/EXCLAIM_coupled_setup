@@ -1,0 +1,24 @@
+#! /bin/bash
+
+# ===== INIT =================================================================
+
+set +x
+ulimit -s unlimited
+
+: "${FIRST_EXECUTION:=true}"
+: "${FIRST_SUBMIT:=false}"
+
+if [ -n "${SLURM_JOB_ID:-}" ]; then
+    if [ "${FIRST_EXECUTION}" == "true" ]; then
+        echo "ERROR: Please first execute me from the command line"
+        exit 1
+    fi
+    SUBMITTED="true"
+    SCRIPT_PATH=$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}')
+else
+    SUBMITTED="false"
+    SCRIPT_PATH=$(realpath "${BASH_SOURCE[0]}")
+fi
+SCRIPT_DIR=$(dirname "${SCRIPT_PATH}")
+
+set | grep SLURM

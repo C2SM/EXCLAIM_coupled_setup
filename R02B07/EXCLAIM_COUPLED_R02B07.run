@@ -1,0 +1,244 @@
+#! /bin/bash
+
+# ============================================================================
+#SBATCH --uenv=icon/25.2:v3:/user-environment
+#SBATCH --view=default
+#SBATCH --job-name=exp.new-adapt-hybrid.run
+#SBATCH --output=./LOG.exp.new-adapt-hybrid.run.%j.out
+#SBATCH --error=./LOG.exp.new-adapt-hybrid.run.%j.out
+#SBATCH --nodes=18
+#SBATCH --ntasks-per-node=8
+#SBATCH --time=01:30:00
+#SBATCH --exclusive
+#SBATCH --account=cwd01
+# ============================================================================
+
+set -x
+
+# ============================================================================
+# CAUTION
+# - Restart mechanism not implemented
+# - Only initialiseOcean="fromClimatology" case
+
+# ============================================================================
+# Settings
+
+# Load Auxiliary functions
+# ------------------------
+source ../Common/tools.sh
+source namelists.sh
+source inputs.sh
+
+# Target architecture
+# -------------------
+TARGET=${TARGET:-"hybrid"}
+
+# Executables
+# -----------
+icon_cpu="/capstor/store/cscs/userlab/cwd01/nbeech/icon_execs/cpu/icon"
+icon_gpu="/capstor/store/cscs/userlab/cwd01/nbeech/icon_execs/gpu/icon"
+icon_cpu_name="$(basename ${icon_cpu})"
+icon_gpu_name="$(basename ${icon_gpu})"
+
+# Grids
+# -----
+atmos_gridID="0061"             #  icon-nwp grid
+atmos_refinement="R02B07"
+ocean_gridID="0062"             #  icon-oce r2b7 grid
+ocean_refinement="R02B07"
+
+# Input data directories
+# ----------------------
+basedir="/capstor/scratch/cscs/leclairm/EXCLAIM_COUPLED/icon-hybrid"
+clim_data_poolFolder="/capstor/store/cscs/userlab/cws01/pool/data/ICON/grids/public/mpim"
+icon_data_poolFolder="/capstor/store/cscs/userlab/cws01/pool/data/ICON/grids/public/mpim"
+atmo_data_InputFolder="${clim_data_poolFolder}/${atmos_gridID}"
+atmos_grid_folder="${icon_data_poolFolder}/${atmos_gridID}"
+ocean_grid_folder="${icon_data_poolFolder}/${ocean_gridID}"
+
+# Dates and intervals
+# -------------------
+start_date=${start_date:="1979-01-01T00:00:00Z"}
+end_date=${end_date:="1979-01-01T00:15:00Z"}
+restart_interval="P1M"
+checkpoint_interval="P1M"
+atm_file_interval="P50Y"
+oce_file_interval="P50Y"
+
+start_year=$(( ${start_date%%-*} ))
+end_year=$(( ${end_date%%-*} ))
+
+# Time steps
+# ----------
+atmTimeStep="PT150S"            # atmos time step (for coupler)  (same as dtime!!)
+dtime=150                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
+dt_rad=300.                     # NWP radiation timestep (s) - must match coupling/ocean time step
+oceTimeStep="PT5M"              # corresponds to fromClimatology case, ocean time step (20min for r2b7)
+ocecouplingTimeStep="PT10M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
+
+# Task distribution
+# -----------------
+case "${TARGET}" in
+    "hybrid")
+        N_OCE_TASKS_PER_NODE=4
+        N_ATM_TASKS_PER_NODE=4
+        ;;
+    "cpu")
+        N_OCE_TASKS_PER_NODE=9
+        ((N_ATM_TASKS_PER_NODE = 288 - N_OCE_TASKS_PER_NODE))
+        ;;
+    *)
+        echo "ERROR: target architecture must either be 'hybrid' or 'cpu'"
+        exit 1
+        ;;
+esac
+ATM_IO_TASKS=0
+OCE_IO_TASKS=0
+ATM_RST_TASKS=0
+OCE_RST_TASKS=0
+
+# output interval
+#all_output_interval="PT30M"    # short test
+#all_output_interval="PT60M"     # short test
+#all_output_interval="P1D"      # daily output
+all_output_interval="PT300S"      # monthly output - production
+
+# Type of experiment
+# ------------------
+#NB change to include options for historical control and year selection.
+exptype="control" #"picontrol" # "hist"
+control_year=1979 #will not change hardcoded ghg concentrations, only file names
+initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphere + hdext cold-started from scratch
+
+# namelist files
+# --------------
+master_namelist="icon_master.namelist"
+atm_namelist="NAMELIST_${EXPNAME}_atm"
+oce_namelist="NAMELIST_${EXPNAME}_oce"
+lnd_namelist="NAMELIST_${EXPNAME}_lnd"
+cpl_yaml="coupling_${EXPNAME}.yaml"
+
+# Coupling settings
+# -----------------
+atm_lag=1
+oce_lag=1
+
+# Atmosphere settings
+# -------------------
+nproma_atm=6
+atmo_model_equations=3 # equation system
+#                     1=hydrost. atm. (T dynamics)
+#                     2=hydrost. atm. (theta dynamics)
+#                     3=non-hydrost. atm.,
+#                    -1=shallow water model
+#                    -2=hydrost. ocean
+nlev=130          # nlev = number of full levels
+iforcing=3        # 3 for inwp forcing; 0 for no forcing
+atmos_grid_target="icon_grid_${atmos_gridID}_${atmos_refinement}_G.nc"
+
+# FIXME: unsued variables: ighg1, ighg2, irad_aero
+case "${exptype}" in
+    "control")
+        irad_aero=12
+        ighg1=2    # const. vert. prof. of GHGs defined with vmr_* for CO2, O2, CFC11, CFC12
+        ighg2=3    # tanh-profile with surface concentration given by vmr_ch4/n2o for CH4, N2O
+    ;;
+    "picontrol")
+        irad_aero=12
+        ighg1=2    # const. vert. prof. of GHGs defined with vmr_* for CO2, O2, CFC11, CFC12
+        ighg2=3    # tanh-profile with surface concentration given by vmr_ch4/n2o for CH4, N2O
+    ;;
+    *)
+        irad_aero=18 # background aero. from Kinne + volcanic aero. + anthropogenic aero. from Simple Plume
+        ighg1=4    # greenhouse gases from external file
+        ighg2=4    # greenhouse gases from external file
+        ;;
+esac
+
+atm_file_interval="P50Y"
+atm_output_interval=${all_output_interval}
+atm_hfreq_output_interval="PT6H"
+
+# Ocean settings
+# --------------
+nproma_oce=16
+ocean_grid_target="icon_grid_${ocean_gridID}_${ocean_refinement}_O.nc"
+VERT_COR=1
+ocean_vertical_levels="L72"
+use_hamocc="no"
+oce_file_interval="P50Y"
+oce_output_interval=${all_output_interval}
+oce_output_interval_def="P1Y"
+# FIXME: Probably never active
+start_fx="1000-01-02T00:00:00Z"  # output time of geometry file fx
+
+# Activate output streams
+# -----------------------
+activate_output="true"
+
+# ============================================================================
+# Config files
+compute_tasks_distribution
+set_ocean_vertical_coordinate
+
+icon_master_nml
+coupling_yaml
+atmo_nml
+lnd_nml
+oce_nml
+
+if [[ "${activate_output}" == "true" ]];then
+    # Atmosphere / Land
+    # -----------------
+    output_atm_mon
+    # output_atm_2d
+    output_energy_budget
+    # output_atm_hfreq
+    # output_atm_3d
+    output_atm_latlon
+    # output_atm_icon
+    # output_atm_spot
+    output_jsb_2d
+    output_lnd_mon
+    # output_lnd_dbg
+    output_hyd_dbg
+    output_lnd_wat
+    output_atm_alb
+
+    # Ocean
+    # -----
+    output_oce_fx
+    output_oce_def
+    output_oce_ice
+    output_oce_mon
+    # output_oce_moc
+    # output_oce_dbg
+    output_oce_zos
+    output_oce_ssh
+    output_oce_grib
+fi
+
+# ============================================================================
+# Executables
+ln -sf ${icon_cpu} .
+ln -sf ${icon_gpu} .
+
+echo "ICON shared object dependencies"
+ldd ${icon_cpu}
+ldd ${icon_gpu}
+
+# ============================================================================
+# Input files
+atm_inputs
+oce_inputs
+
+# ============================================================================
+# Run
+
+# Run environment
+# ---------------
+set_environment
+
+# MPI run
+# -------
+run_model

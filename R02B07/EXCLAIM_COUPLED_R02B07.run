@@ -3,9 +3,9 @@
 # ============================================================================
 #SBATCH --uenv=icon/25.2:v3:/user-environment
 #SBATCH --view=default
-#SBATCH --job-name=exp.new-adapt-hybrid.run
-#SBATCH --output=./LOG.exp.new-adapt-hybrid.run.%j.out
-#SBATCH --error=./LOG.exp.new-adapt-hybrid.run.%j.out
+#SBATCH --job-name=EXCLAIM_COUPLED_R02B07
+#SBATCH --output=EXCLAIM_COUPLED_R02B07.%j.out
+#SBATCH --error=EXCLAIM_COUPLED_R02B07.%j.out
 #SBATCH --nodes=18
 #SBATCH --ntasks-per-node=8
 #SBATCH --time=01:30:00
@@ -35,7 +35,7 @@ TARGET=${TARGET:-"hybrid"}
 
 # Experiment name
 # ---------------
-EXPNAME="EXCLAIM_coupled_{TARGET}"
+EXPNAME="EXCLAIM_coupled_${TARGET}"
 
 # Executables
 # -----------
@@ -69,8 +69,8 @@ checkpoint_interval="P1M"
 atm_file_interval="P50Y"
 oce_file_interval="P50Y"
 
-start_year=$(( ${start_date%%-*} ))
-end_year=$(( ${end_date%%-*} ))
+start_year=${start_date%%-*}
+end_year=${end_date%%-*}
 
 # Time steps
 # ----------

@@ -1124,11 +1124,11 @@ output_oce_moc(){
   cat >> ${oce_namelist} << EOF
 &output_nml
   filetype                   = 5
-  output_filename            = "${EXPNAME}_oce_moc"
-  filename_format            = "<output_filename>_<datetime2>"
+  filename_format            = "${stream}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  filename_format            = "${stream}/${stream}_<datetime2>"
+  output_interval            = "${oce_output_interval}"
+  file_interval              = "${oce_file_interval}"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
   include_last               = .FALSE.
@@ -1166,13 +1166,13 @@ output_oce_zos(){
 &output_nml
   output_start     = "${start_date}"                  ! start date in ISO-format
   output_end       = "${end_date}"                    ! end date in ISO-format
-  filename_format  = "${stream}/${stream}_<datetime2>"
+  output_interval  = "${oce_output_interval}"         ! interval in ISO-format
+  file_interval    = "${oce_file_interval}"           ! interval in ISO-format
   mode             =  1                               ! 1: forecast mode (relative t-axis), 2: climate mode (absolute t-axis)
   !operation        = 'mean'                           ! mean over output interval
   include_last     = .FALSE.                          ! set to false for asynchron output
   output_grid      = .TRUE.
-  output_filename  = "${EXPNAME}_oce_zos"
-  filename_format  = "<output_filename>_<datetime2>"
+filename_format    = "${stream}/${stream}_<datetime2>"
   filetype         =  5                               ! output format: 2=GRIB2, 4=NETCDFv2, 5=NETCDFv4
   ml_varlist       =  'zos'
 /

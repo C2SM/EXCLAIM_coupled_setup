@@ -4,8 +4,8 @@
 #SBATCH --uenv=icon/25.2:v3:/user-environment
 #SBATCH --view=default
 #SBATCH --job-name=EXCLAIM_COUPLED_R02B07
-#SBATCH --output=EXCLAIM_COUPLED_R02B07.%j.out
-#SBATCH --error=EXCLAIM_COUPLED_R02B07.%j.out
+#SBATCH --output=LOG.EXCLAIM_COUPLED_R02B07.%j
+#SBATCH --error=LOG.EXCLAIM_COUPLED_R02B07.%j
 #SBATCH --nodes=18
 #SBATCH --ntasks-per-node=8
 #SBATCH --time=01:30:00

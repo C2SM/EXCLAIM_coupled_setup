@@ -120,7 +120,6 @@ master_namelist="icon_master.namelist"
 atm_namelist="NAMELIST_${EXPNAME}_atm"
 oce_namelist="NAMELIST_${EXPNAME}_oce"
 lnd_namelist="NAMELIST_${EXPNAME}_lnd"
-cpl_yaml="coupling_${EXPNAME}.yaml"
 
 # Coupling settings
 # -----------------

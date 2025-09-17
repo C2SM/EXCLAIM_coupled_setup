@@ -55,7 +55,7 @@ EOF
 # Coupling
 
 coupling_yaml(){
-  cat > ${cpl_yaml} << EOF
+  cat > ./coupling.yaml << EOF
 definitions:
   atm2oce: &atm2oce
     src_component: atmo

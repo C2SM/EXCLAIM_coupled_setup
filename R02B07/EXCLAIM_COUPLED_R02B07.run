@@ -183,6 +183,7 @@ start_fx="1000-01-02T00:00:00Z"  # output time of geometry file fx
 # Activate output streams
 # -----------------------
 activate_output="true"
+# activate_output="false"
 
 # ============================================================================
 # Config files
@@ -238,6 +239,7 @@ ldd ${icon_gpu}
 # ============================================================================
 # Input files
 atm_inputs
+lnd_inputs
 oce_inputs
 
 # ============================================================================

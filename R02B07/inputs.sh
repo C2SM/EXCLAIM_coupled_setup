@@ -3,13 +3,18 @@
 atm_inputs(){
     ln -sf "${atmos_grid_folder}/${atmos_grid_target}" .
 
+    ifs_target_name="ifs2icon_R2B07_DOM01.nc"  # NOTE: do not change name
+    ifs_indir="${clim_data_poolFolder}/${atmos_gridID}/initial_conditions/rcscs"
+    ifs_file_name="ifs2icon_1979010100_${atmos_gridID}_${atmos_refinement}_G.nc"
+    ln -sf "${ifs_indir}/${ifs_file_name}" "${ifs_target_name}"
+
     # NOTE: From add_required_atmo_non-hydrostatic_files
-    cp ${basedir}/data/rrtmg_lw.nc .
-    cp ${basedir}/data/rrtmg_sw.nc .
-    cp ${basedir}/data/ECHAM6_CldOptProps.nc .
-    cp ${basedir}/data/dmin_wetgrowth_lookup.nc .   #for inwp_gscp==4
-    cp ${basedir}/data/pmod.txt .
-    ecRad_data_path=${basedir}'/externals/ecrad/data'
+    cp "${basedir}/data/rrtmg_lw.nc" .
+    cp "${basedir}/data/rrtmg_sw.nc" .
+    cp "${basedir}/data/ECHAM6_CldOptProps.nc" .
+    cp "${basedir}/data/dmin_wetgrowth_lookup.nc" .   #for inwp_gscp==4
+    cp "${basedir}/data/pmod.txt" .
+    ln -sf "${basedir}/externals/ecrad/data" ecrad_data
 
     revision="rcscs"
     datadir_aerosol_kinne="${atmo_data_InputFolder}/aerosol_kinne/${revision}"
@@ -47,6 +52,7 @@ atm_inputs(){
             ln -sf "${datadir_aerosol_kinne}/bc_aeropt_kinne_lw_b16_coa.nc" .
             ln -sf "${datadir_aerosol_kinne}/bc_aeropt_kinne_sw_b14_coa.nc" .
             ln -sf "${datadir_aerosol_kinne}/bc_aeropt_kinne_sw_b14_fin_1850.nc" ./bc_aeropt_kinne_sw_b14_fin.nc
+            # NOTE: check => this loop does not start at start_year-1 like the others
             for ((year=start_year; year<=end_year; year++)); do
                 if [[ $year -eq 1849 ]]; then
                     ln -sf "${datadir_aerosol_volcanic}/bc_aeropt_cmip6_volc_lw_b16_sw_b14_1850.nc" ./bc_aeropt_cmip6_volc_lw_b16_sw_b14_1849.nc
@@ -86,8 +92,34 @@ oce_inputs(){
 
     if [[ "${use_hamocc}" == "yes" ]]; then
         # FIXME: this is still a private path
-        datadir="/work/mh0727/m300732/input/0036/ocean/hamocc/"
+        datadir="/work/mh0727/m300732/input/0036/ocean/hamocc"
         ln -sf "${datadir}/MAHOWALDDUST_icon_grid_0036_R02B04_O_remapbil1.nc" ./dust.nc  # iron deposition
         ln -sf "${datadir}/ndepo_1-0_gr_185001-185012-clim_icon_grid_0036_R02B04_O.nc" ./nitrogen.nc  # nitrate deposition
     fi
+}
+
+lnd_inputs(){
+    datadir_land="${icon_data_poolFolder}/${atmos_gridID}-${ocean_gridID}/land/rcscs"
+
+    ln -sf "${basedir}/externals/jsbach/data/lctlib_nlct21.def" .
+
+    if [[ "$exptype" == "control"  ]]; then
+        year="${control_year}"  # constant historical value
+    elif [[ "$exptype" == "picontrol"  ]]; then
+        year="1850"  # preindustrial constant
+    else
+        # FIXME: year mechanism not implemented yet, this will fail
+        # NOTE: restart every year max to get the right land frac
+        year="${current_year}" # transient
+    fi
+    ln -sf "${datadir_land}/bc_land_frac_11pfts_${year}.nc" .
+
+    ln -sf "${datadir_land}/bc_land_phys.nc" .
+    ln -sf "${datadir_land}/bc_land_soil.nc" .
+    ln -sf "${datadir_land}/ic_land_soil.nc" .
+    ln -sf "${datadir_land}/bc_land_sso.nc" .
+
+    extpar_filename="${datadir_land}/icon_extpar4jsbach_${atmos_gridID}_20250509_tiles_jsb.nc"
+    extpar_targetname="extpar_icon_grid_${atmos_gridID}_${atmos_refinement}_G.nc"
+    ln -sf "${extpar_filename}" "${extpar_targetname}"
 }

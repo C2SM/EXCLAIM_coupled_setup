@@ -324,6 +324,90 @@ atmo_nml(){
  lkeep_in_sync           = .TRUE.                    ! sync after each timestep
  lnetcdf_flt64_output    = .FALSE.                   ! T: 64 bit output in all files
 /
+&dbg_index_nml
+  idbg_mxmn              = 1                          ! initialize MIN/MAX  debug output
+  idbg_val               = 0                          ! initialize one cell debug output
+  idbg_slev              = 1                          ! initialize start level for debug output
+  idbg_elev              = 3                          ! initialize start level for debug output
+/
+&extpar_nml
+ itopo                   = 1
+ n_iter_smooth_topo      = 1
+ heightdiff_threshold    = 3000.
+ !pp_sso                 = 2 !NB this is in tpp runscript but mentions MERIT REMA topography, which is not used here
+/
+#many removed, final 4 added to match DRAGON namelists
+&lnd_nml
+ !nlev_snow               = 3
+ !lmulti_snow             = .false.
+ !itype_heatcond          = 3
+ !idiag_snowfrac          = 20
+ !lsnowtile               = .true.
+ !llake                   = .true.
+ !itype_lndtbl            = 4
+ !itype_evsl              = 4
+ !itype_trvg              = 3
+ !itype_root              = 2
+ !cwimax_ml               = 5.e-4
+ !c_soil                  = 1.25
+ !c_soil_urb              = 0.5
+ !itype_snowevap          = 2
+ lprog_albsi             = .true.      ! default = F
+ lseaice                 = .true.
+ hice_min                = 0.05        ! default of nwp sea-ice model - 0.05 in sea-ice model of icon-o
+ hice_max                = 10.0        ! must correspont to seaice_limit in icon-o in % of upper layer thickness
+ sstice_mode             = 1           ! 1 for coupled
+ !                                     ! parameters for jsbach land model:
+ ntiles                  = 1           ! 1 for jsbach, 3 for terra?
+ !albsi_snow_max = 0.81 ! Maximum albedo of snow over sea ice
+ !albsi_snow_min = 0.77 ! Minimum albedo of snow over sea ice
+ !albsi_max      = 0.70 ! Maximum albedo of sea ice
+ !albsi_min      = 0.68 ! Minimum albedo of sea ice
+/
+&turb_vdiff_nml
+ fsl                     = 0.8         ! for lowest model layer thickness of 20m
+ pr0                     = 1.0        ! default: 0.68; neutral limit Prandtl number (0.6 to 1.0)
+ f_theta_limit_fraction  = 0.1
+ f_theta_decay           = 4.0         ! default: 4.0
+ ek_ep_ratio_stable      = 2.33        ! default: 3 - Mauritzen: 1/(0.3 +- 0.1) -1 = 1.5 to 4
+ ek_ep_ratio_unstable    = 1.0         ! default: 2 - Mauritzen: 1
+/
+&radiation_nml
+ !NB isolrad to 1. no file added
+ isolrad                 = 1           ! 1: SSI from Coddington (def); 2: SSI monthly mean time series from file
+ !NB check 5
+ irad_o3                 = 5           ! 0: no ozon (def); 5: transient 3-dim; 79: GEMS/MACC #NB was running with 79
+ irad_aero               = 12
+ irad_co2                = 2           ! 2: const. vert. prof. with vmr_co2 (def), 4: from greenhouse gas scenario
+ irad_ch4                = 3           ! 3: tanh vert.prof. with vmr_ch4 at surface (def), 4: from greenhouse gas scenario
+ irad_n2o                = 3           ! 3: tanh vert.prof. with vmr_n2o at surface (def), 4: from greenhouse gas scenario
+ irad_cfc11              = 2           ! 2: const. vert. prof. with vmr_cfc11 (def), 4: from greenhouse gas scenario
+ irad_cfc12              = 2           ! 2: const. vert. prof. with vmr_cfc12 (def), 4: from greenhouse gas scenario
+ izenith                 = 4           ! 4: NWP (def), 3: no annual cycle
+ irad_o2                 = 2
+
+ !NB update to year of simulation - O3
+ vmr_co2                 = 336.6e-06   ! values for 1979 CE ! 284.3e-06   ! values for 1850 CE
+ vmr_ch4                 = 1566.2e-09  ! values for 1979 CE ! 808.2e-09   ! values for 1850 CE
+ vmr_n2o                 = 300.4e-09   ! values for 1979 CE ! 273.0e-09   ! values for 1850 CE
+ vmr_o2                  = 0.20946     ! preindustrial
+ vmr_cfc11               = 157.6e-12   ! values for 1979 ! 0.0 ! preindustrial
+ vmr_cfc12               = 286.5e-12   ! values for 1979 ! 0.0 ! preindustrial
+ !albedo_type             = 1          ! 1: dry soil (def); 2: Modis albedo
+ direct_albedo           = 4
+ direct_albedo_water     = 3
+ albedo_whitecap         = 1
+ ecrad_llw_cloud_scat    = .true.
+ ecrad_data_path         = 'ecrad_data'
+ ecrad_isolver           = ${radiation_ecrad_isolver}
+ decorr_pole             =  780        ! default: 2000
+ decorr_equator          = 2000        ! default: 2000
+/
+&ccycle_nml
+  ccycle_config%iccycle  = 2            ! 0: vmr_co2=384 for jsbach (def); 2: ccycle namelist values used
+  ccycle_config%ico2conc = 2            ! 2: use vmr_co2 of ccycle; 4: use values of GHG file
+  ccycle_config%vmr_co2  = 336.6e-06 ! 284.3e-06    ! same value as in radiation_nml
+/
 EOF
 }
 

@@ -705,7 +705,7 @@ EOF
 }
 
 output_hyd_dbg(){
-  stream="${EXPNAME}_lnd_dbg"
+  stream="${EXPNAME}_hyd_dbg"
   mkdir -p "${stream}"
   cat >> ${atm_namelist} << EOF
 &output_nml
@@ -721,7 +721,7 @@ output_hyd_dbg(){
  output_grid             = .TRUE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  !operation               = "mean"                    ! works on icon grid only (remap=0)
- ml_varlist		 = 'group:land_vars'
+ ml_varlist              = 'group:land_vars'
 
 /
 EOF

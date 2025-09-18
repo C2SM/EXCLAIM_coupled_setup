@@ -17,6 +17,12 @@ ${ATM_MIN_RANK}-${ATM_MAX_RANK} ../Common/hybrid_wrapper.sh ./icon_gpu
 ${OCE_MIN_RANK}-${OCE_MAX_RANK} ../Common/hybrid_wrapper.sh ./icon_cpu
 EOF
       chmod 755 multi-prog.conf
+   elif [[ "${TARGET}" == "cpu-cpu" ]]; then
+      cat > multi-prog.conf << EOF
+${ATM_MIN_RANK}-${ATM_MAX_RANK} ./icon_cpu
+${OCE_MIN_RANK}-${OCE_MAX_RANK} ./icon_cpu
+EOF
+      chmod 755 multi-prog.conf
    fi
 }
 
@@ -79,6 +85,18 @@ run_model(){
             --kill-on-bad-exit=1 \
             --nodes="${SLURM_JOB_NUM_NODES:-1}" \
             --distribution="cyclic:cyclic" \
+            --hint="nomultithread" \
+            --ntasks="${NTASKS}" \
+            --ntasks-per-node="${NTASKS_PER_NODE}" \
+            --cpus-per-task="${OMP_NUM_THREADS}" \
+            --multi-prog multi-prog.conf
+      ;;
+      "cpu-cpu")
+         srun \
+            -l \
+            --kill-on-bad-exit=1 \
+            --nodes="${SLURM_JOB_NUM_NODES:-1}" \
+            --distribution="block:cyclic" \
             --hint="nomultithread" \
             --ntasks="${NTASKS}" \
             --ntasks-per-node="${NTASKS_PER_NODE}" \

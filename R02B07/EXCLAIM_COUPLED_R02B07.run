@@ -33,11 +33,11 @@ source inputs.sh
 # -------------------
 if [[ "$#" != 1 ]]; then
     echo "ERROR: ${0} requires one and only one argument for the target architecture"
-    echo "       which must be either 'cpu' or 'hybrid'"
+    echo "       which must be either 'cpu', 'cpu-cpu' or hybrid'"
     exit 1
 fi
-if [[ "${1}" != "cpu" ]] && [[ "${1}" != "hybrid" ]]; then
-    echo "ERROR: ${0} single argument must be either 'cpu' or 'hybrid'"
+if [[ "${1}" != "cpu" ]] && [[ "${1}" != "cpu-cpu" ]] && [[ "${1}" != "hybrid" ]]; then
+    echo "ERROR: ${0} single argument must be either 'cpu', 'cpu-cpu' or hybrid'"
     exit 1
 fi
 TARGET="${1}"
@@ -94,7 +94,7 @@ case "${TARGET}" in
         N_OCE_TASKS_PER_NODE=4
         N_ATM_TASKS_PER_NODE=4
         ;;
-    "cpu")
+    "cpu" | "cpu-cpu")
         N_OCE_TASKS_PER_NODE=9
         ((N_ATM_TASKS_PER_NODE = 288 - N_OCE_TASKS_PER_NODE))
         ;;
@@ -117,7 +117,7 @@ all_output_interval="PT300S"      # monthly output - production
 # Type of experiment
 # ------------------
 #NB change to include options for historical control and year selection.
-exptype="control" #"picontrol" # "hist"
+export exptype=${exptype:-"control"} #"picontrol" # "hist"
 control_year=1979 #will not change hardcoded ghg concentrations, only file names
 initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphere + hdext cold-started from scratch
 
@@ -140,7 +140,7 @@ case "${TARGET}" in
         nproma_atm=8000
         ecrad_isolver=2  # (0 for CPU/vector, 2 for GPU)
         ;;
-    "cpu")
+    "cpu" | "cpu-cpu")
         nproma_atm=16
         ecrad_isolver=0  # (0 for CPU/vector, 2 for GPU)
         ;;

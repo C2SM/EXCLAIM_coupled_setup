@@ -41,8 +41,6 @@ EXPNAME="EXCLAIM_coupled_${TARGET}"
 # -----------
 icon_cpu="/capstor/store/cscs/userlab/cwd01/nbeech/icon_execs/cpu/icon"
 icon_gpu="/capstor/store/cscs/userlab/cwd01/nbeech/icon_execs/gpu/icon"
-icon_cpu_name="$(basename ${icon_cpu})"
-icon_gpu_name="$(basename ${icon_gpu})"
 
 # Grids
 # -----
@@ -229,8 +227,8 @@ fi
 
 # ============================================================================
 # Executables
-ln -sf ${icon_cpu} .
-ln -sf ${icon_gpu} .
+ln -sf ${icon_cpu} icon_cpu
+ln -sf ${icon_gpu} icon_gpu
 
 echo "ICON shared object dependencies"
 ldd ${icon_cpu}

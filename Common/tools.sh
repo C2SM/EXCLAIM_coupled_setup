@@ -13,8 +13,8 @@ compute_tasks_distribution(){
    # Write multi-prog distribution to file
    if [[ "${TARGET}" == "hybrid" ]]; then
       cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} ../Common/hybrid_wrapper.sh ${icon_gpu_name}
-${OCE_MIN_RANK}-${OCE_MAX_RANK} ../Common/hybrid_wrapper.sh ${icon_cpu_name}
+${ATM_MIN_RANK}-${ATM_MAX_RANK} ../Common/hybrid_wrapper.sh icon_gpu
+${OCE_MIN_RANK}-${OCE_MAX_RANK} ../Common/hybrid_wrapper.sh icon_cpu
 EOF
       chmod 755 multi-prog.conf
    fi
@@ -95,7 +95,7 @@ run_model(){
             --ntasks="${NTASKS}" \
             --ntasks-per-node="${NTASKS_PER_NODE}" \
             --cpus-per-task="${OMP_NUM_THREADS}" \
-            "./{icon_cpu_name}"
+            "./icon_cpu"
       ;;
    esac
 }

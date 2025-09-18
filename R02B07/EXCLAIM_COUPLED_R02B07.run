@@ -31,16 +31,25 @@ source inputs.sh
 
 # Target architecture
 # -------------------
-TARGET=${TARGET:-"hybrid"}
+if [[ "$#" != 1 ]]; then
+    echo "ERROR: ${0} requires one and only one argument for the target architecture"
+    echo "       which must be either 'cpu' or 'hybrid'"
+    exit 1
+fi
+if [[ "${1}" != "cpu" ]] && [[ "${1}" != "hybrid" ]]; then
+    echo "ERROR: ${0} single argument must be either 'cpu' or 'hybrid'"
+    exit 1
+fi
+TARGET="${1}"
 
 # Experiment name
 # ---------------
-EXPNAME="EXCLAIM_coupled_${TARGET}"
+export EXPNAME=${EXPNAME:-"EXCLAIM_coupled_${TARGET}"}
 
 # Executables
 # -----------
-icon_cpu="/capstor/store/cscs/userlab/cwd01/nbeech/icon_execs/cpu/icon"
-icon_gpu="/capstor/store/cscs/userlab/cwd01/nbeech/icon_execs/gpu/icon"
+export icon_cpu=${icon_cpu:-"/capstor/store/cscs/userlab/cwd01/nbeech/icon_execs/cpu/icon"}
+export icon_gpu=${icon_gpu:-"/capstor/store/cscs/userlab/cwd01/nbeech/icon_execs/gpu/icon"}
 
 # Grids
 # -----
@@ -51,7 +60,7 @@ ocean_refinement="R02B07"
 
 # Input data directories
 # ----------------------
-basedir="/capstor/scratch/cscs/leclairm/icon-XPP-20250319"
+export basedir=${basedir:-"/capstor/scratch/cscs/leclairm/icon-XPP-20250319"}
 clim_data_poolFolder="/capstor/store/cscs/userlab/cws01/pool/data/ICON/grids/public/mpim"
 icon_data_poolFolder="/capstor/store/cscs/userlab/cws01/pool/data/ICON/grids/public/mpim"
 atmo_data_InputFolder="${clim_data_poolFolder}/${atmos_gridID}"
@@ -60,10 +69,10 @@ ocean_grid_folder="${icon_data_poolFolder}/${ocean_gridID}"
 
 # Dates and intervals
 # -------------------
-start_date=${start_date:="1979-01-01T00:00:00Z"}
-end_date=${end_date:="1979-01-01T00:15:00Z"}
-restart_interval="P1M"
-checkpoint_interval="P1M"
+export start_date=${start_date:-"1979-01-01T00:00:00Z"}
+export end_date=${end_date:-"1979-01-01T00:15:00Z"}
+export restart_interval=${restart_interval:-"P1M"}
+export checkpoint_interval=${checkpoint_interval:-"${restart_interval}"}
 atm_file_interval="P50Y"
 oce_file_interval="P50Y"
 

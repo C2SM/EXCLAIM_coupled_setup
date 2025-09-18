@@ -174,9 +174,9 @@ atmo_nml(){
  l_fast_sum              = .false.
  l_test_openmp           = .false.
  l_log_checks            = .false.
- num_io_procs            = ${mpi_atm_io_procs}
+ num_io_procs            = ${ATM_IO_TASKS}
  pio_type                = 1                   ! default 1: asynchron io
- num_restart_procs       = ${num_rest_atm_mpi} ! number of procs for multifile restart
+ num_restart_procs       = ${ATM_RST_TASKS} ! number of procs for multifile restart
  num_dist_array_replicas = ${replicate_grid-1} ! can be 1 iff passive or active (see HAVE_SLOW_PASSIVE_TARGET_ONESIDED) target RMA works well
 /
 &grid_nml
@@ -399,7 +399,7 @@ atmo_nml(){
  albedo_whitecap         = 1
  ecrad_llw_cloud_scat    = .true.
  ecrad_data_path         = 'ecrad_data'
- ecrad_isolver           = ${radiation_ecrad_isolver}
+ ecrad_isolver           = ${ecrad_isolver}
  decorr_pole             =  780        ! default: 2000
  decorr_equator          = 2000        ! default: 2000
 /
@@ -872,10 +872,10 @@ oce_nml(){
 /
 &parallel_nml
  nproma                      = ${nproma_oce}
- num_io_procs                = ${mpi_oce_io_procs}
+ num_io_procs                = ${OCE_IO_TASKS}
  io_proc_chunk_size          = 8
  pio_type                    = 1                                ! default 1: asynchron io
- num_restart_procs           = ${num_rest_oce_mpi}              ! number of procs for multifile restart
+ num_restart_procs           = ${OCE_RST_TASKS}                 ! number of procs for multifile restart
  num_prefetch_proc           = 0
  p_test_run                  = .FALSE.
  l_fast_sum                  = .FALSE.

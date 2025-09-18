@@ -51,7 +51,7 @@ ocean_refinement="R02B07"
 
 # Input data directories
 # ----------------------
-basedir="/capstor/scratch/cscs/leclairm/EXCLAIM_COUPLED/icon-hybrid"
+basedir="/capstor/store/cscs/userlab/cwd01/leclairm/icon-XPP-20250319"
 clim_data_poolFolder="/capstor/store/cscs/userlab/cws01/pool/data/ICON/grids/public/mpim"
 icon_data_poolFolder="/capstor/store/cscs/userlab/cws01/pool/data/ICON/grids/public/mpim"
 atmo_data_InputFolder="${clim_data_poolFolder}/${atmos_gridID}"
@@ -127,8 +127,14 @@ oce_lag=1
 # Atmosphere settings
 # -------------------
 case "${TARGET}" in
-    "hybrid") nproma_atm=8000 ;;
-    "cpu") nproma_atm=16 ;;
+    "hybrid")
+        nproma_atm=8000
+        ecrad_isolver=2  # (0 for CPU/vector, 2 for GPU)
+        ;;
+    "cpu")
+        nproma_atm=16
+        ecrad_isolver=0  # (0 for CPU/vector, 2 for GPU)
+        ;;
 esac
 
 atmo_model_equations=3 # equation system

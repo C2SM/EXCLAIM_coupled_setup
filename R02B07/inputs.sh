@@ -3,11 +3,6 @@
 atm_inputs(){
     ln -sf "${atmos_grid_folder}/${atmos_grid_target}" .
 
-    ifs_target_name="ifs2icon_R2B07_DOM01.nc"  # NOTE: do not change name
-    ifs_indir="${clim_data_poolFolder}/${atmos_gridID}/initial_conditions/rcscs"
-    ifs_file_name="ifs2icon_1979010100_${atmos_gridID}_${atmos_refinement}_G.nc"
-    ln -sf "${ifs_indir}/${ifs_file_name}" "${ifs_target_name}"
-
     # NOTE: From add_required_atmo_non-hydrostatic_files
     cp "${basedir}/data/rrtmg_lw.nc" .
     cp "${basedir}/data/rrtmg_sw.nc" .
@@ -101,6 +96,11 @@ oce_inputs(){
 lnd_inputs(){
     datadir_land="${icon_data_poolFolder}/${atmos_gridID}-${ocean_gridID}/land/rcscs"
 
+    ifs_fname="ifs2icon_R2B07_DOM01.nc"  # NOTE: do not change name
+    ifs_indir="${clim_data_poolFolder}/${atmos_gridID}/initial_conditions/rcscs"
+    ifs_origin_name="ifs2icon_1979010100_${atmos_gridID}_${atmos_refinement}_G.nc"
+    ln -sf "${ifs_indir}/${ifs_origin_name}" "${ifs_fname}"
+
     ln -sf "${basedir}/externals/jsbach/data/lctlib_nlct21.def" .
 
     if [[ "$exptype" == "control"  ]]; then
@@ -112,12 +112,20 @@ lnd_inputs(){
         # NOTE: restart every year max to get the right land frac
         year="${current_year}" # transient
     fi
-    ln -sf "${datadir_land}/bc_land_frac_11pfts_${year}.nc" .
+    jsbach_lnd_frac="bc_land_frac_11pfts_${year}.nc"
+    ln -sf "${datadir_land}/${jsbach_lnd_frac}" .
 
-    ln -sf "${datadir_land}/bc_land_phys.nc" .
-    ln -sf "${datadir_land}/bc_land_soil.nc" .
-    ln -sf "${datadir_land}/ic_land_soil.nc" .
-    ln -sf "${datadir_land}/bc_land_sso.nc" .
+    # - jsbach land data:
+    jsbach_bc_phys="bc_land_phys.nc"
+    jsbach_bc_soil="bc_land_soil.nc"
+    jsbach_sso="bc_land_sso.nc"
+    # - jsbach soil init data
+    jsbach_ic_soil="ic_land_soil.nc"
+
+    ln -sf "${datadir_land}/${jsbach_bc_phys}" .
+    ln -sf "${datadir_land}/${jsbach_bc_soil}" .
+    ln -sf "${datadir_land}/${jsbach_ic_soil}" .
+    ln -sf "${datadir_land}/${jsbach_sso}" .
 
     extpar_filename="${datadir_land}/icon_extpar4jsbach_${atmos_gridID}_20250509_tiles_jsb.nc"
     extpar_targetname="extpar_icon_grid_${atmos_gridID}_${atmos_refinement}_G.nc"

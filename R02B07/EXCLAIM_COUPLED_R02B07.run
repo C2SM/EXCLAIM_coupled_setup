@@ -51,7 +51,7 @@ ocean_refinement="R02B07"
 
 # Input data directories
 # ----------------------
-basedir="/capstor/store/cscs/userlab/cwd01/leclairm/icon-XPP-20250319"
+basedir="/capstor/scratch/cscs/leclairm/icon-XPP-20250319"
 clim_data_poolFolder="/capstor/store/cscs/userlab/cws01/pool/data/ICON/grids/public/mpim"
 icon_data_poolFolder="/capstor/store/cscs/userlab/cws01/pool/data/ICON/grids/public/mpim"
 atmo_data_InputFolder="${clim_data_poolFolder}/${atmos_gridID}"
@@ -221,8 +221,8 @@ if [[ "${activate_output}" == "true" ]];then
     output_lnd_mon
     # output_lnd_dbg
     output_hyd_dbg
-    output_lnd_wat
-    output_atm_alb
+    # output_lnd_wat
+    # output_atm_alb
 
     # Ocean
     # -----
@@ -232,9 +232,9 @@ if [[ "${activate_output}" == "true" ]];then
     output_oce_mon
     # output_oce_moc
     # output_oce_dbg
-    output_oce_zos
-    output_oce_ssh
-    output_oce_grib
+    # output_oce_zos
+    # output_oce_ssh
+    # output_oce_grib
 fi
 
 # ============================================================================

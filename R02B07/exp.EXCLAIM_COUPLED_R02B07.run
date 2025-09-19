@@ -25,7 +25,7 @@ set -x
 
 # Load Auxiliary functions
 # ------------------------
-source ../Common/tools.sh
+source ../run-utils/run-tools.sh
 source namelists.sh
 source inputs.sh
 

@@ -1,0 +1,207 @@
+diff --git a/src/atm_phy_nwp/mo_nwp_vdiff_interface.f90 b/src/atm_phy_nwp/mo_nwp_vdiff_interface.f90
+index cca9b8cb83..ef117f7134 100644
+--- a/src/atm_phy_nwp/mo_nwp_vdiff_interface.f90
++++ b/src/atm_phy_nwp/mo_nwp_vdiff_interface.f90
+@@ -377,6 +377,8 @@ CONTAINS
+ 
+     CALL assert_acc_device_only ('nwp_vdiff', lacc)
+ 
++    !$ACC DATA ASYNC(1) COPY(mem%sea_state%ocean_u) IF(ASSOCIATED(mem%sea_state%ocean_u))
++    !$ACC DATA ASYNC(1) COPY(mem%sea_state%ocean_v) IF(ASSOCIATED(mem%sea_state%ocean_v))
+     ! Asynchronous data regions are a too recent feature. We have to resort to unstructured ones.
+     ! This crutch ensures that we don't forget to delete any variable. The compiler complains when
+     ! the line gets too long, so we have to split it into chunks, too. Yay...
+@@ -385,8 +387,6 @@ CONTAINS
+         fr_sfc, \
+         fr_sft, \
+         temp_sfc, \
+-        ocean_u, \
+-        ocean_v, \
+         wind_lowest, \
+         tracer_srf_emission, \
+         cloud_water_total, \
+@@ -417,8 +417,7 @@ CONTAINS
+         s_sfc, \
+         s_atm, \
+         theta_v_var_intermediate, \
+-        total_turbulence_energy_intermediate
+-#   define LIST_CREATE3 \
++        total_turbulence_energy_intermediate, \
+         ch_sfc, \
+         bn_sfc, \
+         bhn_sfc, \
+@@ -433,13 +432,22 @@ CONTAINS
+         uv_acoef, \
+         u_bcoef, \
+         v_bcoef, \
+-        flx_rad, \
+         drag_coef, \
+         t_eff_sft, \
+         qsat_sft, \
+         s_sft, \
+         t2m_sft
++#   define LIST_CREATE3 \
++        flx_rad
+ #   define LIST_CREATE4 \
++        alb
++#   define LIST_CREATE5 \
++        ekin_dissipation, \
++        Q_snowcanopymelt, \
++        flx_heat_latent_sft, \
++        flx_heat_sensible_sft, \
++        flx_mom_u_sft, \
++        flx_mom_v_sft, \
+         td2m_sft, \
+         rh2m_sft, \
+         qv2m_sft, \
+@@ -451,17 +459,9 @@ CONTAINS
+         evapo_potential, \
+         flx_heat_ground, \
+         cap_heat_ground, \
+-        flx_heat_latent_sft, \
+-        flx_heat_sensible_sft, \
+-        flx_mom_u_sft, \
+-        flx_mom_v_sft, \
+-        Q_snowcanopymelt, \
+-        alb, \
+-        ekin_dissipation, \
+         ddt_u, \
+         ddt_v, \
+-        ddt_Q
+-#   define LIST_CREATE5 \
++        ddt_Q, \
+         ddt_tracer, \
+         z0m_gbm, \
+         flx_humidity, \
+@@ -1316,9 +1316,43 @@ CONTAINS
+     END IF
+ 
+     !$ACC WAIT(1)
++!    !$ACC UPDATE HOST(ocean_u, ocean_v, p_graupel_gsp_rate, p_ice_gsp_rate, p_hail_gsp_rate)
+     !$ACC EXIT DATA &
+     !$ACC   DETACH(ocean_u, ocean_v, p_graupel_gsp_rate, p_ice_gsp_rate, p_hail_gsp_rate)
+ 
++    !$ACC WAIT(1)
++
++    !$ACC UPDATE HOST(flx_rad%flx_nir_down, flx_rad%flx_vis_down, flx_rad%flx_par_down, &
++    !$ACC   flx_rad%fr_nir_diffuse, flx_rad%fr_vis_diffuse, flx_rad%fr_par_diffuse, &
++    !$ACC   flx_rad%flx_lw_down)
++
++    !$ACC UPDATE HOST(prog_wtr_now)
++!    !$ACC UPDATE HOST(prog_wtr_now%t_ice, prog_wtr_now%h_ice, prog_wtr_now%t_snow_si)
++!    !$ACC UPDATE HOST(prog_wtr_now%h_snow_si, prog_wtr_now%alb_si)
++    !$ACC EXIT DATA &
++    !$ACC   DETACH(prog_wtr_now%t_ice, prog_wtr_now%h_ice, prog_wtr_now%t_snow_si) &
++    !$ACC   DETACH(prog_wtr_now%h_snow_si, prog_wtr_now%alb_si) &
++    !$ACC   DELETE(prog_wtr_now)
++
++    !$ACC UPDATE HOST(LIST_CREATE1)
++    !$ACC UPDATE HOST(LIST_CREATE2)
++!    !$ACC UPDATE HOST(LIST_CREATE3)
++!    !$ACC UPDATE HOST(LIST_CREATE4)
++    !$ACC UPDATE HOST(LIST_CREATE5)
++    !$ACC EXIT DATA &
++    !$ACC   DELETE(LIST_CREATE1) &
++    !$ACC   DELETE(LIST_CREATE2) &
++    !$ACC   DELETE(LIST_CREATE3) &
++    !$ACC   DELETE(LIST_CREATE4) &
++    !$ACC   DELETE(LIST_CREATE5)
++#   undef LIST_CREATE5
++#   undef LIST_CREATE4
++#   undef LIST_CREATE3
++#   undef LIST_CREATE2
++#   undef LIST_CREATE1
++    !$ACC END DATA
++    !$ACC END DATA
++
+     IF (is_coupled_to_ocean() .AND. .NOT. linit) THEN
+       CALL sea_model_couple_ocean (&
+           & patch=patch, &
+@@ -1346,25 +1380,6 @@ CONTAINS
+         )
+     END IF
+ 
+-    !$ACC WAIT(1)
+-
+-    !$ACC EXIT DATA &
+-    !$ACC   DELETE(prog_wtr_now) &
+-    !$ACC   DETACH(prog_wtr_now%t_ice, prog_wtr_now%h_ice, prog_wtr_now%t_snow_si) &
+-    !$ACC   DETACH(prog_wtr_now%h_snow_si, prog_wtr_now%alb_si)
+-
+-    !$ACC EXIT DATA &
+-    !$ACC   DELETE(LIST_CREATE1) &
+-    !$ACC   DELETE(LIST_CREATE2) &
+-    !$ACC   DELETE(LIST_CREATE3) &
+-    !$ACC   DELETE(LIST_CREATE4) &
+-    !$ACC   DELETE(LIST_CREATE5)
+-#   undef LIST_CREATE5
+-#   undef LIST_CREATE4
+-#   undef LIST_CREATE3
+-#   undef LIST_CREATE2
+-#   undef LIST_CREATE1
+-
+   END SUBROUTINE nwp_vdiff
+ 
+ 
+@@ -2075,6 +2090,7 @@ CONTAINS
+     !$OMP END PARALLEL
+ 
+     !$ACC WAIT(1)
++    !$ACC UPDATE HOST(qtvar)
+     !$ACC EXIT DATA DELETE(qtvar)
+ 
+   END SUBROUTINE get_stddev_saturation_deficit
+@@ -2153,6 +2169,7 @@ CONTAINS
+             & flx=vmfl_sft(:,isft) &
+           )
+       !$ACC WAIT(1)
++!      !$ACC UPDATE HOST(u_sfc, v_sfc)
+       !$ACC EXIT DATA DETACH(u_sfc, v_sfc)
+     END DO
+ 
+@@ -2219,6 +2236,7 @@ CONTAINS
+         CALL copy(p_runoff(:,:), diag_lnd%runoff_s_inst_t(:,:,1), lacc=.TRUE., opt_acc_async=.TRUE.)
+         CALL copy(p_drainage(:,:), diag_lnd%runoff_g_inst_t(:,:,1), lacc=.TRUE., opt_acc_async=.TRUE.)
+       !$ACC WAIT(1)
++!      !$ACC UPDATE HOST(p_runoff, p_drainage)
+       !$ACC EXIT DATA DETACH(p_runoff, p_drainage)
+ 
+       ! Convert runoff rate [kg/(m**2 s)] to the amount of runoff in the current time step
+@@ -2496,6 +2514,7 @@ CONTAINS
+     !$OMP END PARALLEL
+ 
+     !$ACC WAIT(1)
++    !$ACC UPDATE HOST(nonnegative)
+     !$ACC EXIT DATA DELETE(nonnegative)
+ 
+   END SUBROUTINE add_tendencies_to_state
+diff --git a/src/atm_phy_nwp/mo_nwp_vdiff_radfluxes.f90 b/src/atm_phy_nwp/mo_nwp_vdiff_radfluxes.f90
+index e2177793b4..2dfa0abf92 100644
+--- a/src/atm_phy_nwp/mo_nwp_vdiff_radfluxes.f90
++++ b/src/atm_phy_nwp/mo_nwp_vdiff_radfluxes.f90
+@@ -114,9 +114,10 @@ CONTAINS
+ 
+     !$ACC WAIT
+ 
+-    !$ACC EXIT DATA DELETE(self%flx_lw_down) &
++    !$ACC EXIT DATA &
+     !$ACC   DETACH(self%flx_nir_down, self%flx_vis_down, self%flx_par_down) &
+-    !$ACC   DETACH(self%fr_nir_diffuse, self%fr_vis_diffuse, self%fr_par_diffuse)
++    !$ACC   DETACH(self%fr_nir_diffuse, self%fr_vis_diffuse, self%fr_par_diffuse) &
++    !$ACC   DELETE(self%flx_lw_down)
+ 
+     DEALLOCATE(self%flx_lw_down)
+     NULLIFY(self%flx_nir_down, self%flx_par_down, self%flx_vis_down, self%flx_vis_down, &
+diff --git a/src/configure_model/mo_nml_crosscheck.f90 b/src/configure_model/mo_nml_crosscheck.f90
+index 025bbbf99f..782421b7b7 100644
+--- a/src/configure_model/mo_nml_crosscheck.f90
++++ b/src/configure_model/mo_nml_crosscheck.f90
+@@ -901,7 +901,7 @@ CONTAINS
+     END IF
+ 
+     IF ( is_coupled_to_ocean() ) THEN
+-      CALL finish(routine, "Coupled atm/ocean runs are not available on GPU")
++!      CALL finish(routine, "Coupled atm/ocean runs are not available on GPU")
+     END IF
+ #endif
+ 

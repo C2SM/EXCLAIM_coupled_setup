@@ -1,12 +1,15 @@
 # EXCLAIM Coupled Setup Utilities
 
-Collection of utility script to build and run the EXCLAIM coupled atmosphere-ocean setup.
+Collection of utility scripts to build and run the EXCLAIM coupled atmosphere-ocean setup.
 
 ## Build
 
 To build the coupled setup follow these steps:
 
 ```bash
+# Start UENV
+uenv start --view=default icon/25.2:v3
+
 # Create a base directory
 mkdir -p coupled-setup
 
@@ -21,14 +24,18 @@ source build-tools.sh
 cao_init
 
 # Build CPU and GPU
-cd build-cpu && cao_build cpu_ocean && cd ..
-cd build-gpu && cao_build gpu_coupled && cd ..
+pushd icon-hybrid/build-cpu && cao_build cpu_ocean && popd
+pushd icon-hybrid/build-gpu && cao_build gpu_coupled && popd
 ```
 
 If you only want to rebuild (e.g. after you made some changes in the code), enter the build directories and run
 `cao_rebuild`.
 
 ```bash
+# Make sure your UENV is active first
+uenv status
+
+# Build CPU and GPU executables
 cd build-cpu && cao_rebuild cpu_ocean && cd ..
 cd build-gpu && cao_rebuild gpu_coupled && cd ..
 ```

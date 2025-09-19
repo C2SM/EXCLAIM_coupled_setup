@@ -16,11 +16,11 @@ mkdir -p coupled-setup
 # Clone this repository in the base directory
 cd coupled-setup && git clone git@github.com:C2SM/EXCLAIM_coupled_setup.git
 
-# Copy the build-tools into the base directory
-cp EXCLAIM_coupled_setup/build-utils/build-tools.sh .
+# Copy the build_tools into the base directory
+cp EXCLAIM_coupled_setup/build_utils/build_tools.sh .
 
-# Source the build-tools and initialize
-source build-tools.sh
+# Source the build_tools and initialize
+source build_tools.sh
 cao_init
 
 # Build CPU and GPU
@@ -41,7 +41,7 @@ cd build-gpu && cao_rebuild gpu_coupled && cd ..
 ```
 
 > Note that to have the build utilities (e.g. `cao_init`, `cao_build`, `cao_rebuild`, ...) available you should source
-*build-tools.sh* in all new shells.
+*build_tools.sh* in all new shells.
 
 ## Run
 

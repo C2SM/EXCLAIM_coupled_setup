@@ -29,7 +29,7 @@ RUNSCRIPT_DIR=$(cd $(dirname "$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/Co
 
 # Load Auxiliary functions
 # ------------------------
-source ../run-utils/run-tools.sh
+source ../run_utils/run_tools.sh
 source namelists.sh
 source inputs.sh
 

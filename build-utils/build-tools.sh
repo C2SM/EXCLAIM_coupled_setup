@@ -3,23 +3,20 @@
 
 CAO_BASEDIR="$(pwd)"
 
-CAO_ICONXPP_BRANCH="icon-XPP-20250319"
+CAO_ICONXPP_BRANCH='icon-XPP-20250319'
 
 CAO_BUILD_UTILS_DIR="${CAO_BASEDIR}/EXCLAIM_coupled_setup/build-utils/"
 CAO_ICON_DIR="${CAO_BASEDIR}/icon-hybrid"
 
 CAO_BUILD_DIRS=(
-  "build-cpu"
-  "build-gpu"
+  'build-cpu'
+  'build-gpu'
 )
 
 CAO_CONFIG_FILES=(
-  "santis.cpu_ocean.nvidia"
-  "santis.gpu_coupled.nvidia"
+  'santis.cpu_ocean.nvidia'
+  'santis.gpu_coupled.nvidia'
 )
-
-CAO_RUN_WRAPPER="hybrid_wrapper.sh"
-CAO_EXP_NAME="new-adapt-hybrid"
 
 CAO_CONFIG_NAMES=()
 for config_file in "${CAO_CONFIG_FILES[@]}"; do

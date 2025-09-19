@@ -23,6 +23,10 @@ set -x
 # ============================================================================
 # Settings
 
+# Get runscript path
+# ------------------
+RUNSCRIPT_DIR=$(cd "$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/Command=/{print $2}')"; pwd)
+
 # Load Auxiliary functions
 # ------------------------
 source ../run-utils/run-tools.sh
@@ -46,10 +50,14 @@ TARGET="${1}"
 # ---------------
 export EXPNAME=${EXPNAME:-"EXCLAIM_coupled_${TARGET}"}
 
+# Base ICON directory
+# -------------------
+export basedir=${basedir:-"${RUNSCRIPT_DIR}/../../icon-hybrid"}
+
 # Executables
 # -----------
-export icon_cpu=${icon_cpu:-"/capstor/store/cscs/userlab/cwd01/nbeech/icon_execs/cpu/icon"}
-export icon_gpu=${icon_gpu:-"/capstor/store/cscs/userlab/cwd01/nbeech/icon_execs/gpu/icon"}
+export icon_cpu=${icon_cpu:-"${basedir}/build-cpu/bin/icon"}
+export icon_gpu=${icon_gpu:-"${basedir}/build-gpu/bin/icon"}
 
 # Grids
 # -----
@@ -60,7 +68,6 @@ ocean_refinement="R02B07"
 
 # Input data directories
 # ----------------------
-export basedir=${basedir:-"/capstor/scratch/cscs/leclairm/icon-XPP-20250319"}
 clim_data_poolFolder="/capstor/store/cscs/userlab/cws01/pool/data/ICON/grids/public/mpim"
 icon_data_poolFolder="/capstor/store/cscs/userlab/cws01/pool/data/ICON/grids/public/mpim"
 atmo_data_InputFolder="${clim_data_poolFolder}/${atmos_gridID}"

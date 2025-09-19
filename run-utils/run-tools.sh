@@ -13,8 +13,8 @@ compute_tasks_distribution(){
    # Write multi-prog distribution to file
    if [[ "${TARGET}" == "hybrid" ]]; then
       cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} ../run-utils/hybrid_wrapper.sh ./icon_gpu
-${OCE_MIN_RANK}-${OCE_MAX_RANK} ../run-utils/hybrid_wrapper.sh ./icon_cpu
+${ATM_MIN_RANK}-${ATM_MAX_RANK} ../run-utils/hybrid_wrapper.sh ${1-} ./icon_gpu
+${OCE_MIN_RANK}-${OCE_MAX_RANK} ../run-utils/hybrid_wrapper.sh ${1-} ./icon_cpu
 EOF
       chmod 755 multi-prog.conf
    elif [[ "${TARGET}" == "cpu-cpu" ]]; then

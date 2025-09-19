@@ -26,19 +26,14 @@ export MPICH_GPU_SUPPORT_ENABLED=1
 #  export MPICH_GPU_SUPPORT_ENABLED=1
 #fi
 
-#sanitizer_wrapper="../../run/run_wrapper/sanitizer_wrapper.sh"
-#NB change
-sanitizer_wrapper="run_wrapper/sanitizer_wrapper.sh"
-
 if [[ $# -lt 2 ]]; then
     # only ICON binary as argument
     numactl --cpunodebind=$NUMA_NODE --membind=$NUMA_NODE bash -c "$@"
-elif [[ "$1" = "--compute-sanitizer" ]]; then
-    echo 'sanitizer'
-    module use $USER_ENV_ROOT/modules
-    module load nvhpc
+elif [[ "$1" = "--profile" ]]; then
+    NSYS_WRAPPER_PATH="$(cd $(dirname $0); pwd)/nsys_wrapper.sh"
+
     shift
-    numactl --cpunodebind=$NUMA_NODE --membind=$NUMA_NODE bash -c "${sanitizer_wrapper} $@"
+    numactl --cpunodebind=$NUMA_NODE --membind=$NUMA_NODE bash -c "${NSYS_WRAPPER_PATH} $@"
 else
     echo "Error: Unrecognised command line option: $1"
     exit 1

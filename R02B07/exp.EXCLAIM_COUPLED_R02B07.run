@@ -35,9 +35,9 @@ source inputs.sh
 
 # Target architecture
 # -------------------
-if [[ "$#" != 1 ]]; then
-    echo "ERROR: ${0} requires one and only one argument for the target architecture"
-    echo "       which must be either 'cpu', 'cpu-cpu' or hybrid'"
+if [[ "$#" -lt 1 ]]; then
+    echo "ERROR: ${0} requires at least one argument for the target architecture"
+    echo "       which must be either 'cpu', 'cpu-cpu' or 'hybrid'"
     exit 1
 fi
 if [[ "${1}" != "cpu" ]] && [[ "${1}" != "cpu-cpu" ]] && [[ "${1}" != "hybrid" ]]; then
@@ -45,6 +45,7 @@ if [[ "${1}" != "cpu" ]] && [[ "${1}" != "cpu-cpu" ]] && [[ "${1}" != "hybrid" ]
     exit 1
 fi
 TARGET="${1}"
+RUN_OPTIONS="${2-}"
 
 # Experiment name
 # ---------------
@@ -213,7 +214,7 @@ oce_inputs
 
 # ============================================================================
 # Config files
-compute_tasks_distribution
+compute_tasks_distribution ${RUN_OPTIONS}
 set_ocean_vertical_coordinate
 
 icon_master_nml

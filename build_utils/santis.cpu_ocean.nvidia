@@ -60,7 +60,7 @@ CXX='mpicxx'
 
 FC='mpif90'
 #FC=""
-FCFLAGS="-g -traceback -O3 -Mrecursive -Mallocatable=03 ${SERIALBOXI} ${ECCODESI} ${NETCDFFI} -D__SWAPDIM -DNO_RTTOV"
+FCFLAGS="-g -traceback -O2 -Mrecursive -Mallocatable=03 ${SERIALBOXI} ${ECCODESI} ${NETCDFFI} -D__SWAPDIM -DNO_RTTOV"
 #LDFLAGS="-L${uenv_view_path}/lib64 -L${uenv_view_path}/lib"
 LDFLAGS="-L${uenv_view_path}/lib64 -L${uenv_view_path}/lib -nvmalloc"
 #LDFLAGS="-L${CUDA_HOME}/lib64 -L${SERIALBOX2_ROOT}/lib -L${ECCODES_ROOT}/lib64 -L${XML2_ROOT}/lib -L${NETCDF}/lib -L${NETCDFMINFORTRAN}/lib"

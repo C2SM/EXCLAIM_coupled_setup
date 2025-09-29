@@ -145,7 +145,7 @@ oce_lag=1
 # -------------------
 case "${TARGET}" in
     "hybrid")
-        nproma_atm=8000
+        nproma_atm=19186
         ecrad_isolver=2  # (0 for CPU/vector, 2 for GPU)
         ;;
     "cpu" | "cpu-cpu")

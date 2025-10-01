@@ -35,9 +35,9 @@ If you only want to rebuild (e.g. after you made some changes in the code), ente
 # Make sure your UENV is active first
 uenv status
 
-# Build CPU and GPU executables
-cd build-cpu && cao_rebuild cpu_ocean && cd ..
-cd build-gpu && cao_rebuild gpu_coupled && cd ..
+# Rebuild CPU and GPU executables
+cd build-cpu && cao_rebuild && cd ..
+cd build-gpu && cao_rebuild && cd ..
 ```
 
 > Note that to have the build utilities (e.g. `cao_init`, `cao_build`, `cao_rebuild`, ...) available you should source

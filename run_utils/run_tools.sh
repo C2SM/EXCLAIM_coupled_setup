@@ -49,9 +49,8 @@ set_environment(){
    # MPICH
    # -----
    if [[ "${TARGET}" == "hybrid" ]]; then
-      # NOTE: it's in the wrapper now
-      # export MPICH_GPU_SUPPORT_ENABLED=1
-
+      export MPICH_GPU_SUPPORT_ENABLED=1
+      # export MPICH_GPU_IPC_ENABLED=0
       export MPICH_RDMA_ENABLED_CUDA=1
       export MPICH_OFI_NIC_POLICY=GPU
    fi

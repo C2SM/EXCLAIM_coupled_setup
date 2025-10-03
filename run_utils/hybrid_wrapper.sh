@@ -18,11 +18,6 @@ export NUMA_NODE=${NUMA_IDS[$LOCAL_RANK % 4]}
 
 export CUDA_VISIBLE_DEVICES=$(($LOCAL_RANK % 4))
 
-export MPICH_GPU_SUPPORT_ENABLED=1
-# export MPICH_GPU_IPC_ENABLED=0
-
-ulimit -s unlimited
-
 if [[ $# -lt 2 ]]; then
     # only ICON binary as argument
     numactl --cpunodebind=$NUMA_NODE --membind=$NUMA_NODE bash -c "$@"

@@ -6,9 +6,9 @@
 #SBATCH --job-name=EXCLAIM_COUPLED_R02B07
 #SBATCH --output=LOG.EXCLAIM_COUPLED_R02B07.%j
 #SBATCH --error=LOG.EXCLAIM_COUPLED_R02B07.%j
-#SBATCH --nodes=18
+#SBATCH --nodes=4
 #SBATCH --ntasks-per-node=8
-#SBATCH --time=01:30:00
+#SBATCH --time=00:15:00
 #SBATCH --exclusive
 #SBATCH --account=cwd01
 # ============================================================================
@@ -78,7 +78,7 @@ ocean_grid_folder="${icon_data_poolFolder}/${ocean_gridID}"
 # Dates and intervals
 # -------------------
 export start_date=${start_date:-"1979-01-01T00:00:00Z"}
-export end_date=${end_date:-"1979-01-01T00:15:00Z"}
+export end_date=${end_date:-"1979-01-01T02:00:00Z"}
 export restart_interval=${restart_interval:-"P1M"}
 export checkpoint_interval=${checkpoint_interval:-"${restart_interval}"}
 atm_file_interval="P50Y"
@@ -145,11 +145,13 @@ oce_lag=1
 # -------------------
 case "${TARGET}" in
     "hybrid")
-        nproma_atm=19186
+        nproma_atm=83752
+        nproma_sub=10469
         ecrad_isolver=2  # (0 for CPU/vector, 2 for GPU)
         ;;
     "cpu" | "cpu-cpu")
         nproma_atm=16
+        nproma_sub=16
         ecrad_isolver=0  # (0 for CPU/vector, 2 for GPU)
         ;;
 esac

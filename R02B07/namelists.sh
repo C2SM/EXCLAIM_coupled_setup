@@ -169,7 +169,7 @@ atmo_nml(){
 &parallel_nml
  nproma                  = ${nproma_atm}
  !nblocks_c               = 1
- !nproma_sub              = 1000
+ nproma_sub              = ${nproma_sub}
  p_test_run              = .false.
  l_fast_sum              = .false.
  l_test_openmp           = .false.

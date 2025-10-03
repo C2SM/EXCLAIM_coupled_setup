@@ -222,12 +222,12 @@ atmo_nml(){
  !icalc_reff              = 100         ! For Modis cdnc
  !icpl_rad_reff           = 0           ! For Modis cdnc
  inwp_gscp               = 2
- inwp_convection         = 1
+ inwp_convection         = 0
  inwp_radiation          = 4
  inwp_cldcover           = 1
  inwp_satad              = 1
- inwp_sso                = 1
- inwp_gwd                = 1
+ inwp_sso                = 0
+ inwp_gwd                = 0
  latm_above_top          = .false.
  efdt_min_raylfric       = 7200.
  itype_z0                = 2

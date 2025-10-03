@@ -89,7 +89,7 @@ run_model(){
             -l \
             --kill-on-bad-exit=1 \
             --nodes="${SLURM_JOB_NUM_NODES:-1}" \
-            --distribution="cyclic:cyclic" \
+            --distribution="plane=4" \
             --hint="nomultithread" \
             --ntasks="${NTASKS}" \
             --ntasks-per-node="${NTASKS_PER_NODE}" \

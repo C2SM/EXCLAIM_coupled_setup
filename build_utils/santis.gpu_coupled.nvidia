@@ -97,7 +97,7 @@ EXTRA_CONFIG_ARGS='--disable-loop-exchange --enable-ocean --enable-gpu --disable
 #EXTRA_CONFIG_ARGS+=' --enable-hd='yes' --enable-lib-only='no' --disable-jsbach-hd'
 EXTRA_CONFIG_ARGS+=' --enable-jsbach-hd'
 # Speed up the configuration by disabling MPI checks:
-EXTRA_CONFIG_ARGS+=' --disable-mpi-checks --enable-mpi-gpu --enable-coupling --enable-async-io-rma'
+EXTRA_CONFIG_ARGS+=' --disable-mpi-checks --enable-coupling --enable-async-io-rma'
 EXTRA_CONFIG_ARGS+=' --disable-rpaths --enable-atmo --enable-les --enable-upatmo --enable-jsbach --disable-waves --disable-aes  --disable-rttov --enable-acm-license --enable-mpi  --disable-openmp --enable-realloc-buf  --disable-parallel-netcdf --disable-sct --enable-yaxt --disable-testbed --disable-vectorized-lrtm --disable-mixed-precision --enable-pgi-inlib --disable-nccl --disable-cuda-graphs --enable-silent-rules --disable-serialization'
 #NB added for era script
 #EXTRA_CONFIG_ARGS+=' --enable-python-bindings'

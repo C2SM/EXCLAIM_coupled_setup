@@ -6,7 +6,7 @@
 #SBATCH --job-name=EXCLAIM_COUPLED_R02B07
 #SBATCH --output=LOG.EXCLAIM_COUPLED_R02B07.%j
 #SBATCH --error=LOG.EXCLAIM_COUPLED_R02B07.%j
-#SBATCH --nodes=4
+#SBATCH --nodes=3
 #SBATCH --ntasks-per-node=8
 #SBATCH --time=00:15:00
 #SBATCH --exclusive
@@ -145,8 +145,8 @@ oce_lag=1
 # -------------------
 case "${TARGET}" in
     "hybrid")
-        nproma_atm=83752
-        nproma_sub=10469
+        nproma_atm=111286
+        nproma_sub=7949
         ecrad_isolver=2  # (0 for CPU/vector, 2 for GPU)
         ;;
     "cpu" | "cpu-cpu")

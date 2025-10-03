@@ -48,18 +48,24 @@ set_environment(){
 
    # MPICH
    # -----
-   # NOTE: it's in the wrapper now
-   # if [[ "${TARGET}" == "hybrid" ]]; then
-   #    export MPICH_GPU_SUPPORT_ENABLED=1
-   # fi
+   if [[ "${TARGET}" == "hybrid" ]]; then
+      # NOTE: it's in the wrapper now
+      # export MPICH_GPU_SUPPORT_ENABLED=1
+
+      export MPICH_RDMA_ENABLED_CUDA=1
+      export MPICH_OFI_NIC_POLICY=GPU
+   fi
 
    # NVHPC/CUDA
    # ----------
    if [[ "${TARGET}" == "hybrid" ]]; then
-      export NVCOMPILER_ACC_SYNCHRONOUS=1  # TODO: Check that, looks very suspicious
+      export NVCOMPILER_ACC_SYNCHRONOUS=0
       export NVCOMPILER_ACC_DEFER_UPLOADS=1
+      export NVCOMPILER_ACC_USE_GRAPH=1  # Harmless if cuda-graphs is disabled
+      export NVCOMPILER_ACC_NOTIFY=0
       export NVCOMPILER_TERM=trace
       export CUDA_BUFFER_PAGE_IN_THRESHOLD_MS=0.001
+      # export CRAY_CUDA_MPS=1  # Only needed if we oversubscribe the GPU
    fi
 
    # OpenMP

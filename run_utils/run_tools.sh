@@ -48,18 +48,23 @@ set_environment(){
 
    # MPICH
    # -----
-   # NOTE: it's in the wrapper now
-   # if [[ "${TARGET}" == "hybrid" ]]; then
-   #    export MPICH_GPU_SUPPORT_ENABLED=1
-   # fi
+   if [[ "${TARGET}" == "hybrid" ]]; then
+      export MPICH_GPU_SUPPORT_ENABLED=1
+      # export MPICH_GPU_IPC_ENABLED=0
+      export MPICH_RDMA_ENABLED_CUDA=1
+      export MPICH_OFI_NIC_POLICY=GPU
+   fi
 
    # NVHPC/CUDA
    # ----------
    if [[ "${TARGET}" == "hybrid" ]]; then
-      export NVCOMPILER_ACC_SYNCHRONOUS=1  # TODO: Check that, looks very suspicious
+      export NVCOMPILER_ACC_SYNCHRONOUS=0
       export NVCOMPILER_ACC_DEFER_UPLOADS=1
+      export NVCOMPILER_ACC_USE_GRAPH=1  # Harmless if cuda-graphs is disabled
+      export NVCOMPILER_ACC_NOTIFY=0
       export NVCOMPILER_TERM=trace
       export CUDA_BUFFER_PAGE_IN_THRESHOLD_MS=0.001
+      # export CRAY_CUDA_MPS=1  # Only needed if we oversubscribe the GPU
    fi
 
    # OpenMP
@@ -84,7 +89,7 @@ run_model(){
             -l \
             --kill-on-bad-exit=1 \
             --nodes="${SLURM_JOB_NUM_NODES:-1}" \
-            --distribution="cyclic:cyclic" \
+            --distribution="plane=4" \
             --hint="nomultithread" \
             --ntasks="${NTASKS}" \
             --ntasks-per-node="${NTASKS_PER_NODE}" \

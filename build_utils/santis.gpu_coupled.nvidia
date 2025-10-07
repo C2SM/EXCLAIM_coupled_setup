@@ -9,8 +9,6 @@ ICON_DIR=$(cd "${SCRIPT_DIR}/../../"; pwd)
 
 uenv_view_path="/user-environment/env/default/"
 
-#MODULES='nvhpc/23.9 cuda/11.8.0 netcdf-c/4.9.2 netcdf-fortran/4.6.1 cray-mpich/8.1.26 gcc/11.3.0'
-
 # Requirements
 XML2_ROOT="${uenv_view_path}"
 XML2_LIBS='-lxml2'
@@ -44,9 +42,6 @@ STDCPP_LIBS='-c++libs'
 
 ################################################################################
 
-#BUILD_ENV=". \"${SCRIPT_DIR}/module_switcher\"; module use /user-environment/modules; switch_for_module ${MODULES}; export LD_LIBRARY_PATH=\"${XML2_ROOT}/lib:\${LD_LIBRARY_PATH}\"; export CC=mpicc; export FC=mpif90; export CXX=mpicxx;"
-#BUILD_ENV="source ${uenv_view_path}/activate; export LD_LIBRARY_PATH=\"/user-environment/icon-o/bin/lib64:/user-environment/icon-o/bin/lib:\${LD_LIBRARY_PATH}\";"
-#BUILD_ENV="source ${uenv_view_path}/activate.sh; export LD_LIBRARY_PATH=\"/user-environment/icon-o/lib64:/user-environment/icon-o/lib:\${LD_LIBRARY_PATH}\";"
 BUILD_ENV="source ${uenv_view_path}/activate.sh; export NVFORTRAN_CONVERT_UPPERCASE=1;"
 # We need some of the environment variables set by the modules now:
 eval "$BUILD_ENV"
@@ -59,20 +54,13 @@ CPPFLAGS="-I${uenv_view_path}/include/libxml2 -I${uenv_view_path}/include"
 CXX='mpicxx'
 
 FC='mpif90'
-#FC=""
 FCFLAGS="-g -traceback -O2 -acc=gpu,verystrict -Minfo=accel,inline -Mrecursive -Mallocatable=03 -Mpreprocess -Mstack_arrays ${SERIALBOXI} ${ECCODESI} ${NETCDFFI} -D__SWAPDIM -DNO_RTTOV"
-#LDFLAGS="-L${uenv_view_path}/lib64 -L${uenv_view_path}/lib"
-#LDFLAGS="-L${uenv_view_path}/lib64 -L${uenv_view_path}/lib -L/user-environment/linux-sles15-neoverse_v2/gcc-13.3.0/cuda-12.8.0-gzalcjk4qltncf4lx5lr6nuq633gfw3c/targets/sbsa-linux/lib -nvmalloc"
 LDFLAGS="-L${uenv_view_path}/lib64 -L${uenv_view_path}/lib -L/user-environment/linux-sles15-neoverse_v2/gcc-13.2.0/cuda-12.6.0-cqxe545cshmxocfoqzdwolerb4i447t5/lib64 -nvmalloc"
-#LDFLAGS="-L${CUDA_HOME}/lib64 -L${SERIALBOX2_ROOT}/lib -L${ECCODES_ROOT}/lib64 -L${XML2_ROOT}/lib -L${NETCDF}/lib -L${NETCDFMINFORTRAN}/lib"
 
 FYAML_LIBS='-lfyaml'
 
-
-#export LD_LIBRARY_PATH=/user-environment/linux-sles15-neoverse_v2/gcc-13.3.0/cuda-12.8.0-gzalcjk4qltncf4lx5lr6nuq633gfw3c/targets/sbsa-linux/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/user-environment/linux-sles15-neoverse_v2/gcc-13.2.0/cuda-12.6.0-cqxe545cshmxocfoqzdwolerb4i447t5/lib64:$LD_LIBRARY_PATH
-#LD_LIBRARY_PATH=/user-environment/env/default/lib64:$LD_LIBRARY_PATH
-#export LD_LIBRARY_PATH=/user-environment/linux-sles15-neoverse_v2/gcc-12.3.0/cuda-12.3.0-silch2tljifo57dqe33jwcy7uuge5oh3/lib64:$LD_LIBRARY_PATH
+
 # ICON executable will be linked to /opt/cray/pe/lib64/libmpichf90_pgi.so.3,
 # which depends on libomptarget.so but doesn't have an RPATH to it. For this
 # reason, it becomes impossible to run the executable without setting
@@ -80,7 +68,6 @@ export LD_LIBRARY_PATH=/user-environment/linux-sles15-neoverse_v2/gcc-13.2.0/cud
 # this issue, we overlink to libomptarget.so so that it can be found through
 # RPATH entries of the executable, which are injected by the compiler.
 LIBS="-Wl,--as-needed ${XML2_LIBS} ${BLAS_LAPACK_LIBS} ${SERIALBOX2_LIBS} ${FYAML_LIBS} ${STDCPP_LIBS} ${NETCDF_LIBS} -lcudart"
-#LIBS="-Wl,--as-needed ${XML2_LIBS} ${BLAS_LAPACK_LIBS} ${SERIALBOX2_LIBS} ${FYAML_LIBS} ${STDCPP_LIBS} ${NETCDF_LIBS}"
 
 CUDAARCHS='90'
 NVCC='nvcc'
@@ -88,25 +75,19 @@ NVCC='nvcc'
 NVCFLAGS='-ccbin mpic++ -g -O3 -arch=sm_90'
 # gt4py NVCFLAGS need to be frozen, since -I/path/to/external/cub is added for NVCFLAGS in configure, which will break the build for gt4py.
 
-
-#MPI_LAUNCH='/apps/daint/UES/xalt/production/bin/srun -p debug -C gpu'
 MPI_LAUNCH=false
 
-EXTRA_CONFIG_ARGS='--disable-loop-exchange --enable-ocean --enable-gpu --disable-rte-rrtmgp --enable-ecrad'
-#EXTRA_CONFIG_ARGS='--disable-loop-exchange --enable-ocean --disable-gpu --disable-rte-rrtmgp --enable-ecrad'
-#EXTRA_CONFIG_ARGS+=' --enable-hd='yes' --enable-lib-only='no' --disable-jsbach-hd'
-EXTRA_CONFIG_ARGS+=' --enable-jsbach-hd'
-# Speed up the configuration by disabling MPI checks:
-EXTRA_CONFIG_ARGS+=' --disable-mpi-checks --enable-coupling --enable-async-io-rma'
-EXTRA_CONFIG_ARGS+=' --disable-rpaths --enable-atmo --enable-les --enable-upatmo --enable-jsbach --disable-waves --disable-aes  --disable-rttov --enable-acm-license --enable-mpi  --disable-openmp --enable-realloc-buf  --disable-parallel-netcdf --disable-sct --enable-yaxt --disable-testbed --disable-vectorized-lrtm --disable-mixed-precision --enable-pgi-inlib --disable-nccl --enable-cuda-graphs --enable-silent-rules --disable-serialization'
-#NB added for era script
-#EXTRA_CONFIG_ARGS+=' --enable-python-bindings'
-#EXTRA_CONFIG_ARGS+=' --enable-bundled-python=yac --enable-openmp'
+EXTRA_CONFIG_ARGS='--enable-atmo --enable-ocean --enable-coupling --enable-ecrad --disable-rte-rrtmgp --enable-jsbach'
+EXTRA_CONFIG_ARGS+=' --enable-upatmo --enable-jsbach-hd --enable-les --disable-waves --disable-aes --disable-rttov --enable-yaxt'
+EXTRA_CONFIG_ARGS+=' --enable-gpu --enable-cuda-graphs --disable-loop-exchange'
+EXTRA_CONFIG_ARGS+=' --enable-mpi --disable-mpi-checks --disable-nccl'
+EXTRA_CONFIG_ARGS+=' --disable-openmp'
+EXTRA_CONFIG_ARGS+=' --enable-pgi-inlib --disable-mixed-precision --enable-realloc-buf --disable-vectorized-lrtm'
+EXTRA_CONFIG_ARGS+=' --disable-parallel-netcdf --enable-async-io-rma --disable-serialization'
+EXTRA_CONFIG_ARGS+=' --enable-silent-rules --enable-acm-license --disable-rpaths --disable-sct --disable-testbed'
 
-#NB python env installed within uenv for icon-o standalone
-#python=/user-environment/icon-o/bin/python
-#PYTHON=/user-environment/env/default/bin/python
 ################################################################################
+
 "${ICON_DIR}/configure" \
 BUILD_ENV="$BUILD_ENV" \
 CC="$CC" \

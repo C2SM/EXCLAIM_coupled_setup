@@ -118,9 +118,9 @@ OCE_RST_TASKS=0
 
 # output interval
 #all_output_interval="PT30M"    # short test
-all_output_interval="PT60M"     # short test
+#all_output_interval="PT60M"     # short test
 #all_output_interval="P1D"      # daily output
-#all_output_interval="PT300S"      # monthly output - production
+all_output_interval="PT300S"      # monthly output - production
 
 # Type of experiment
 # ------------------

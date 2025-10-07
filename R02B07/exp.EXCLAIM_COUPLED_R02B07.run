@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 # ============================================================================
 #SBATCH --uenv=icon/25.2:v3:/user-environment
@@ -6,9 +6,9 @@
 #SBATCH --job-name=EXCLAIM_COUPLED_R02B07
 #SBATCH --output=LOG.EXCLAIM_COUPLED_R02B07.%j
 #SBATCH --error=LOG.EXCLAIM_COUPLED_R02B07.%j
-#SBATCH --nodes=18
+#SBATCH --nodes=24
 #SBATCH --ntasks-per-node=8
-#SBATCH --time=01:30:00
+#SBATCH --time=00:15:00
 #SBATCH --exclusive
 #SBATCH --account=cwd01
 # ============================================================================
@@ -78,11 +78,11 @@ ocean_grid_folder="${icon_data_poolFolder}/${ocean_gridID}"
 # Dates and intervals
 # -------------------
 export start_date=${start_date:-"1979-01-01T00:00:00Z"}
-export end_date=${end_date:-"1979-01-01T00:15:00Z"}
+export end_date=${end_date:-"1979-01-03T00:00:00Z"}
 export restart_interval=${restart_interval:-"P1M"}
 export checkpoint_interval=${checkpoint_interval:-"${restart_interval}"}
-atm_file_interval="P50Y"
-oce_file_interval="P50Y"
+atm_file_interval="P1Y"
+oce_file_interval="P1Y"
 
 start_year=${start_date%%-*}
 end_year=${end_date%%-*}
@@ -118,9 +118,9 @@ OCE_RST_TASKS=0
 
 # output interval
 #all_output_interval="PT30M"    # short test
-#all_output_interval="PT60M"     # short test
+all_output_interval="PT60M"     # short test
 #all_output_interval="P1D"      # daily output
-all_output_interval="PT300S"      # monthly output - production
+#all_output_interval="PT300S"      # monthly output - production
 
 # Type of experiment
 # ------------------
@@ -145,11 +145,13 @@ oce_lag=1
 # -------------------
 case "${TARGET}" in
     "hybrid")
-        nproma_atm=19186
+        nproma_atm=83752
+        nproma_sub=10469
         ecrad_isolver=2  # (0 for CPU/vector, 2 for GPU)
         ;;
     "cpu" | "cpu-cpu")
         nproma_atm=16
+        nproma_sub=16
         ecrad_isolver=0  # (0 for CPU/vector, 2 for GPU)
         ;;
 esac
@@ -184,7 +186,7 @@ case "${exptype}" in
         ;;
 esac
 
-atm_file_interval="P50Y"
+atm_file_interval="P1M"
 atm_output_interval=${all_output_interval}
 atm_hfreq_output_interval="PT6H"
 
@@ -195,16 +197,17 @@ ocean_grid_target="icon_grid_${ocean_gridID}_${ocean_refinement}_O.nc"
 VERT_COR=1
 ocean_vertical_levels="L72"
 use_hamocc="no"
-oce_file_interval="P50Y"
+oce_file_interval="P1M"
 oce_output_interval=${all_output_interval}
-oce_output_interval_def="P1Y"
-# FIXME: Probably never active
-start_fx="1000-01-02T00:00:00Z"  # output time of geometry file fx
+oce_output_interval_def="P1D"
+start_fx=${start_date}  # output time of geometry file fx
 
 # Activate output streams
 # -----------------------
 activate_output="true"
 # activate_output="false"
+#activate_output_dyamond="true"
+activate_output_dyamond="false"
 
 # ============================================================================
 # Input files
@@ -227,17 +230,17 @@ if [[ "${activate_output}" == "true" ]];then
     # Atmosphere / Land
     # -----------------
     output_atm_mon
-    # output_atm_2d
+    output_atm_2d
     output_energy_budget
-    # output_atm_hfreq
-    # output_atm_3d
+    output_atm_hfreq
+    output_atm_3d
     output_atm_latlon
     # output_atm_icon
     # output_atm_spot
     output_jsb_2d
     output_lnd_mon
     # output_lnd_dbg
-    output_hyd_dbg
+    #output_hyd_dbg
     # output_lnd_wat
     # output_atm_alb
 
@@ -246,13 +249,45 @@ if [[ "${activate_output}" == "true" ]];then
     output_oce_fx
     output_oce_def
     output_oce_ice
+    output_oce_flux
     output_oce_mon
-    # output_oce_moc
-    # output_oce_dbg
-    # output_oce_zos
-    # output_oce_ssh
-    # output_oce_grib
+    output_oce_moc
 fi
+# Dyamond output streams. Comment out to deactivate
+if [ "${activate_output_dyamond}" == "true" ]; then
+    output_stream_1_1
+    output_stream_1_2
+    output_stream_1_3
+    output_stream_1_4
+    output_stream_1_5
+    output_stream_2
+    output_stream_3 
+    output_stream_4
+    output_stream_5
+    output_stream_6
+    output_stream_7
+    output_stream_8
+    output_stream_9
+    output_stream_10
+    output_stream_11
+    output_stream_12
+    output_stream_13
+    output_stream_14
+    #output_stream_15_1
+    #output_stream_15_2
+    #output_stream_15_3
+    #output_stream_15_4
+    #output_stream_15_5
+    #output_stream_15_6
+    #output_stream_15_7
+    #output_stream_15_8
+    #output_stream_15_9
+    #output_stream_15_10
+    #output_stream_15_11
+    #output_stream_15_12
+    #output_stream_15_13
+fi
+
 
 # ============================================================================
 # Executables

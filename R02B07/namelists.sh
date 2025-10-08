@@ -197,7 +197,8 @@ atmo_nml(){
  lfeedback               = .false.
 /
 &initicon_nml
-! initialization mode (2 for IFS ana, 1 for DWD ana, 4=cosmo, 2=ifs, 3=combined
+ ! initialization mode (2 for IFS ana, 1 for DWD ana, 4=cosmo, 2=ifs, 3=combined 
+ !NB: addition from dyamond. Suspicious that this may break the HD budget as wwe saw previously
  init_mode               = 2
  ifs2icon_filename       = "${ifs_fname}"
  zpbl1                   = 500.    ! NEW Works  !(CLM) bottom height (AGL) of layer used for gradient computation

@@ -125,9 +125,9 @@ all_output_interval="PT60M"     # short test
 
 # Type of experiment
 # ------------------
-#NB change to include options for historical control and year selection.
 export exptype=${exptype:-"control"} #"picontrol" # "hist"
 control_year=1979 #will not change hardcoded ghg concentrations, only file names
+ssp="370"
 initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphere + hdext cold-started from scratch
 
 # namelist files
@@ -168,7 +168,6 @@ nlev=120          # nlev = number of full levels
 iforcing=3        # 3 for inwp forcing; 0 for no forcing
 atmos_grid_target="icon_grid_${atmos_gridID}_${atmos_refinement}_G.nc"
 
-# FIXME: unsued variables: ighg1, ighg2, irad_aero
 case "${exptype}" in
     "control")
         irad_aero=12

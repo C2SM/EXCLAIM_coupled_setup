@@ -6,7 +6,7 @@
 #SBATCH --job-name=EXCLAIM_COUPLED_R02B07
 #SBATCH --output=LOG.EXCLAIM_COUPLED_R02B07.%j
 #SBATCH --error=LOG.EXCLAIM_COUPLED_R02B07.%j
-#SBATCH --nodes=24
+#SBATCH --nodes=4
 #SBATCH --ntasks-per-node=8
 #SBATCH --time=00:15:00
 #SBATCH --exclusive
@@ -78,9 +78,10 @@ ocean_grid_folder="${icon_data_poolFolder}/${ocean_gridID}"
 # Dates and intervals
 # -------------------
 export start_date=${start_date:-"1979-01-01T00:00:00Z"}
-export end_date=${end_date:-"1979-01-03T00:00:00Z"}
+export end_date=${end_date:-"1979-01-01T02:00:00Z"}
 export restart_interval=${restart_interval:-"P1M"}
 export checkpoint_interval=${checkpoint_interval:-"${restart_interval}"}
+#duplicates
 atm_file_interval="P1Y"
 oce_file_interval="P1Y"
 
@@ -111,8 +112,8 @@ case "${TARGET}" in
         exit 1
         ;;
 esac
-ATM_IO_TASKS=0
-OCE_IO_TASKS=0
+ATM_IO_TASKS=1
+OCE_IO_TASKS=1
 ATM_RST_TASKS=0
 OCE_RST_TASKS=0
 
@@ -163,7 +164,7 @@ atmo_model_equations=3 # equation system
 #                    -1=shallow water model
 #                    -2=hydrost. ocean
 
-nlev=130          # nlev = number of full levels
+nlev=120          # nlev = number of full levels
 iforcing=3        # 3 for inwp forcing; 0 for no forcing
 atmos_grid_target="icon_grid_${atmos_gridID}_${atmos_refinement}_G.nc"
 
@@ -240,7 +241,7 @@ if [[ "${activate_output}" == "true" ]];then
     output_jsb_2d
     output_lnd_mon
     # output_lnd_dbg
-    #output_hyd_dbg
+    # output_hyd_dbg
     # output_lnd_wat
     # output_atm_alb
 

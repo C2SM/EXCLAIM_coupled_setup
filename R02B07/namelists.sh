@@ -151,7 +151,13 @@ atmo_nml(){
           MAXLAYTH=500.
           TOPTHLIM=35000.
           STRETFAC=1.2
-          FLHEIGHT=35000.
+          FLHEIGHT=35000. #! Height above whihc coordinatre surfaces are flat  (default value)
+          ;;
+      "120")
+          MAXLAYTH=400.
+          TOPTHLIM=15000.
+          STRETFAC=0.9
+          FLHEIGHT=25000.
           ;;
       *)
           echo "ERROR: unsupported nlev: ${nlev}"
@@ -171,13 +177,15 @@ atmo_nml(){
  !nblocks_c               = 1
  nproma_sub              = ${nproma_sub}
  p_test_run              = .false.
- l_fast_sum              = .false.
+ !l_fast_sum              = .false.
  l_test_openmp           = .false.
  l_log_checks            = .false.
  num_io_procs            = ${ATM_IO_TASKS}
  pio_type                = 1                   ! default 1: asynchron io
  num_restart_procs       = ${ATM_RST_TASKS} ! number of procs for multifile restart
  num_dist_array_replicas = ${replicate_grid-1} ! can be 1 iff passive or active (see HAVE_SLOW_PASSIVE_TARGET_ONESIDED) target RMA works well
+ io_proc_chunk_size      = 12              ! Used for Large Data writing requiring large memory (eg., 3D files)
+ iorder_sendrecv         = 3               ! From CLM namelist  (isend/irec)
 /
 &grid_nml
  dynamics_grid_filename  = "${atmos_grid_target}"
@@ -188,6 +196,17 @@ atmo_nml(){
  radiation_grid_filename = " "
  lfeedback               = .false.
 /
+&initicon_nml
+ ! initialization mode (2 for IFS ana, 1 for DWD ana, 4=cosmo, 2=ifs, 3=combined 
+ !NB: addition from dyamond. Suspicious that this may break the HD budget as wwe saw previously
+ init_mode               = 2
+ ifs2icon_filename       = "${ifs_fname}"
+ zpbl1                   = 500.    ! NEW Works  !(CLM) bottom height (AGL) of layer used for gradient computation
+ zpbl2                   = 1000.   ! NEW Works    !(CLM) top height (AGL) of layer used for gradient computation
+ ltile_init              =.true.   ! NEW Works   !(CLM) True: initialize tiled surface fields from a first guess coming from a run without tiles.
+ ltile_coldstart         =.true.   ! NEW Works  ! (CLM) If true, tiled surface fields are initialized with tile-averaged fields from a previous run with tiles.
+/
+
 &run_nml
  num_lev                 = ${nlev}              ! number of full levels of vertical grid
  modelTimeStep           = "${atmTimeStep}"
@@ -211,12 +230,14 @@ atmo_nml(){
 /
 &diffusion_nml
  hdiff_order             = 5
- hdiff_efdt_ratio        = 24.0
+ itype_vn_diffu          = 1        ! (u,v reconstruction atvertices only)  Default of CLM
+ itype_t_diffu           = 2        ! (Discritization of temp diffusion, default value of CLM)
+ hdiff_efdt_ratio        = 32.0     ! Ratio iof e-forlding time to time step, recomemded values above 30 (CLM value)
  hdiff_smag_fac          = 0.025
  lhdiff_vn               = .TRUE.
  lhdiff_temp             = .TRUE.
- hdiff_multfac           = 1.0
- hdiff_tv_ratio          = 1.0
+ !hdiff_multfac           = 1.0
+ !hdiff_tv_ratio          = 1.0
 /
 &nwp_phy_nml
  !icalc_reff              = 100         ! For Modis cdnc
@@ -234,7 +255,7 @@ atmo_nml(){
  icapdcycl               = 3
  icpl_aero_conv          = 0           ! 1 if irad_aero=6 or 9 is used - 0 for irad_aero=12
  icpl_aero_gscp          = 0           ! 1 if irad_aero=6 or 9 is used - 0 for irad_aero=12
- icpl_o3_tp              = 1
+ !icpl_o3_tp              = 1
  !lshallow_liquid_only   = .true.
  dt_rad                  = ${dt_rad}
  dt_conv                 = ${dtime}      !NB can make these longer ! time step for convection in s (domain specific)
@@ -246,36 +267,37 @@ atmo_nml(){
  ! NB adding tuning from Dragon runscript
  mu_rain                 = 0.5     ! new tuning becoming operational in July 2018
  rain_n0_factor          = 0.1
+ ldetrain_conv_prec = .false.   ! Detraintment of convective rain and snow. (for inwp_convection = 1)
 /
 &nwp_tuning_nml
- tune_rprcon             = 1.0e-3
+ !tune_rprcon             = 1.0e-3
  itune_albedo            = 0                         ! 0: no MODIS tuning (def); 1: dimmed Sahara; 2: +brighter AA
- tune_zceff_min          = 0.01                     ! ** default value (0.01) to be used for R3B7; use 0.025 for R2B6
- tune_gkdrag             = 0.09                     ! R2B6: 0.075
- tune_gkwake             = 1.8                       ! R2B6: 1.5
- tune_gfrcrit            = 0.333                     ! R2B6: 0.425
- tune_grcrit             = 0.25
- tune_grcrit_enh         = 0.25
- tune_dust_abs           = 0.
- tune_box_liq_asy        = 3.0    ! 3.5              ! oper global: 3.0 , oper D2: 3.25, default: 2.5
- tune_box_liq            = 0.07
+ !tune_zceff_min          = 0.01                     ! ** default value (0.01) to be used for R3B7; use 0.025 for R2B6
+ tune_gkdrag             = 0.075                     ! R2B6: 0.075
+ tune_gkwake             = 1.5                       ! R2B6: 1.5
+ tune_gfrcrit            = 0.425                     ! R2B6: 0.425
+ !tune_grcrit             = 0.25
+ !tune_grcrit_enh         = 0.25
+ !tune_dust_abs           = 0.
+ tune_box_liq_asy        = 3.25    ! 3.5              ! oper global: 3.0 , oper D2: 3.25, default: 2.5
+ !tune_box_liq            = 0.07
  tune_rcucov             = 0.075
  tune_rhebc_land         = 0.825
  tune_gust_factor        = 7.0
- icpl_turb_clc           = 1
- lcalib_clcov            = .false.                   ! turn off TCC, HCC, MCC, LCC tuning
- tune_eiscrit            = 7.0                       ! to switch off conv param in stratocumulus regions
- tune_sc_eis             = 7.             ! ! default: 1000. - exec newer 633d375ad0
- tune_zvz0i              = 0.9    ! 1.2 !  0.6      ! default: 0/.85   ; Terminal fall velocity of ice
- tune_entrorg            = 1.75e-3        !  3.0e-3   ! default: 1.95e-3; Entrainment parameter valid for dx=20 km
- tune_sc_eis             = 7.            !  7.       ! default: 1000. - exec newer 633d375ad0
+ !icpl_turb_clc           = 1
+ !lcalib_clcov            = .false.                   ! turn off TCC, HCC, MCC, LCC tuning
+ !tune_eiscrit            = 7.0                       ! to switch off conv param in stratocumulus regions
+ !tune_sc_eis             = 7.             ! ! default: 1000. - exec newer 633d375ad0
+ !tune_zvz0i              = 0.9    ! 1.2 !  0.6      ! default: 0/.85   ; Terminal fall velocity of ice
+ !tune_entrorg            = 1.75e-3        !  3.0e-3   ! default: 1.95e-3; Entrainment parameter valid for dx=20 km
+ !tune_sc_eis             = 7.            !  7.       ! default: 1000. - exec newer 633d375ad0
 /
 &transport_nml
- ivadv_tracer            = 3,3,3,3,3
- itype_hlimit            = 4,4,4,4,4
- ihadv_tracer            = 2,2,2,2,2
- itype_vlimit            = 1,1,1,1,1
- ivlimit_selective       = 1,1,1,1,1
+ ivadv_tracer            = 3,3,3,3,3,3   ! (AD recomendaiton)gdm: 52 combination of hybrid FFSL/Miura3 with subcycling
+ itype_hlimit            = 4,4,4,4,4,4
+ ihadv_tracer            = 2,2,2,2,2,2
+ itype_vlimit            = 1,1,1,1,1,1
+ ivlimit_selective       = 1,1,1,1,1,1
  llsq_svd                = .true.
 /
 &interpol_nml
@@ -289,11 +311,11 @@ atmo_nml(){
  itime_scheme            = 4
  exner_expol             = 0.333
  vwind_offctr            = 0.2                       ! 0.2 for R2B6 and higher resolution, 0.3 for lower resolution
- damp_height             = 50000.
- rayleigh_coeff          = 0.50001                       ! default: 0.05
+ damp_height             = 30000.                    ! AD recomendation (rayeigh damping starts at this lelev in meters)
+ rayleigh_coeff          = 0.5                       ! default: 0.05
  divdamp_order           = 24                        ! 2 ass, 24 fc
  divdamp_type            = 32                        ! optional: 2 assimilation cycle, 32 forecast
- divdamp_fac             = 0.003                     ! 0.004 for R2B6; recommendation for R3B7: 0.003
+ divdamp_fac             = 0.004                     ! 0.004 for R2B6; recommendation for R3B7: 0.003
  divdamp_trans_start     = 12500
  divdamp_trans_end       = 17500
  igradp_method           = 3
@@ -304,25 +326,31 @@ atmo_nml(){
  hbot_qvsubstep          = 16000.
 /
 &sleve_nml
- top_height          = 75000.                         ! model top
- min_lay_thckn       = 20.                            ! lowest level thickness (between half-levels)
+ top_height          = 85000.                         ! model top AD recomendation
+ min_lay_thckn       = 50.                            ! Layer thickness of lowermost layer (CLM recommendation)
  decay_scale_1       = 4000.
  decay_scale_2       = 2500.
  decay_exp           = 1.2
- max_lay_thckn       = ${MAXLAYTH}                    ! maximum layer thickness below htop_thcknlimit
+ !max_lay_thckn       = ${MAXLAYTH}                    ! maximum layer thickness below htop_thcknlimit
  htop_thcknlimit     = ${TOPTHLIM}                    ! top limit for max_lay_thckn
  stretch_fac         = ${STRETFAC}
  flat_height         = ${FLHEIGHT}
 /
 &io_nml
- lflux_avg               = .FALSE.                   ! true: averaged (ashfl_s), false: accumulated fluxes (accshfl_s)
+ lflux_avg               = .true.                   ! true: averaged (ashfl_s), false: accumulated fluxes (accshfl_s)
  itype_pres_msl          = 5                         ! (1) 3: IFS-type extrapolation
  itype_rh                = 1                         ! (1) 2: mixed phase (water and ice)
  inextra_3d              = 2                         ! 3D extra variables
  inextra_2d              = 10                        ! 2D extra variables
  restart_write_mode      = "joint procs multifile"   ! asynchron multifile restart handling; 'sync' for single file writing
- lkeep_in_sync           = .TRUE.                    ! sync after each timestep
+ !lkeep_in_sync           = .TRUE.                    ! sync after each timestep
  lnetcdf_flt64_output    = .FALSE.                   ! T: 64 bit output in all files
+ precip_interval         = "PT15M"   ! NEW ! Works The precipitation value is accumulated in these interval otherwise accumulated fromm begining of the run
+ runoff_interval         = "PT3H"    ! NEW ! Works The runoff is accumalted in this inetrval else accumulated from bengining.
+ maxt_interval           = "PT3H"    ! NEW ! Works Interval at which Max/Min 2m temperture are calculated
+ melt_interval           = "PT3H"    ! NEW ! Works CLM community has this , Can not find discription
+ lmask_boundary          = .true.    ! NEW ! Works if interpolation zone should be masked in triangular output.
+ dt_hailcast             = 900.
 /
 &dbg_index_nml
   idbg_mxmn              = 1                          ! initialize MIN/MAX  debug output
@@ -335,6 +363,9 @@ atmo_nml(){
  n_iter_smooth_topo      = 1
  heightdiff_threshold    = 3000.
  !pp_sso                 = 2 !NB this is in tpp runscript but mentions MERIT REMA topography, which is not used here
+ hgtdiff_max_smooth_topo = 750.    ! RMS height difference to neighbor grid points at which the smoothing pre-factor fac_smooth_topo reaches its maximum value (CLM value)
+ itype_vegetation_cycle  = 3       ! NEW  (CLM value , but not defined. Annual cycle of Leaf Area Index, use T2M to get realistic values)
+ !itype_lwemiss           = 2      !NB: not included in extpar ! NEW  Type of data for Long wave surfae emissitvity (Read from monthly climatologoies from expar file)
 /
 #many removed, final 4 added to match DRAGON namelists
 &lnd_nml
@@ -373,17 +404,16 @@ atmo_nml(){
  ek_ep_ratio_unstable    = 1.0         ! default: 2 - Mauritzen: 1
 /
 &radiation_nml
- !NB isolrad to 1. no file added
- isolrad                 = 1           ! 1: SSI from Coddington (def); 2: SSI monthly mean time series from file
- !NB check 5
+ !isolrad                 = 1           ! 1: SSI from Coddington (def); 2: SSI monthly mean time series from file
  irad_o3                 = 5           ! 0: no ozon (def); 5: transient 3-dim; 79: GEMS/MACC #NB was running with 79
- irad_aero               = 12
- irad_co2                = 2           ! 2: const. vert. prof. with vmr_co2 (def), 4: from greenhouse gas scenario
- irad_ch4                = 3           ! 3: tanh vert.prof. with vmr_ch4 at surface (def), 4: from greenhouse gas scenario
- irad_n2o                = 3           ! 3: tanh vert.prof. with vmr_n2o at surface (def), 4: from greenhouse gas scenario
- irad_cfc11              = 2           ! 2: const. vert. prof. with vmr_cfc11 (def), 4: from greenhouse gas scenario
- irad_cfc12              = 2           ! 2: const. vert. prof. with vmr_cfc12 (def), 4: from greenhouse gas scenario
- izenith                 = 4           ! 4: NWP (def), 3: no annual cycle
+ irad_aero               = ${irad_aero}! NB to test
+ ghg_filename            = './bc_greenhouse_gases.nc'
+ irad_co2                = ${ighg1}
+ irad_ch4                = ${ighg2}
+ irad_n2o                = ${ighg2}
+ irad_cfc11              = ${ighg1}
+ irad_cfc12              = ${ighg1}
+ !zenith                  = 4           ! 4: NWP (def), 3: no annual cycle
  irad_o2                 = 2
 
  !NB update to year of simulation - O3
@@ -393,20 +423,21 @@ atmo_nml(){
  vmr_o2                  = 0.20946     ! preindustrial
  vmr_cfc11               = 157.6e-12   ! values for 1979 ! 0.0 ! preindustrial
  vmr_cfc12               = 286.5e-12   ! values for 1979 ! 0.0 ! preindustrial
- !albedo_type             = 1          ! 1: dry soil (def); 2: Modis albedo
+ !NB double check file
+ albedo_type             = 1          ! 1: dry soil (def); 2: Modis albedo
  direct_albedo           = 4
- direct_albedo_water     = 3
+ !direct_albedo_water     = 3
  albedo_whitecap         = 1
- ecrad_llw_cloud_scat    = .true.
+ !ecrad_llw_cloud_scat    = .true.
  ecrad_data_path         = 'ecrad_data'
  ecrad_isolver           = ${ecrad_isolver}
- decorr_pole             =  780        ! default: 2000
- decorr_equator          = 2000        ! default: 2000
+ !decorr_pole             =  780        ! default: 2000
+ !decorr_equator          = 2000        ! default: 2000
 /
 &ccycle_nml
   ccycle_config%iccycle  = 2            ! 0: vmr_co2=384 for jsbach (def); 2: ccycle namelist values used
-  ccycle_config%ico2conc = 2            ! 2: use vmr_co2 of ccycle; 4: use values of GHG file
-  ccycle_config%vmr_co2  = 336.6e-06 ! 284.3e-06    ! same value as in radiation_nml
+  ccycle_config%ico2conc = ${ighg1}     ! 2: use vmr_co2 of ccycle; 4: use values of GHG file
+  ccycle_config%vmr_co2  = 336.6e-06    ! 284.3e-06    ! same value as in radiation_nml
 /
 EOF
 }
@@ -558,7 +589,8 @@ output_atm_latlon(){
  reg_lat_def             = -90.,1.,90.
  !operation               = 'mean'                   !mean operation doesn't seem to work with interpolated output
  ml_varlist              = 'clct', 'tqv', 'tqc_dia', 'tqi_dia', 'sp_10m', 't_2m' ,'t_g', 'qv_2m', 'h_ice', 't_ice',
-                           'accthb_s','accthb_t','accsob_s','accsob_t','accshfl_s','acclhfl_s','accumfl_s','accvmfl_s',
+                           !'accthb_s','accthb_t','accsob_s','accsob_t','accshfl_s','acclhfl_s','accumfl_s','accvmfl_s',
+                           'thb_s','thb_t','sob_s','sob_t','shfl_s','lhfl_s','umfl_s','vmfl_s',
                            'pres_sfc', 'tot_prec', 't_seasfc', 'fr_seaice',
                            'fr_land', 'fr_lake', 'fr_seaice', 't_seasfc'
  !hl_varlist              = 'temp', 'u'

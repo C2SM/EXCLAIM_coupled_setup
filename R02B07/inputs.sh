@@ -110,7 +110,7 @@ oce_inputs(){
 lnd_inputs(){
     datadir_land="${icon_data_poolFolder}/${atmos_gridID}-${ocean_gridID}/land/rcscs"
     
-    used to initialize jsbach from ifs data
+    #used to initialize jsbach from ifs data
     ifs_fname="ifs2icon_R2B07_DOM01.nc"  # NOTE: do not change name
     ifs_indir="${clim_data_poolFolder}/${atmos_gridID}/initial_conditions/rcscs"
     

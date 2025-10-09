@@ -216,7 +216,7 @@ atmo_nml(){
  ntracer                 =  5                   ! number of tracers - default 0
  ltimer                  = .true.               !
  ltestcase               = .false.              ! initialize with real data
- timers_level            = 10
+ timers_level            = 11
  msg_level               = 10                    ! detailed report during integration (5-7 or 13 incl. seaice prints)
  output                  = 'nml'
  check_uuid_gracefully   = .true.

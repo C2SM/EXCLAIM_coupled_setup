@@ -6,17 +6,214 @@ compute_tasks_distribution(){
    ((NTASKS = SLURM_JOB_NUM_NODES * NTASKS_PER_NODE))
 
    ATM_MIN_RANK=0
-   ((ATM_MAX_RANK = N_ATM_TASKS_PER_NODE * SLURM_JOB_NUM_NODES - 1))
-   ((OCE_MIN_RANK = ATM_MAX_RANK + 1))
-   ((OCE_MAX_RANK = NTASKS - 1))
+   #((ATM_MAX_RANK = N_ATM_TASKS_PER_NODE * SLURM_JOB_NUM_NODES - 1))
+   #((OCE_MIN_RANK = ATM_MAX_RANK + 1))
+   #((OCE_MAX_RANK = NTASKS - 1))
 
    # Write multi-prog distribution to file
    if [[ "${TARGET}" == "hybrid" ]]; then
-      cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} ../run_utils/hybrid_wrapper.sh ${1-} ./icon_gpu
-${OCE_MIN_RANK}-${OCE_MAX_RANK} ../run_utils/hybrid_wrapper.sh ${1-} ./icon_cpu
+#      cat > multi-prog.conf << EOF
+#${ATM_MIN_RANK}-${ATM_MAX_RANK} ../run_utils/hybrid_wrapper.sh ${1-} ./icon_gpu
+#${OCE_MIN_RANK}-${OCE_MAX_RANK} ../run_utils/hybrid_wrapper.sh ${1-} ./icon_cpu
+#EOF
+#      chmod 755 multi-prog.conf
+############ to replace run_wrapper #####################
+
+rm -f run_atmo_gpu.sh
+
+cat > run_atmo_gpu.sh << EOF
+#! /usr/bin/bash
+
+lrank=\$SLURM_LOCALID%4
+
+numanode=(0 1 2 3)
+gpus=(0 1 2 3)
+nics=(mlx5_0:1 mlx5_1:1 mlx5_2:1 mlx5_3:1)
+cpu_cores=(0-3 72-75 144-147 216-220)
+reorder=(0 1 2 3)
+
+nic_reorder=(\${nics[\${reorder[0]}]}
+             \${nics[\${reorder[1]}]}
+             \${nics[\${reorder[2]}]}
+             \${nics[\${reorder[3]}]})
+numanode_reorder=(\${numanode[\${reorder[0]}]}
+                  \${numanode[\${reorder[1]}]}
+                  \${numanode[\${reorder[2]}]}
+                  \${numanode[\${reorder[3]}]})
+
+export UCX_NET_DEVICES=\${nic_reorder[lrank]}
+
+#echo Atmo compute process \$SLURM_LOCALID on \$(hostname)
+export CUDA_VISIBLE_DEVICES=\${gpus[\${reorder[lrank]}]}
+
+#numactl --cpunodebind=\${numanode_reorder[\$lrank]} --membind=\${numanode_reorder[\$lrank]} numactl -s
+#echo numactl --physcpubind=\${cpu_cores[\$lrank]} --membind=\${numanode_reorder[\$lrank]} ${ICONg}
+#numactl --physcpubind=\${cpu_cores[\$lrank]} --membind=\${numanode_reorder[\$lrank]} ${ICONg}
+numactl --cpunodebind=\${numanode_reorder[\$lrank]} --membind=\${numanode_reorder[\$lrank]} ${icon_gpu}
+#${ICONg}
+
 EOF
-      chmod 755 multi-prog.conf
+
+chmod 755 ./run_atmo_gpu.sh
+
+################# Oce wrapper #########################
+
+rm -f run_oce_cpu.sh
+
+cat > run_oce_cpu.sh << EOF
+#! /usr/bin/bash
+
+
+export OMP_NUM_THREADS=1
+export ICON_THREADS=1
+
+#export OMP_WAIT_POLICY=active
+
+#export OMP_PROC_BIND=close 
+#export OMP_PLACES=cores
+
+#export MPICH_OFI_NIC_POLICY="NUMA"
+
+# The first 4 ranks are gpus so they do not count here
+lrank=\$((SLURM_LOCALID - SLURM_GPUS_ON_NODE))
+
+#echo Oce compute process \$SLURM_LOCALID on \$(hostname)
+
+nOceranks=$N_OCE_TASKS_PER_NODE
+nSockets=\$SLURM_GPUS_ON_NODE
+nOcePerSocket=\$(( nOceranks / nSockets ))
+nCoresPerSocket=72
+noOceCoresPerSocket=\$(( nCoresPerSocket - nOcePerSocket*\${OMP_NUM_THREADS} ))
+nOceRanksPerSocket=\$(( nCoresPerSocket - noOceCoresPerSocket ))
+
+if [[ \$lrank -lt \$nOcePerSocket ]]; then
+  core=\$(( \$noOceCoresPerSocket + \$lrank*\${OMP_NUM_THREADS} ))
+  nic=('mlx5_0:1')
+elif [[ \$lrank -lt \$(( \$nOcePerSocket * 2 )) ]]; then
+  core=\$(( \$nCoresPerSocket + \$noOceCoresPerSocket + \$lrank*\${OMP_NUM_THREADS} - \$nOceRanksPerSocket ))
+  nic=('mlx5_1:1')
+elif [[ \$lrank -lt \$(( \$nOcePerSocket * 3 )) ]]; then
+  core=\$(( \$nCoresPerSocket*2 + \$noOceCoresPerSocket + \$lrank*\${OMP_NUM_THREADS} - 2*\$nOceRanksPerSocket ))
+  nic=('mlx5_2:1')
+else
+  core=\$(( \$nCoresPerSocket*3 + \$noOceCoresPerSocket + \$lrank*\${OMP_NUM_THREADS} - 3*\$nOceRanksPerSocket ))
+  nic=('mlx5_3:1')
+fi
+
+numanode=(\$((\$core/72)))
+#export UCX_NET_DEVICES=\${nic}
+
+#export CUDA_VISIBLE_DEVICES=""
+export CUDA_VISIBLE_DEVICES=\$numanode
+#echo $CUDA_VISIBLE_DEVICES
+#echo numactl --physcpubind=\${core}-\$(( core+3 )) --membind=\${numanode} ${ICONc}
+#numactl --physcpubind=\${core}-\$(( core+3 )) --membind=\${numanode} ${ICONc}
+numactl --cpunodebind=\${numanode} --membind=\${numanode} ${icon_cpu}
+EOF
+
+chmod 755 ./run_oce_cpu.sh
+
+
+################## Hostfile ###############################
+
+export SLURM_HOSTFILE="hostfile.$SLURM_JOB_ID"
+
+/usr/bin/python3 -c "
+import os
+import re
+
+def expandNG(nodestring):
+    substrings = ['-','[',']',',']
+    token = []
+    pos = 0
+    while pos >= 0:
+        pat = re.compile('|'.join([re.escape(s) for s in substrings]))
+        match = pat.search(nodestring)
+        if match is None:
+            pos = -1
+            token.append(nodestring)
+        else:
+            pos = match.start()
+            token.append(nodestring[0:pos])
+            token.append(nodestring[pos])
+        nodestring = nodestring[pos+1:]
+
+    return parse(token)
+
+def parse(token, inSquareBrackets=False):
+    #print(token)
+    if len(token) == 0:
+        return []
+    elif len(token) == 1:
+        # Discard empty strings
+        if len(token[0]) == 0:
+            return []
+        return token
+    elif token[1] == ',':
+        first = parse([token[0]])
+        second = parse(token[2:], inSquareBrackets)
+        return [*first, *second]
+    elif token[1] == '[':
+        end = token.index(']')
+        res = parse(token[2:end], True)
+        ret = []
+        for r in res:
+            ret.append(token[0]+r)
+        second = parse(token[end+1:])
+        return [*ret, *second]
+    elif token[1] == '-':
+        if inSquareBrackets:
+            start = int(token[0])
+            end = int(token[2])
+            ret = []
+            for i in range(start,end+1):
+                ret.append(str(i).zfill(len(token[0])))
+            second = parse(token[4:], inSquareBrackets)
+            return [ *ret, *second ]
+        else:
+            # This might need additional parser passes
+            first = [ token[0] + '-' + token[2] ]
+            newtoken = [ *first, *(token[3:]) ]
+            return parse(newtoken, inSquareBrackets)
+    else:
+        print(token, 'error')
+
+SLURM_NODELIST          = os.environ['SLURM_NODELIST']
+SLURM_GPUS_ON_NODE      = int(os.environ['SLURM_GPUS_ON_NODE'])
+NCPU_RANKS_PER_NODE     = int(os.environ['NCPU_RANKS_PER_NODE'])
+
+ns = expandNG(SLURM_NODELIST)
+
+# Atmo, 4 GPUs per Node, all nodes filled
+for host in ns:
+    for i in range(SLURM_GPUS_ON_NODE):
+        print(host)
+
+# This time we're gonna put all out-ranks on one node, the last one.
+host = ns[-1]
+for i in range($ATM_IO_TASKS):
+    print(host)
+
+
+# OCE
+for host in ns[1:-1]:
+    for i in range(NCPU_RANKS_PER_NODE):
+        print(host)
+
+# This time we're gonna put all out-ranks on one node, the last one.
+host = ns[-1]
+for i in range($OCE_IO_TASKS):
+    print(host)
+
+" > $SLURM_HOSTFILE
+
+##################### MPMD ################################
+
+cat > multi-prog.conf << EOF
+0-$((no_of_nodes * N_ATM_TASKS_PER_NODE -1)) ./run_atmo_gpu.sh
+* ./run_oce_cpu.sh
+EOF
+
    elif [[ "${TARGET}" == "cpu-cpu" ]]; then
       cat > multi-prog.conf << EOF
 ${ATM_MIN_RANK}-${ATM_MAX_RANK} ./icon_cpu
@@ -87,13 +284,16 @@ run_model(){
       "hybrid")
          srun \
             -l \
+            --export=ALL \
             --kill-on-bad-exit=1 \
-            --nodes="${SLURM_JOB_NUM_NODES:-1}" \
-            --distribution="plane=4" \
+            --distribution="arbitrary" \
             --hint="nomultithread" \
-            --ntasks="${NTASKS}" \
-            --ntasks-per-node="${NTASKS_PER_NODE}" \
-            --cpus-per-task="${OMP_NUM_THREADS}" \
+            --ntasks=${TOT_TASKS} \
+            --ntasks-per-node=$((MPI_PROCS_PER_NODE)) \
+            --cpus-per-task=2 \
+            --threads-per-core=2 \
+            --cpu-bind=v,none \
+            --overcommit \
             --multi-prog multi-prog.conf
       ;;
       "cpu-cpu")

@@ -70,7 +70,7 @@ atm_inputs(){
             for ((year=start_year-1; year<=end_year; year++)); do
                 if  ((year < 2014)) ; then  # historical
                     ln -s "${datadir_ozone}/bc_ozone_historical_${year}.nc" ./bc_ozone_"${year}".nc
-                else  #NOTE no projections yet
+                else  # NOTE: no projections yet
                     echo "WARNING: ozone will use constant 2014 values"
                     ln -s "${datadir_ozone}/bc_ozone_historical_2014.nc" ./bc_ozone_"${year}".nc
                     #ln -s "${datadir_ozone}/bc_ozone_ssp${ssp}_${year}.nc" ./bc_ozone_"${year}".nc

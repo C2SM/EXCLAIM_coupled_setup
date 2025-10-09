@@ -270,7 +270,7 @@ atmo_nml(){
  ldetrain_conv_prec = .false.   ! Detraintment of convective rain and snow. (for inwp_convection = 1)
 /
 &nwp_tuning_nml
- !itune_rprcon             = 1.0e-3
+ !tune_rprcon             = 1.0e-3
  itune_albedo            = 0                         ! 0: no MODIS tuning (def); 1: dimmed Sahara; 2: +brighter AA
  !tune_zceff_min          = 0.01                     ! ** default value (0.01) to be used for R3B7; use 0.025 for R2B6
  tune_gkdrag             = 0.075                     ! R2B6: 0.075

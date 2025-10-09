@@ -114,7 +114,7 @@ lnd_inputs(){
     ifs_fname="ifs2icon_R2B07_DOM01.nc"  # NOTE: do not change name
     ifs_indir="${clim_data_poolFolder}/${atmos_gridID}/initial_conditions/rcscs"
     
-    #TODO add picontrol mechanism
+    # TODO: add picontrol mechanism
     ifs_origin_name="ifs2icon_${start_year}010100_${atmos_gridID}_${atmos_refinement}_G.nc"
     ln -sf "${ifs_indir}/${ifs_origin_name}" "${ifs_fname}"
 

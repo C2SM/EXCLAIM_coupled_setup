@@ -90,6 +90,7 @@ fi
 
 export restart_interval=${restart_interval:-"P1M"}
 export checkpoint_interval=${checkpoint_interval:-"${restart_interval}"}
+#duplicates
 atm_file_interval="P1Y"
 oce_file_interval="P1Y"
 
@@ -133,9 +134,9 @@ all_output_interval="PT300S"      # monthly output - production
 
 # Type of experiment
 # ------------------
-#NB change to include options for historical control and year selection.
 export exptype=${exptype:-"control"} #"picontrol" # "hist"
 control_year=1979 #will not change hardcoded ghg concentrations, only file names
+ssp="370"
 initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphere + hdext cold-started from scratch
 
 # namelist files
@@ -172,11 +173,10 @@ atmo_model_equations=3 # equation system
 #                    -1=shallow water model
 #                    -2=hydrost. ocean
 
-nlev=130          # nlev = number of full levels
+nlev=120          # nlev = number of full levels
 iforcing=3        # 3 for inwp forcing; 0 for no forcing
 atmos_grid_target="icon_grid_${atmos_gridID}_${atmos_refinement}_G.nc"
 
-# FIXME: unsued variables: ighg1, ighg2, irad_aero
 case "${exptype}" in
     "control")
         irad_aero=12
@@ -251,7 +251,7 @@ if [[ "${activate_output}" == "true" ]];then
     output_jsb_2d
     output_lnd_mon
     # output_lnd_dbg
-    #output_hyd_dbg
+    # output_hyd_dbg
     # output_lnd_wat
     # output_atm_alb
 

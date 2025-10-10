@@ -13,12 +13,12 @@ atm_inputs(){
 
     revision="rcscs"
     datadir_aerosol_kinne="${atmo_data_InputFolder}/aerosol_kinne/${revision}"
-    datadir_aerosol_volcanic="${clim_data_poolFolder}/common/aerosol_volcanic_cmip6"
-    datadir_plumes="${clim_data_poolFolder}/common/MACv2_simple_plumes_merged"
+    datadir_aerosol_volcanic="${clim_data_poolFolder}/atmo/common/aerosol_volcanic_cmip6"
+    datadir_plumes="${clim_data_poolFolder}/atmo/common/MACv2_simple_plumes_merged"
     datadir_ozone="${atmo_data_InputFolder}/ozone/${revision}"
-    datadir_rad="${clim_data_poolFolder}/common/solar_radiation"
-    datadir_ghg="${clim_data_poolFolder}/common/greenhouse_gases"
-    datadir_hd="${icon_data_poolFolder}/${atmos_gridID}-${ocean_gridID}/hd/r0100"
+    datadir_rad="${clim_data_poolFolder}/atmo/common/solar_radiation"
+    datadir_ghg="${clim_data_poolFolder}/atmo/common/greenhouse_gases"
+    datadir_hd="${icon_data_poolFolder}/atmo/${atmos_gridID}-${ocean_gridID}/hd/r0100"
 
     case "${exptype}" in
         "control")
@@ -28,7 +28,7 @@ atm_inputs(){
             ln -sf "${datadir_aerosol_kinne}/bc_aeropt_kinne_sw_b14_fin_${control_year}.nc" ./bc_aeropt_kinne_sw_b14_fin.nc
             #ozone constant historical value
             for ((year=start_year-1; year<=end_year; year++)); do 
-                ln -s "${datadir_ozone}/bc_ozone_historical_${control_year}.nc" ./"bc_ozone_${year}.nc"
+                ln -sf "${datadir_ozone}/bc_ozone_historical_${control_year}.nc" ./"bc_ozone_${year}.nc"
             done
             #solar irradiance - from file with constant annual values. This file must be made for each control year. see datadir_rad
             ln -sf "${datadir_rad}/swflux_14band_cmip6_${control_year}ADconst_999-2301-v3.2.nc" ./bc_solar_irradiance_sw_b14.nc
@@ -69,17 +69,17 @@ atm_inputs(){
             #ozone depending on year
             for ((year=start_year-1; year<=end_year; year++)); do
                 if  ((year < 2014)) ; then  # historical
-                    ln -s "${datadir_ozone}/bc_ozone_historical_${year}.nc" ./bc_ozone_"${year}".nc
+                    ln -sf "${datadir_ozone}/bc_ozone_historical_${year}.nc" ./bc_ozone_"${year}".nc
                 else  # NOTE: no projections yet
                     echo "WARNING: ozone will use constant 2014 values"
-                    ln -s "${datadir_ozone}/bc_ozone_historical_2014.nc" ./bc_ozone_"${year}".nc
-                    #ln -s "${datadir_ozone}/bc_ozone_ssp${ssp}_${year}.nc" ./bc_ozone_"${year}".nc
+                    ln -sf "${datadir_ozone}/bc_ozone_historical_2014.nc" ./bc_ozone_"${year}".nc
+                    #ln -sf "${datadir_ozone}/bc_ozone_ssp${ssp}_${year}.nc" ./bc_ozone_"${year}".nc
                 fi
             done
             #solar irradiance
             ln -sf ${datadir_rad}/swflux_14band_cmip6_1849-2299-v3.2.nc ./bc_solar_irradiance_sw_b14.nc
             #GHGs with ighg1=4 and 1ghg2=4 - greenhouse gases from external file
-            #TODO implement current_year to have historical, projections, and different scenarios. For now, historic+ssp245.
+            # TODO: implement current_year to have historical, projections, and different scenarios. For now, historic+ssp245.
             ${datadir_ghg}/greenhouse_historical_plus.nc ./bc_greenhouse_gases.nc
             ;;
     esac
@@ -108,15 +108,15 @@ oce_inputs(){
 }
 
 lnd_inputs(){
-    datadir_land="${icon_data_poolFolder}/${atmos_gridID}-${ocean_gridID}/land/rcscs"
+    datadir_land="${icon_data_poolFolder}/atmo/${atmos_gridID}-${ocean_gridID}/land/rcscs"
+    datadir_init="${atmo_data_InputFolder}/initial_conditions/rcscs"
     
     #used to initialize jsbach from ifs data
     ifs_fname="ifs2icon_R2B07_DOM01.nc"  # NOTE: do not change name
-    ifs_indir="${clim_data_poolFolder}/${atmos_gridID}/initial_conditions/rcscs"
     
     # TODO: add picontrol mechanism
     ifs_origin_name="ifs2icon_${start_year}010100_${atmos_gridID}_${atmos_refinement}_G.nc"
-    ln -sf "${ifs_indir}/${ifs_origin_name}" "${ifs_fname}"
+    ln -sf "${datadir_init}/${ifs_origin_name}" "${ifs_fname}"
 
     ln -sf "${basedir}/externals/jsbach/data/lctlib_nlct21.def" .
 

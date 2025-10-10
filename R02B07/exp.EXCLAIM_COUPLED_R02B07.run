@@ -7,8 +7,7 @@
 #SBATCH --output=LOG.EXCLAIM_COUPLED_R02B07.%j
 #SBATCH --error=LOG.EXCLAIM_COUPLED_R02B07.%j
 #SBATCH --nodes=4
-##SBATCH --ntasks-per-node=8
-#SBATCH --gpus-per-node=4
+#SBATCH --ntasks-per-node=8
 #SBATCH --time=00:15:00
 #SBATCH --exclusive
 #SBATCH --account=cwd01
@@ -105,29 +104,11 @@ atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets 
 
 # Task distribution
 # -----------------
-ATM_IO_TASKS=12
-OCE_IO_TASKS=8
-ATM_RST_TASKS=0
-OCE_RST_TASKS=0
 
 case "${TARGET}" in
     "hybrid")
-        # FIXME: Calculate the following values instead of hardcoding
-        no_of_nodes=${SLURM_JOB_NUM_NODES}
-        N_OCE_TASKS_PER_NODE=116
-        N_ATM_TASKS_PER_NODE=4 #FIXME SLURM_GPUS_ON_NODE
-        MPI_PROCS_PER_NODE=$(( $N_ATM_TASKS_PER_NODE + $N_OCE_TASKS_PER_NODE ))
-
-        ATM_TASKS=$(( no_of_nodes * N_ATM_TASKS_PER_NODE ))
-        OCE_TASKS=$(( (no_of_nodes-2) * N_OCE_TASKS_PER_NODE ))
-        TOT_TASKS=$(( ATM_TASKS + OCE_TASKS + ATM_IO_TASKS + OCE_IO_TASKS ))
-        
-        export NCPU_RANKS_PER_NODE=$N_OCE_TASKS_PER_NODE
-
-        ATM_MAX_RANK=$(( ATM_TASKS - 1 + ATM_IO_TASKS ))
-        OCE_MIN_RANK=$(( ATM_MAX_RANK + 1 ))
-        OCE_MAX_RANK=$(( ATM_MAX_RANK + OCE_TASKS + OCE_IO_TASKS ))
-        OCE_INC_RANK=1
+        N_OCE_TASKS_PER_NODE=4
+        N_ATM_TASKS_PER_NODE=4
         ;;
     "cpu" | "cpu-cpu")
         N_OCE_TASKS_PER_NODE=9
@@ -139,6 +120,10 @@ case "${TARGET}" in
         exit 1
         ;;
 esac
+ATM_IO_TASKS=1
+OCE_IO_TASKS=1
+ATM_RST_TASKS=0
+OCE_RST_TASKS=0
 
 # output interval
 #all_output_interval="PT30M"    # short test

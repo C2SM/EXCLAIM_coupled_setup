@@ -108,22 +108,22 @@ atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets 
 # -----------------
 case "${TARGET}" in
     "hybrid")
-        N_OCE_TASKS_PER_NODE=4
-        N_ATM_TASKS_PER_NODE=4
+        export ATM_COMP_TASKS_PER_NODE=4
+        export TOT_TASKS_PER_NODE=64
         ;;
     "cpu" | "cpu-cpu")
-        N_OCE_TASKS_PER_NODE=9
-        ((N_ATM_TASKS_PER_NODE = 288 - N_OCE_TASKS_PER_NODE))
+        export OCE_COMP_TASKS_PER_NODE=9
+        export ATM_COMP_TASKS_PER_NODE=$((288 - OCE_COMP_TASKS_PER_NODE)) # TODO: this might need to be adapted as for the hybrid run
         ;;
     *)
         echo "ERROR: target architecture must either be 'hybrid' or 'cpu'"
         exit 1
         ;;
 esac
-ATM_IO_TASKS=0
-OCE_IO_TASKS=0
-ATM_RST_TASKS=0
-OCE_RST_TASKS=0
+export ATM_IO_TASKS=3
+export OCE_IO_TASKS=2
+export ATM_RST_TASKS=0
+export OCE_RST_TASKS=0
 
 # output interval
 #all_output_interval="PT30M"    # short test
@@ -226,7 +226,9 @@ oce_inputs
 
 # ============================================================================
 # Config files
-compute_tasks_distribution ${RUN_OPTIONS}
+compute_task_distribution_variables
+create_multiprog_file ${RUN_OPTIONS}
+create_slurm_hostfile
 set_ocean_vertical_coordinate
 
 icon_master_nml

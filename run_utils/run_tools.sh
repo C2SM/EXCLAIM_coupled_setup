@@ -1,20 +1,24 @@
 #!/usr/bin/bash
 
-compute_tasks_distribution(){
 
-   ((NTASKS_PER_NODE = N_OCE_TASKS_PER_NODE + N_ATM_TASKS_PER_NODE))
-   ((NTASKS = SLURM_JOB_NUM_NODES * NTASKS_PER_NODE))
+compute_task_distribution_variables(){
+
+   ((ATM_TOT_TASKS = ATM_COMP_TASKS_PER_NODE * SLURM_JOB_NUM_NODES + ATM_IO_TASKS))
+   ((TOT_TASKS = TOT_TASKS_PER_NODE * SLURM_JOB_NUM_NODES))
+}
+
+create_multiprog_file(){
 
    ATM_MIN_RANK=0
-   ((ATM_MAX_RANK = N_ATM_TASKS_PER_NODE * SLURM_JOB_NUM_NODES - 1))
+   ((ATM_MAX_RANK = ATM_TOT_TASKS - 1))
    ((OCE_MIN_RANK = ATM_MAX_RANK + 1))
-   ((OCE_MAX_RANK = NTASKS - 1))
+   ((OCE_MAX_RANK = TOT_TASKS - 1))
 
    # Write multi-prog distribution to file
    if [[ "${TARGET}" == "hybrid" ]]; then
       cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} ../run_utils/hybrid_wrapper.sh ${1-} ./icon_gpu
-${OCE_MIN_RANK}-${OCE_MAX_RANK} ../run_utils/hybrid_wrapper.sh ${1-} ./icon_cpu
+${ATM_MIN_RANK}-${ATM_MAX_RANK} ../run_utils/gpu_wrapper.sh ${1-} ./icon_gpu
+${OCE_MIN_RANK}-${OCE_MAX_RANK} ../run_utils/cpu_wrapper.sh ./icon_cpu
 EOF
       chmod 755 multi-prog.conf
    elif [[ "${TARGET}" == "cpu-cpu" ]]; then
@@ -24,6 +28,24 @@ ${OCE_MIN_RANK}-${OCE_MAX_RANK} ./icon_cpu
 EOF
       chmod 755 multi-prog.conf
    fi
+}
+
+create_slurm_hostfile(){
+
+   python3 ../run_utils/create_slurm_hostfile.py \
+        --output_filepath "./hostfile-${SLURM_JOB_ID}" \
+        --tot_tasks_per_node "${TOT_TASKS_PER_NODE}" \
+        --atm_comp_tasks_per_node "${ATM_COMP_TASKS_PER_NODE}" \
+        --atm_io_tasks "${ATM_IO_TASKS}" \
+        --oce_io_tasks "${OCE_IO_TASKS}" \
+        --max_tasks_per_node 288 # TODO: infer using a SLURM variable
+   
+   exit_status=$?
+   if [ "$exit_status" -ne 0 ]; then
+      exit $status
+   fi
+
+   export SLURM_HOSTFILE="$(pwd)/hostfile-${SLURM_JOB_ID}"
 }
 
 set_environment(){
@@ -88,11 +110,10 @@ run_model(){
          srun \
             -l \
             --kill-on-bad-exit=1 \
-            --nodes="${SLURM_JOB_NUM_NODES:-1}" \
-            --distribution="plane=4" \
+            --distribution="arbitrary" \
             --hint="nomultithread" \
-            --ntasks="${NTASKS}" \
-            --ntasks-per-node="${NTASKS_PER_NODE}" \
+            --ntasks="${TOT_TASKS}" \
+            --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
             --cpus-per-task="${OMP_NUM_THREADS}" \
             --multi-prog multi-prog.conf
       ;;
@@ -103,8 +124,8 @@ run_model(){
             --nodes="${SLURM_JOB_NUM_NODES:-1}" \
             --distribution="block:cyclic" \
             --hint="nomultithread" \
-            --ntasks="${NTASKS}" \
-            --ntasks-per-node="${NTASKS_PER_NODE}" \
+            --ntasks="${TOT_TASKS}" \
+            --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
             --cpus-per-task="${OMP_NUM_THREADS}" \
             --multi-prog multi-prog.conf
       ;;
@@ -115,8 +136,8 @@ run_model(){
             --nodes="${SLURM_JOB_NUM_NODES:-1}" \
             --distribution="block:cyclic" \
             --hint="nomultithread" \
-            --ntasks="${NTASKS}" \
-            --ntasks-per-node="${NTASKS_PER_NODE}" \
+            --ntasks="${TOT_TASKS}" \
+            --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
             --cpus-per-task="${OMP_NUM_THREADS}" \
             "./icon_cpu"
       ;;

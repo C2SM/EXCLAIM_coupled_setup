@@ -19,7 +19,7 @@ export NUMA_NODE=$((LOCAL_RANK % N_SOCKETS))
 if [[ $LOCAL_RANK -lt $ATM_COMP_TASKS_PER_NODE ]]; then
     export CUDA_VISIBLE_DEVICES=$NUMA_NODE
 else
-    export MPICH_OFI_NIC_POLICY=NUMA
+    export MPICH_OFI_NIC_POLICY=NUMA # TODO: Does this make sense
     export CUDA_VISIBLE_DEVICES=""
 fi
 

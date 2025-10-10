@@ -69,10 +69,7 @@ atm_inputs(){
             #ozone depending on year
             for ((year=start_year-1; year<=end_year; year++)); do
                 if  ((year < 2014)) ; then  # historical
-<<<<<<< HEAD
                     ln -sf "${datadir_ozone}/bc_ozone_historical_${year}.nc" ./bc_ozone_"${year}".nc
-=======
->>>>>>> refs/remotes/origin/development
                 else  # NOTE: no projections yet
                     echo "WARNING: ozone will use constant 2014 values"
                     ln -sf "${datadir_ozone}/bc_ozone_historical_2014.nc" ./bc_ozone_"${year}".nc

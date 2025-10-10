@@ -104,7 +104,6 @@ atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets 
 
 # Task distribution
 # -----------------
-
 case "${TARGET}" in
     "hybrid")
         N_OCE_TASKS_PER_NODE=4
@@ -114,7 +113,6 @@ case "${TARGET}" in
         N_OCE_TASKS_PER_NODE=9
         ((N_ATM_TASKS_PER_NODE = 288 - N_OCE_TASKS_PER_NODE))
         ;;
-
     *)
         echo "ERROR: target architecture must either be 'hybrid' or 'cpu'"
         exit 1

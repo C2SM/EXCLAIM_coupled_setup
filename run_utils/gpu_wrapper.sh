@@ -16,12 +16,7 @@ N_SOCKETS=$(nvidia-smi --list-gpus | wc -l)
 
 export NUMA_NODE=$((LOCAL_RANK % N_SOCKETS))
 
-if [[ $LOCAL_RANK -lt $ATM_COMP_TASKS_PER_NODE ]]; then
-    export CUDA_VISIBLE_DEVICES=$NUMA_NODE
-else
-    export MPICH_OFI_NIC_POLICY=NUMA # TODO: Does this make sense
-    export CUDA_VISIBLE_DEVICES=""
-fi
+export CUDA_VISIBLE_DEVICES=$NUMA_NODE
 
 echo "G${GLOBAL_RANK} - L${LOCAL_RANK} -> NODE: ${SLURM_NODEID} - NUMA: ${NUMA_NODE}, CUDA: ${CUDA_VISIBLE_DEVICES}"
 

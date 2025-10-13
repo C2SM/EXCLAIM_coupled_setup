@@ -69,8 +69,8 @@ ocean_refinement="R02B07"
 
 # Input data directories
 # ----------------------
-clim_data_poolFolder="/capstor/store/cscs/userlab/cws01/input/icon/global/grids/"
-icon_data_poolFolder="/capstor/store/cscs/userlab/cws01/input/icon/global/grids/"
+clim_data_poolFolder="/capstor/store/cscs/userlab/cws01/input/icon/global/grids"
+icon_data_poolFolder="/capstor/store/cscs/userlab/cws01/input/icon/global/grids"
 atmo_data_InputFolder="${clim_data_poolFolder}/atmo/${atmos_refinement}_${atmos_gridID}"
 atmos_grid_folder="${icon_data_poolFolder}/atmo/${atmos_refinement}_${atmos_gridID}"
 ocean_grid_folder="${icon_data_poolFolder}/ocean/${ocean_refinement}_${ocean_gridID}"

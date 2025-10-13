@@ -1585,7 +1585,7 @@ oce_nml(){
  activate_sync_timers        = .TRUE.
  profiling_output            = 1                                ! aggregated: 1; detailed: 2; in files: 3
  msg_timestamp               = .FALSE.
- timers_level                = 10
+ timers_level                = 11
  debug_check_level           = 1
  Restart_filename            = "${EXPNAME}_restart_oce_<rsttime>.nc"
 /

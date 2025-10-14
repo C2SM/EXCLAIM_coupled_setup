@@ -256,7 +256,9 @@ if [[ "${activate_output}" == "true" ]];then
     # Ocean
     # -----
     output_oce_fx
-    output_oce_def
+    #output_oce_def
+    output_oce_6h
+    output_oce_day
     output_oce_ice
     output_oce_flux
     output_oce_mon

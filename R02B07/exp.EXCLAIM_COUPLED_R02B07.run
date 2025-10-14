@@ -99,7 +99,7 @@ end_year=${end_date%%-*}
 atmTimeStep="PT150S"            # atmos time step (for coupler)  (same as dtime!!)
 dtime=150                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
 dt_rad=300.                     # NWP radiation timestep (s) - must match coupling/ocean time step
-oceTimeStep="PT5M"              # corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
+oceTimeStep="PT5M"              # FIXME: reduced timestep only for first restart interval when starting from climatology. corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
 atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
 
 # Task distribution
@@ -132,10 +132,15 @@ all_output_interval="PT300S"    #very short test
 
 # Type of experiment
 # ------------------
-export exptype=${exptype:-"picontrol"} #"picontrol" # "hist"
+export exptype=${exptype:-"control"} #"picontrol" # "hist"
 control_year=1979 #will not change hardcoded ghg concentrations, only file names
 ssp="370"
 initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphere + hdext cold-started from scratch
+#initialiseOcean="fromRestart"
+
+restart_dir="/capstor/scratch/cscs/nbeech/coupled_setup/EXCLAIM_coupled_setup/R02B07"
+restart_exp="EXCLAIM_coupled_hybrid"
+restart_date="19790102"
 
 # namelist files
 # --------------

@@ -1686,7 +1686,7 @@ oce_nml(){
   use_lbound_dirichlet                       = .FALSE.
 /
 &ocean_GentMcWilliamsRedi_nml
-  GMRedi_configuration                       = 1           ! 0=cartesian diffusion; 1=GM-Redi: bolus advection + isopycnal diffusion
+  GMRedi_configuration                       = 0           ! 0=cartesian diffusion; 1=GM-Redi: bolus advection + isopycnal diffusion
   tapering_scheme                            = 1
   GMRedi_usesRelativeMaxSlopes               = .FALSE.
   S_max                                      = 1.0e-3      ! 3e-5

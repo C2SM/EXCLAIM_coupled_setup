@@ -173,8 +173,9 @@ atmo_nml(){
 /
 !
 &parallel_nml
- nproma                  = ${nproma_atm}
- !nblocks_c               = 1
+ !nproma                  = ${nproma_atm}
+ nblocks_e               = 1
+ nblocks_c               = 0
  nproma_sub              = ${nproma_sub}
  p_test_run              = .false.
  !l_fast_sum              = .false.
@@ -1686,7 +1687,7 @@ oce_nml(){
   use_lbound_dirichlet                       = .FALSE.
 /
 &ocean_GentMcWilliamsRedi_nml
-  GMRedi_configuration                       = 1           ! 0=cartesian diffusion; 1=GM-Redi: bolus advection + isopycnal diffusion
+  GMRedi_configuration                       = 0           ! 0=cartesian diffusion; 1=GM-Redi: bolus advection + isopycnal diffusion
   tapering_scheme                            = 1
   GMRedi_usesRelativeMaxSlopes               = .FALSE.
   S_max                                      = 1.0e-3      ! 3e-5

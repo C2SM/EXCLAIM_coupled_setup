@@ -1848,6 +1848,51 @@ output_oce_def(){
 EOF
 }
 
+output_oce_6h(){
+  stream="${EXPNAME}_oce_6h"
+  mkdir -p "${stream}"
+  cat >> ${oce_namelist} << EOF
+&output_nml
+  filetype                   = 5
+  filename_format            = "${stream}/${stream}_<datetime2>"
+  output_start               = "${start_date}"                  ! start in ISO-format
+  output_end                 = "${end_date}"                    ! end in ISO-format
+  output_interval            = "PT6H"     ! interval in ISO-format
+  file_interval              = "P1D"
+  mode                       = 1                                ! 1: forecast mode (relative t-axis)
+                                                                ! 2: climate mode (absolute t-axis)
+  include_last               = .FALSE.
+  output_grid                = .TRUE.
+  operation                  = "mean"
+  m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
+  ml_varlist                 = 'ssh', 'tos', 'sos', 'zos', 'mld', 'mlotst10', 'uos, 'vos', 'tauuo', 'tauvo'
+/
+EOF
+}
+
+output_oce_day(){
+  stream="${EXPNAME}_oce_6h"
+  mkdir -p "${stream}"
+  cat >> ${oce_namelist} << EOF
+&output_nml
+  filetype                   = 5
+  filename_format            = "${stream}/${stream}_<datetime2>"
+  output_start               = "${start_date}"                  ! start in ISO-format
+  output_end                 = "${end_date}"                    ! end in ISO-format
+  output_interval            = "P1D"     ! interval in ISO-format
+  file_interval              = "P1D"
+  mode                       = 1                                ! 1: forecast mode (relative t-axis)
+                                                                ! 2: climate mode (absolute t-axis)
+  include_last               = .FALSE.
+  output_grid                = .TRUE.
+  operation                  = "mean"
+  m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
+  ml_varlist                 = 't', 'thetao', 's', 'u, 'v', 'w', 'rhopot', 'rho', 'u_vint', 'v_vint', 'heat_content_snow', 'heat_content_seaice', 'heat_content_total', 'heat_content_300m', 'heat_content_700m', 'rsdoabsorb', 'swrab', 'swsum', heatabs', 'mass_flux'
+/
+EOF
+}
+
+
 output_oce_ice(){
   stream="${EXPNAME}_oce_ice"
   mkdir -p "${stream}"

@@ -83,9 +83,12 @@ atm_inputs(){
             ${datadir_ghg}/greenhouse_historical_plus.nc ./bc_greenhouse_gases.nc
             ;;
     esac
+    #shorter and lowercase grid refinement for the hd files
+    aref_very_short="${atmos_refinement//"0"}"
+    aref_vs_lc="${aref_very_short,,}"
 
-    ln -sf "${datadir_hd}/hdpara_r2b7_${atmos_gridID}_${ocean_gridID}_mc_maxl_s_v1.nc" ./bc_land_hd.nc   #  mask for routing_scheme='full'
-    ln -sf "${datadir_hd}/hdstart_r2b7_${atmos_gridID}_${ocean_gridID}_mc_maxl_s_v1.nc" ./ic_land_hd.nc
+    ln -sf "${datadir_hd}/hdpara_${aref_vs_lc}_${atmos_gridID}_${ocean_gridID}_mc_maxl_s_v1.nc" ./bc_land_hd.nc   #  mask for routing_scheme='full'
+    ln -sf "${datadir_hd}/hdstart_${aref_vs_lc}_${atmos_gridID}_${ocean_gridID}_mc_maxl_s_v1.nc" ./ic_land_hd.nc
 }
 
 oce_inputs(){
@@ -111,9 +114,11 @@ lnd_inputs(){
     datadir_land="${icon_data_poolFolder}/atmo/${atmos_gridID}-${ocean_gridID}/land/rcscs"
     datadir_init="${atmo_data_InputFolder}/initial_conditions/rcscs"
     
+    #edit atmos_refinement for ifs_fname
+    short_atmos_refinement=$(echo "${atmos_refinement}" | cut -d "0" -f1)$(echo "${atmos_refinement}" | cut -d "0" -f2-)
     #used to initialize jsbach from ifs data
-    ifs_fname="ifs2icon_R2B07_DOM01.nc"  # NOTE: do not change name
-    
+    ifs_fname="ifs2icon_${short_atmos_refinement}_DOM01.nc"  # NOTE: do not change name
+ 
     # TODO: add picontrol mechanism
     ifs_origin_name="ifs2icon_${start_year}010100_${atmos_gridID}_${atmos_refinement}_G.nc"
     ln -sf "${datadir_init}/${ifs_origin_name}" "${ifs_fname}"

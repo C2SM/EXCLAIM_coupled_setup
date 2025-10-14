@@ -3,12 +3,12 @@
 # ============================================================================
 #SBATCH --uenv=icon/25.2:v3:/user-environment
 #SBATCH --view=default
-#SBATCH --job-name=EXCLAIM_COUPLED_R02B07
-#SBATCH --output=LOG.EXCLAIM_COUPLED_R02B07.%j
-#SBATCH --error=LOG.EXCLAIM_COUPLED_R02B07.%j
-#SBATCH --nodes=4
+#SBATCH --job-name=EXCLAIM_COUPLED_R02B08-09
+#SBATCH --output=LOG.EXCLAIM_COUPLED_R02B08-09.%j
+#SBATCH --error=LOG.EXCLAIM_COUPLED_R02B08-09.%j
+#SBATCH --nodes=72
 #SBATCH --ntasks-per-node=8
-#SBATCH --time=00:15:00
+#SBATCH --time=00:30:00
 #SBATCH --exclusive
 #SBATCH --account=cwd01
 # ============================================================================
@@ -18,6 +18,7 @@ set -x
 # ============================================================================
 # CAUTION
 # - Restart mechanism not implemented
+# TODO: optimize nproma for grid
 
 # ============================================================================
 # Settings
@@ -61,10 +62,10 @@ export icon_gpu=${icon_gpu:-"${basedir}/build-gpu/bin/icon"}
 
 # Grids
 # -----
-atmos_gridID="0061"             #  icon-nwp grid
-atmos_refinement="R02B07"
-ocean_gridID="0062"             #  icon-oce r2b7 grid
-ocean_refinement="R02B07"
+atmos_gridID="0033"             #  icon-nwp r2b8 grid
+atmos_refinement="R02B08"
+ocean_gridID="0016"             #  icon-oce r2b8 grid
+ocean_refinement="R02B09"
 
 # Input data directories
 # ----------------------
@@ -95,11 +96,11 @@ end_year=${end_date%%-*}
 
 # Time steps
 # ----------
-atmTimeStep="PT150S"            # atmos time step (for coupler)  (same as dtime!!)
-dtime=150                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
-dt_rad=300.                     # NWP radiation timestep (s) - must match coupling/ocean time step
-oceTimeStep="PT5M"              # FIXME: reduced timestep only for first restart interval when starting from climatology. corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
-atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
+atmTimeStep="PT90S"            # atmos time step (for coupler)  (same as dtime!!)
+dtime=90                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
+dt_rad=3600.                     # NWP radiation timestep (s) - must match coupling/ocean time step
+oceTimeStep="PT4M"              # corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
+atm_oce_coupling_timestep="PT30M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
 
 # Task distribution
 # -----------------
@@ -127,7 +128,7 @@ all_output_interval="PT300S"    #very short test
 #all_output_interval="PT30M"    # short test
 #all_output_interval="PT60M"     # short test
 #all_output_interval="P1D"      # daily output
-#all_output_interval="P1M"      # monthly output - production
+i#all_output_interval="P1M"      # monthly output - production
 
 # Type of experiment
 # ------------------

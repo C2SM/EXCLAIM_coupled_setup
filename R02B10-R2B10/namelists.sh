@@ -1843,7 +1843,7 @@ output_oce_def(){
   operation                  = "mean"
   m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
   !ml_varlist                 = 'group:oce_default', 'group:oce_essentials'
-  ml_varlist                 = 'group:oce_default', 'group:oce_essentials','A_veloc_v','A_tracer_v_to', 'u', 'v', 'condep' !${STRETCH_C}
+  ml_varlist                 = 'group:oce_default', 'group:oce_essentials','A_veloc_v','A_tracer_v_to'
 /
 EOF
 }
@@ -1905,7 +1905,7 @@ output_oce_mon(){
   filename_format            = "${stream}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  output_interval            = "P1D"
+  output_interval            = "P1M"
   file_interval              = "P1M"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)

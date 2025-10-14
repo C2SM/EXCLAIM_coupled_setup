@@ -124,7 +124,7 @@ lnd_inputs(){
     short_atmos_refinement=$(echo "${atmos_refinement}" | cut -d "0" -f1)$(echo "${atmos_refinement}" | cut -d "0" -f2-)
     #used to initialize jsbach from ifs data
     ifs_fname="ifs2icon_${short_atmos_refinement}_DOM01.nc"  # NOTE: do not change name
- 
+    
     # TODO: add picontrol mechanism
     ifs_origin_name="ifs2icon_${start_year}010100_${atmos_gridID}_${atmos_refinement}_G.nc"
     ln -sf "${datadir_init}/${ifs_origin_name}" "${ifs_fname}"

@@ -85,6 +85,7 @@ else
     export end_date=${end_date:-"1979-01-01T02:00:00Z"}
 fi
 
+export lrestart=${lrestart:-.false.}
 export restart_interval=${restart_interval:-"P1M"}
 export checkpoint_interval=${checkpoint_interval:-"${restart_interval}"}
 #duplicates
@@ -114,7 +115,7 @@ case "${TARGET}" in
         ((N_ATM_TASKS_PER_NODE = 288 - N_OCE_TASKS_PER_NODE))
         ;;
     *)
-        echo "ERROR: target architecture must either be 'hybrid' or 'cpu'"
+        echo "ERROR: target architecture must either be 'hybrid', 'cpu' or 'cpu-cpu'"
         exit 1
         ;;
 esac

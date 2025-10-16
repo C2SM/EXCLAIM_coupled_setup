@@ -51,9 +51,12 @@ To run the coupled setup follow these steps:
 # From the base directory navigate to the R02B07 directory
 cd EXCLAIM_coupled_setup/R02B07
 
+# install python run tools
+./install_py_run_utils.sh
+
 # Run the experiment for one of the three possible targets: 'hybrid', 'cpu', 'cpu-cpu'
-jid=$(sbatch --parsable exp.EXCLAIM_COUPLED_R02B07.run hybrid)
+jid=$(sbatch --uenv="icon/25.2:v3,$PWD/venv.squashfs:$PWD/.venv" --parsable exp.EXCLAIM_COUPLED_R02B07.run hybrid)
 
 # Inspect the logfile at the end
-vim LOG.EXCLAIM_COUPLED_R02B07.${jid}
+less LOG.EXCLAIM_COUPLED_R02B07.${jid}
 ```

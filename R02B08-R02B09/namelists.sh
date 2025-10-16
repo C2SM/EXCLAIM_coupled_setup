@@ -1570,6 +1570,7 @@ oce_nml(){
  num_prefetch_proc           = 0
  p_test_run                  = .FALSE.
  l_fast_sum                  = .FALSE.
+ iorder_sendrecv             = 3
 /
 &grid_nml
  dynamics_grid_filename      = "${ocean_grid_target}"
@@ -1791,7 +1792,7 @@ EOF
   !write_last_restart                         = .TRUE.           ! def=F; T: force writing restart at end of job
   restart_write_mode                         = "joint procs multifile"  ! not yet available in ocean model
   lnetcdf_flt64_output                       = .FALSE.          ! T: 64 bit output in all files
-  lkeep_in_sync                              = .TRUE.           ! sync after each timestep
+  !lkeep_in_sync                              = .TRUE.           ! sync after each timestep
 /
 EOF
 }

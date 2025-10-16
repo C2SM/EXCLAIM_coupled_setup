@@ -96,11 +96,11 @@ end_year=${end_date%%-*}
 
 # Time steps
 # ----------
-atmTimeStep="PT90S"            # atmos time step (for coupler)  (same as dtime!!)
-dtime=90                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
-dt_rad=3600.                     # NWP radiation timestep (s) - must match coupling/ocean time step
+atmTimeStep="PT80S"            # atmos time step (for coupler)  (same as dtime!!)
+dtime=80                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
+dt_rad=1200.                     # NWP radiation timestep (s) - must match coupling/ocean time step
 oceTimeStep="PT4M"              # corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
-atm_oce_coupling_timestep="PT30M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
+atm_oce_coupling_timestep="PT20M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
 
 # Task distribution
 # -----------------
@@ -128,7 +128,7 @@ all_output_interval="PT300S"    #very short test
 #all_output_interval="PT30M"    # short test
 #all_output_interval="PT60M"     # short test
 #all_output_interval="P1D"      # daily output
-i#all_output_interval="P1M"      # monthly output - production
+#all_output_interval="P1M"      # monthly output - production
 
 # Type of experiment
 # ------------------

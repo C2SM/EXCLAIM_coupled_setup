@@ -6,7 +6,7 @@
 #SBATCH --job-name=EXCLAIM_COUPLED_R02B07
 #SBATCH --output=LOG.EXCLAIM_COUPLED_R02B07.%j
 #SBATCH --error=LOG.EXCLAIM_COUPLED_R02B07.%j
-#SBATCH --nodes=4
+#SBATCH --nodes=24
 #SBATCH --ntasks-per-node=8
 #SBATCH --time=00:15:00
 #SBATCH --exclusive
@@ -97,9 +97,9 @@ end_year=${end_date%%-*}
 # ----------
 atmTimeStep="PT150S"            # atmos time step (for coupler)  (same as dtime!!)
 dtime=150                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
-dt_rad=300.                     # NWP radiation timestep (s) - must match coupling/ocean time step
+dt_rad=3600.                     # NWP radiation timestep (s) - must match coupling/ocean time step
 oceTimeStep="PT5M"              # FIXME: reduced timestep only for first restart interval when starting from climatology. corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
-atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
+atm_oce_coupling_timestep="PT30M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
 
 # Task distribution
 # -----------------

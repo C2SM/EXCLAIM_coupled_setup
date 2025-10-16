@@ -343,7 +343,7 @@ atmo_nml(){
  inextra_3d              = 2                         ! 3D extra variables
  inextra_2d              = 10                        ! 2D extra variables
  restart_write_mode      = "joint procs multifile"   ! asynchron multifile restart handling; 'sync' for single file writing
- !lkeep_in_sync           = .TRUE.                    ! sync after each timestep
+ lkeep_in_sync           = .TRUE.                    ! sync after each timestep
  lnetcdf_flt64_output    = .FALSE.                   ! T: 64 bit output in all files
  precip_interval         = "PT15M"   ! NEW ! Works The precipitation value is accumulated in these interval otherwise accumulated fromm begining of the run
  runoff_interval         = "PT3H"    ! NEW ! Works The runoff is accumalted in this inetrval else accumulated from bengining.

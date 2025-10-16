@@ -25,20 +25,27 @@ set -x
 
 # Get runscript path
 # ------------------
-RUNSCRIPT_DIR=$(cd $(dirname "$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/Command=/{print $2}')"); pwd)
+RUNSCRIPT_PATH=$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}')
+RUNSCRIPT_DIR=$(dirname "${RUNSCRIPT_PATH}")
 
 # Load Auxiliary functions
 # ------------------------
-source ../run_utils/run_tools.sh
-source namelists.sh
-source inputs.sh
-
 # source installed runtime python tools
 # NOTE: 1- install tools with
 #          ./install_py_run_utils.sh 
 #       2- submit with
 #          sbatch --uenv="icon/25.2:v3,$PWD/venv.squashfs:$PWD/.venv" ./exp.EXCLAIM_COUPLED_R02B07.run
+if [ -f .venv/bin/activate ]; then
+    echo 'ERROR: py_run_utils not installed or not mounted'
+    echo '- install with ./install_py_run_utils.sh'
+    echo '- run with sbatch --uenv="icon/25.2:v3,$PWD/venv.squashfs:$PWD/.venv" ./exp.EXCLAIM_COUPLED_R02B07.run'
+    exit 1
+fi
 source .venv/bin/activate
+source ../run_utils/run_tools.sh
+source namelists.sh
+source inputs.sh
+
 # 
 # Target architecture
 # -------------------
@@ -95,12 +102,14 @@ fi
 export lrestart=${lrestart:-.false.}
 export restart_interval=${restart_interval:-"P1M"}
 export checkpoint_interval=${checkpoint_interval:-"${restart_interval}"}
-#duplicates
-atm_file_interval="P1Y"
-oce_file_interval="P1Y"
 
-start_year=${start_date%%-*}
-end_year=${end_date%%-*}
+export chunk_start_date=${chunk_start_date:-start_date}
+chunk_end_date=$(date_cycle "${chunk_start_date}" "${restart_interval}" "${end_date}")
+
+start_year=${start_date:0:4}
+chunk_start_year=${chunk_start_date:0:4}
+chunk_end_year=${chunk_end_date:0:4}
+end_year=${end_date:0:4}
 
 # Time steps
 # ----------
@@ -141,6 +150,7 @@ all_output_interval="PT300S"      # monthly output - production
 # ------------------
 export exptype=${exptype:-"control"} #"picontrol" # "hist"
 control_year=1979 #will not change hardcoded ghg concentrations, only file names
+picontrol_year=1850
 ssp="370"
 initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphere + hdext cold-started from scratch
 
@@ -322,3 +332,7 @@ set_environment
 # MPI run
 # -------
 run_model
+
+# Restart
+# -------
+restart_model

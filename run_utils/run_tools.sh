@@ -123,6 +123,37 @@ run_model(){
    esac
 }
 
+restart_model(){
+    status_file="finish.status"
+    if [ ! -f "${status_file}" ]; then
+        echo
+        echo "============================"
+        echo "Script failed"
+        echo "============================"
+        echo
+        exit 1
+    fi
+
+    finish_status=$(cat "${status_file}" | xargs echo)
+    echo
+    echo "============================"
+    echo "Script ran successfully: ${finish_status}"
+    echo "============================"
+    echo
+    echo
+
+    echo "Accounting"
+    sacct -j ${SLURM_JOB_ID} --format "ElapsedRaw, CPUTimeRAW, ConsumedEnergyRaw"
+
+    if [ "${finish_status}" == "RESTART" ]; then
+        export lrestart=.true.
+        export chunk_start_date="${chunk_end_date}"
+        echo
+        echo "submitting next chunk starting at ${chunk_start_date}"
+        sbatch --uenv="icon/25.2:v3,${RUNSCRIPT_DIR}/venv.squashfs:${RUNSCRIPT_DIR}/.venv" "${RUNSCRIPT_PATH}"
+    fi
+}
+
 set_ocean_vertical_coordinate(){
    if [[ "${VERT_COR}" == 0 ]] ; then
       vert_cor_type=0

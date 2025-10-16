@@ -12,6 +12,8 @@ dependencies = ["isoduration"]
 
 [project.scripts]
 date_add = "py_run_utils.main:date_add"
+date_min = "py_run_utils.main:date_min"
+date_cycle = "py_run_utils.main:date_cycle"
 
 [tool.hatch.build.targets.sdist]
 include = [

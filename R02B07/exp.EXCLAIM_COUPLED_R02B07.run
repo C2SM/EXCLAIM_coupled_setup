@@ -35,7 +35,7 @@ RUNSCRIPT_DIR=$(dirname "${RUNSCRIPT_PATH}")
 #          ./install_py_run_utils.sh 
 #       2- submit with
 #          sbatch --uenv="icon/25.2:v3,$PWD/venv.squashfs:$PWD/.venv" ./exp.EXCLAIM_COUPLED_R02B07.run
-if [ -f .venv/bin/activate ]; then
+if [ ! -f .venv/bin/activate ]; then
     echo 'ERROR: py_run_utils not installed or not mounted'
     echo '- install with ./install_py_run_utils.sh'
     echo '- run with sbatch --uenv="icon/25.2:v3,$PWD/venv.squashfs:$PWD/.venv" ./exp.EXCLAIM_COUPLED_R02B07.run'

@@ -52,7 +52,8 @@ atm_inputs(){
             ln -sf "${datadir_aerosol_kinne}/bc_aeropt_kinne_lw_b16_coa.nc" .
             ln -sf "${datadir_aerosol_kinne}/bc_aeropt_kinne_sw_b14_coa.nc" .
             ln -sf "${datadir_aerosol_kinne}/bc_aeropt_kinne_sw_b14_fin_1850.nc" ./bc_aeropt_kinne_sw_b14_fin.nc
-            # add volcanic aerosols #NOTE: no projections yet
+            # add volcanic aerosols
+            # NOTE: no projections yet
             for ((year=start_year-1; year<=end_year; year++)); do
                 if [[ $year -eq 1849 ]]; then
                     ln -sf "${datadir_aerosol_volcanic}/bc_aeropt_cmip6_volc_lw_b16_sw_b14_1850.nc" ./bc_aeropt_cmip6_volc_lw_b16_sw_b14_${year}.nc
@@ -121,17 +122,18 @@ lnd_inputs(){
     ln -sf "${basedir}/externals/jsbach/data/lctlib_nlct21.def" .
 
     # choose year for land fraction file based on exptype
-    if [[ "$exptype" == "control"  ]]; then
-        year="${control_year}"  # constant historical value
-    elif [[ "$exptype" == "picontrol"  ]]; then
-        year="1850"  # preindustrial constant
-    else
-        # FIXME: year mechanism not implemented yet, this will fail
-        # NOTE: restart every year max to get the right land frac
-        year="${current_year}" # transient
-    fi
-    jsbach_lnd_frac="bc_land_frac_11pfts_${year}.nc"
-    ln -sf "${datadir_land}/${jsbach_lnd_frac}" .
+    case "${exptype}" in
+        "control")
+            ln -sf "${datadir_land}/bc_land_frac_11pfts_${control_year}.nc" .
+            ;;
+        "picontrol")
+            ln -sf "${datadir_land}/bc_land_frac_11pfts_${picontrol_year}.nc" .
+            ;;
+        *) # transient
+            for ((year=chunk_start_year; year<=chunk_end_year; year++)); do
+                ln -sf "${datadir_land}/bc_land_frac_11pfts_${year}.nc" .
+            done
+    esac
 
     # jsbach land data:
     jsbach_bc_phys="bc_land_phys.nc"

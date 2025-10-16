@@ -13,11 +13,11 @@ atm_inputs(){
 
     revision="rcscs"
     datadir_aerosol_kinne="${atmo_data_InputFolder}/aerosol_kinne/${revision}"
-    datadir_aerosol_volcanic="${clim_data_poolFolder}/atmo/common/aerosol_volcanic_cmip6"
-    datadir_plumes="${clim_data_poolFolder}/atmo/common/MACv2_simple_plumes_merged"
+    datadir_aerosol_volcanic="${common_data_poolFolder}/aerosol_volcanic_cmip6"
+    datadir_plumes="${common_data_poolFolder}/MACv2_simple_plumes_merged"
     datadir_ozone="${atmo_data_InputFolder}/ozone/${revision}"
-    datadir_rad="${clim_data_poolFolder}/atmo/common/solar_radiation"
-    datadir_ghg="${clim_data_poolFolder}/atmo/common/greenhouse_gases"
+    datadir_rad="${common_data_poolFolder}/solar_radiation"
+    datadir_ghg="${common_data_poolFolder}/greenhouse_gases"
     datadir_hd="${icon_data_poolFolder}/atmo/${atmos_gridID}-${ocean_gridID}/hd/r0100"
 
     case "${exptype}" in

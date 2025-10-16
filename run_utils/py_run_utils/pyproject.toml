@@ -1,0 +1,10 @@
+[project]
+name = "py-run-utils"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = ["isoduration"]
+
+[project.scripts]
+date_add = "main:date_add"

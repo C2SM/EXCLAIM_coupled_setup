@@ -89,9 +89,9 @@ fi
 
 export lrestart=${lrestart:-.false.}
 export restart_interval=${restart_interval:-"P1M"}
-export checkpoint_interval=${checkpoint_interval:-"${restart_interval}"}
+export checkpoint_interval=${checkpoint_interval:-${restart_interval}}
 
-export chunk_start_date=${chunk_start_date:-start_date}
+export chunk_start_date=${chunk_start_date:-${start_date}}
 chunk_end_date=$(date_cycle "${chunk_start_date}" "${restart_interval}" "${end_date}")
 
 start_year=${start_date:0:4}

@@ -222,6 +222,10 @@ start_fx=${start_date}  # output time of geometry file fx
 # -----------------------
 export activate_output=${activate_output:-"true"}
 export activate_output_dyamond=${activate_output_dyamond:-"false"}
+if [[ "${activate_output}" != "true" ]];then
+    ATM_IO_TASKS=0
+    OCE_IO_TASKS=0
+fi
 
 # ============================================================================
 # Input files
@@ -301,9 +305,6 @@ if [[ "${activate_output}" == "true" ]];then
         #output_stream_15_12
         #output_stream_15_13
     fi
-else
-    ATM_IO_TASKS=0
-    OCE_IO_TASKS=0
 fi
 
 # ============================================================================

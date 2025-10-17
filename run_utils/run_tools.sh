@@ -284,3 +284,16 @@ set_ocean_vertical_coordinate(){
       lbgcadv=".FALSE."
    fi
 }
+
+# Activate py_run_tools
+pushd ../run_utils/py_run_utils 2>&1 >/dev/null || exit
+if [ -f .venv/bin/activate ]; then
+    source .venv/bin/activate || exit
+else
+    rm -rf .venv uv.lock
+    uv venv --relocatable --python="$(which python)"
+    source .venv/bin/activate
+    uv sync --no-cache --link-mode=copy --compile-bytecode --active --no-editable --inexact || exit
+fi
+popd 2>&1 >/dev/null || exit
+

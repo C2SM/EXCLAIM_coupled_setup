@@ -31,23 +31,10 @@ RUNSCRIPT_DIR=$(dirname "${RUNSCRIPT_PATH}")
 
 # Load Auxiliary functions
 # ------------------------
-# source installed runtime python tools
-# NOTE: 1- install tools with
-#          ./install_py_run_utils.sh 
-#       2- submit with
-#          sbatch --uenv="icon/25.2:v3,$PWD/venv.squashfs:$PWD/.venv" ./exp.EXCLAIM_COUPLED_R02B07.run
-if [ ! -f .venv/bin/activate ]; then
-    echo 'ERROR: py_run_utils not installed or not mounted'
-    echo '- install with ./install_py_run_utils.sh'
-    echo '- run with sbatch --uenv="icon/25.2:v3,$PWD/venv.squashfs:$PWD/.venv" ./exp.EXCLAIM_COUPLED_R02B07.run'
-    exit 1
-fi
-source .venv/bin/activate
 source ../run_utils/run_tools.sh
 source namelists.sh
 source inputs.sh
 
-# 
 # Target architecture
 # -------------------
 if [[ "$#" -lt 1 ]]; then

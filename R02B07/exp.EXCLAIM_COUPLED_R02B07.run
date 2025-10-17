@@ -301,6 +301,9 @@ if [[ "${activate_output}" == "true" ]];then
         #output_stream_15_12
         #output_stream_15_13
     fi
+else
+    ATM_IO_TASKS=0
+    OCE_IO_TASKS=0
 fi
 
 # ============================================================================

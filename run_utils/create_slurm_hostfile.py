@@ -41,7 +41,8 @@ def main():
     parser.add_argument("--atm_comp_tasks_per_node", type=int, required=True,               help="The number of compute tasks per node for the atmosphere.")
     parser.add_argument("--atm_io_tasks",            type=int, required=True,               help="The total number of IO tasks for the atmosphere.")
     parser.add_argument("--oce_io_tasks",            type=int, required=True,               help="The total number of IO tasks for the ocean.")
-    parser.add_argument("--max_tasks_per_node",      type=int, required=False, default=288, help="Maximum number of tasks allowed per node.")
+    parser.add_argument("--threads_per_task",        type=int, required=True,               help="The number of threads for each task.")
+    parser.add_argument("--max_threads_per_node",    type=int, required=False, default=288, help="Maximum number of threads allowed per node.")
 
     args = parser.parse_args()
 
@@ -50,18 +51,21 @@ def main():
 
     output_filepath = args.output_filepath
 
-    max_tasks_per_node = args.max_tasks_per_node
+    max_threads_per_node = args.max_threads_per_node
 
+    tot_tasks_per_node      = args.tot_tasks_per_node
     atm_comp_tasks_per_node = args.atm_comp_tasks_per_node
     atm_io_tasks            = args.atm_io_tasks
     oce_io_tasks            = args.oce_io_tasks
-    tot_tasks_per_node      = args.tot_tasks_per_node
+    threads_per_task        = args.threads_per_task
 
-    if tot_tasks_per_node > max_tasks_per_node:
-        raise ValueError(f"The desired number of tasks per node ({tot_tasks_per_node}) exceeds the maximum allowed tasks per node ({max_tasks_per_node})."
+    tot_threads_per_node = tot_tasks_per_node * threads_per_task
+
+    if tot_threads_per_node > max_threads_per_node:
+        raise ValueError(f"The desired number of threads per node ({tot_tasks_per_node} * {threads_per_task} (threads per task) = {tot_threads_per_node}) exceeds the allowed maximum ({max_threads_per_node}). "
                           "Stopping execution!")
 
-    n_available_cores = {nid: tot_tasks_per_node for nid in nodes}
+    n_available_cores = {nid: tot_threads_per_node for nid in nodes}
 
     with open(output_filepath, 'w') as file:
 
@@ -70,7 +74,7 @@ def main():
         for nid in nodes:
             file.write((nid + '\n') * atm_comp_tasks_per_node)
 
-            n_available_cores[nid] -= atm_comp_tasks_per_node
+            n_available_cores[nid] -= atm_comp_tasks_per_node * threads_per_task
 
         # Atmosphere IO procs
         # Equal to SLURM's --distribution="cyclic"
@@ -78,21 +82,22 @@ def main():
             nid = nodes[i % number_of_nodes]
             file.write(nid + '\n')
 
-            n_available_cores[nid] -= 1
+            n_available_cores[nid] -= 1 * threads_per_task
 
         # Dry-run for ocean IO procs (to make sure we fill up to
         # tot_tasks_per_node with ocean compute procs)
         for i in range(oce_io_tasks):
             nid = nodes[(atm_io_tasks + i) % number_of_nodes]
 
-            n_available_cores[nid] -= 1
+            n_available_cores[nid] -= 1 * threads_per_task
 
         # Ocean compute procs
         # Fill up to the number of still available cores
         for nid in nodes:
-            file.write((nid + '\n') * n_available_cores[nid])
+            n_remaining_tasks = (n_available_cores[nid] // threads_per_task)
+            file.write((nid + '\n') * n_remaining_tasks)
 
-            n_available_cores[nid] = 0
+            n_available_cores[nid] -= n_remaining_tasks
 
         # Ocean IO procs (avoid overlap with atmosphere IO procs)
         # Equal to SLURM's --distribution="cyclic"

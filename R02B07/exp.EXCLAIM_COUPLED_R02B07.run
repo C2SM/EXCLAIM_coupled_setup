@@ -14,8 +14,6 @@
 #SBATCH --exclusive
 # ============================================================================
 
-# TODO: Should we set gpus-per-node in CPU-only runs?
-
 set -x
 
 # ============================================================================
@@ -90,9 +88,6 @@ fi
 
 export restart_interval=${restart_interval:-"P1M"}
 export checkpoint_interval=${checkpoint_interval:-"${restart_interval}"}
-#duplicates
-atm_file_interval="P1Y"
-oce_file_interval="P1Y"
 
 start_year=${start_date%%-*}
 end_year=${end_date%%-*}
@@ -110,7 +105,8 @@ atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets 
 case "${TARGET}" in
     "hybrid")
         export ATM_COMP_TASKS_PER_NODE=4
-        export TOT_TASKS_PER_NODE=64
+        export TOT_TASKS_PER_NODE=16
+        export CPUS_PER_TASK=16
         ;;
     "cpu" | "cpu-cpu")
         export OCE_COMP_TASKS_PER_NODE=9
@@ -121,8 +117,8 @@ case "${TARGET}" in
         exit 1
         ;;
 esac
-export ATM_IO_TASKS=3
-export OCE_IO_TASKS=2
+export ATM_IO_TASKS=0
+export OCE_IO_TASKS=0
 export ATM_RST_TASKS=0
 export OCE_RST_TASKS=0
 
@@ -213,8 +209,8 @@ start_fx=${start_date}  # output time of geometry file fx
 
 # Activate output streams
 # -----------------------
-activate_output="true"
-# activate_output="false"
+# activate_output="true"
+activate_output="false"
 #activate_output_dyamond="true"
 activate_output_dyamond="false"
 

@@ -38,7 +38,8 @@ create_slurm_hostfile(){
         --atm_comp_tasks_per_node "${ATM_COMP_TASKS_PER_NODE}" \
         --atm_io_tasks "${ATM_IO_TASKS}" \
         --oce_io_tasks "${OCE_IO_TASKS}" \
-        --max_tasks_per_node 288 # TODO: infer using a SLURM variable
+        --threads_per_task "${CPUS_PER_TASK}" \
+        --max_threads_per_node "$(grep -c ^processor /proc/cpuinfo)"
    
    exit_status=$?
    if [ "$exit_status" -ne 0 ]; then
@@ -49,7 +50,6 @@ create_slurm_hostfile(){
 }
 
 set_environment(){
-   # TODO: Make wrapper target-specific and move environment settings there
 
    ulimit -s unlimited
    ulimit -c 0
@@ -60,11 +60,9 @@ set_environment(){
 
    # Libfabric / Slingshot
    # ---------------------
-   if [[ "${TARGET}" == "hybrid" ]]; then
-      export FI_CXI_SAFE_DEVMEM_COPY_THRESHOLD=0
-      export FI_CXI_RX_MATCH_MODE=software
-      export FI_MR_CACHE_MONITOR=disabled
-   fi
+   export FI_CXI_SAFE_DEVMEM_COPY_THRESHOLD=0
+   export FI_CXI_RX_MATCH_MODE=software
+   export FI_MR_CACHE_MONITOR=disabled
    export FI_MR_CACHE_MAX_COUNT=0
    export FI_CXI_OFLOW_BUF_COUNT=10
 
@@ -91,9 +89,7 @@ set_environment(){
 
    # OpenMP
    # ------
-   export OMP_NUM_THREADS=1
-   export ICON_THREADS=1
-   export OMP_SCHEDULE=dynamic,1
+   export OMP_SCHEDULE=guided,16
    export OMP_DYNAMIC="false"
    export OMP_STACKSIZE=200M
 
@@ -114,7 +110,7 @@ run_model(){
             --hint="nomultithread" \
             --ntasks="${TOT_TASKS}" \
             --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
-            --cpus-per-task="${OMP_NUM_THREADS}" \
+            --cpus-per-task="${CPUS_PER_TASK}" \
             --multi-prog multi-prog.conf
       ;;
       "cpu-cpu")
@@ -126,7 +122,7 @@ run_model(){
             --hint="nomultithread" \
             --ntasks="${TOT_TASKS}" \
             --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
-            --cpus-per-task="${OMP_NUM_THREADS}" \
+            --cpus-per-task="${CPUS_PER_TASK}" \
             --multi-prog multi-prog.conf
       ;;
       "cpu")
@@ -138,7 +134,7 @@ run_model(){
             --hint="nomultithread" \
             --ntasks="${TOT_TASKS}" \
             --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
-            --cpus-per-task="${OMP_NUM_THREADS}" \
+            --cpus-per-task="${CPUS_PER_TASK}" \
             "./icon_cpu"
       ;;
    esac

@@ -150,7 +150,7 @@ restart_model(){
         export chunk_start_date="${chunk_end_date}"
         echo
         echo "submitting next chunk starting at ${chunk_start_date}"
-        sbatch "${RUNSCRIPT_PATH}"
+        sbatch "${RUNSCRIPT_PATH}" "${TARGET}"
     fi
 }
 

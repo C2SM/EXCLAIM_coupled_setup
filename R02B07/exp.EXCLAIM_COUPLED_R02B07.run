@@ -275,42 +275,42 @@ if [[ "${activate_output}" == "true" ]];then
     output_oce_flux
     output_oce_mon
     output_oce_moc
+    
+    # Dyamond output streams. Comment out to deactivate
+    if [ "${activate_output_dyamond}" == "true" ]; then
+        output_stream_1_1
+        output_stream_1_2
+        output_stream_1_3
+        output_stream_1_4
+        output_stream_1_5
+        output_stream_2
+        output_stream_3 
+        output_stream_4
+        output_stream_5
+        output_stream_6
+        output_stream_7
+        output_stream_8
+        output_stream_9
+        output_stream_10
+        output_stream_11
+        output_stream_12
+        output_stream_13
+        output_stream_14
+        #output_stream_15_1
+        #output_stream_15_2
+        #output_stream_15_3
+        #output_stream_15_4
+        #output_stream_15_5
+        #output_stream_15_6
+        #output_stream_15_7
+        #output_stream_15_8
+        #output_stream_15_9
+        #output_stream_15_10
+        #output_stream_15_11
+        #output_stream_15_12
+        #output_stream_15_13
+    fi
 fi
-# Dyamond output streams. Comment out to deactivate
-if [ "${activate_output_dyamond}" == "true" ]; then
-    output_stream_1_1
-    output_stream_1_2
-    output_stream_1_3
-    output_stream_1_4
-    output_stream_1_5
-    output_stream_2
-    output_stream_3 
-    output_stream_4
-    output_stream_5
-    output_stream_6
-    output_stream_7
-    output_stream_8
-    output_stream_9
-    output_stream_10
-    output_stream_11
-    output_stream_12
-    output_stream_13
-    output_stream_14
-    #output_stream_15_1
-    #output_stream_15_2
-    #output_stream_15_3
-    #output_stream_15_4
-    #output_stream_15_5
-    #output_stream_15_6
-    #output_stream_15_7
-    #output_stream_15_8
-    #output_stream_15_9
-    #output_stream_15_10
-    #output_stream_15_11
-    #output_stream_15_12
-    #output_stream_15_13
-fi
-
 
 # ============================================================================
 # Executables

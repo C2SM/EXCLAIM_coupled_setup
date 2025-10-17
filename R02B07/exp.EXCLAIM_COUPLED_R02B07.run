@@ -223,10 +223,8 @@ start_fx=${start_date}  # output time of geometry file fx
 
 # Activate output streams
 # -----------------------
-# activate_output="true"
-activate_output="false"
-#activate_output_dyamond="true"
-activate_output_dyamond="false"
+export activate_output=${activate_output:-"true"}
+export activate_output_dyamond=${activate_output_dyamond:-"false"}
 
 # ============================================================================
 # Input files

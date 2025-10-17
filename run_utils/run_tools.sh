@@ -150,7 +150,7 @@ restart_model(){
         export chunk_start_date="${chunk_end_date}"
         echo
         echo "submitting next chunk starting at ${chunk_start_date}"
-        sbatch --uenv="icon/25.2:v3,${RUNSCRIPT_DIR}/venv.squashfs:${RUNSCRIPT_DIR}/.venv" "${RUNSCRIPT_PATH}"
+        sbatch "${RUNSCRIPT_PATH}"
     fi
 }
 

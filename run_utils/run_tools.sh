@@ -17,7 +17,7 @@ create_multiprog_file(){
    # Write multi-prog distribution to file
    if [[ "${TARGET}" == "hybrid" ]]; then
       cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} ../run_utils/gpu_wrapper.sh ${1-} ./icon_gpu
+${ATM_MIN_RANK}-${ATM_MAX_RANK} ../run_utils/gpu_wrapper.sh $RUN_OPTIONS ./icon_cpu
 ${OCE_MIN_RANK}-${OCE_MAX_RANK} ../run_utils/cpu_wrapper.sh ./icon_cpu
 EOF
       chmod 755 multi-prog.conf

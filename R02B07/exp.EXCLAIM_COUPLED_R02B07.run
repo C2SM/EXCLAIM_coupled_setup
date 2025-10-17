@@ -45,8 +45,8 @@ if [[ "${1}" != "cpu" ]] && [[ "${1}" != "cpu-cpu" ]] && [[ "${1}" != "hybrid" ]
     echo "ERROR: ${0} single argument must be either 'cpu', 'cpu-cpu' or hybrid'"
     exit 1
 fi
-TARGET="${1}"
-RUN_OPTIONS="${2-}"
+export TARGET="${1}"
+export RUN_OPTIONS="${2-}"
 
 # Experiment name
 # ---------------

@@ -21,8 +21,6 @@ export CUDA_VISIBLE_DEVICES=$NUMA_NODE
 export OMP_NUM_THREADS=1
 export ICON_THREADS=1
 
-echo "G${GLOBAL_RANK} - L${LOCAL_RANK} -> NODE: ${SLURM_NODEID} - NUMA: ${NUMA_NODE}, CUDA: ${CUDA_VISIBLE_DEVICES}"
-
 if [[ $# -lt 2 ]]; then
     # only ICON binary as argument
     numactl --cpunodebind=$NUMA_NODE --membind=$NUMA_NODE bash -c "$@"

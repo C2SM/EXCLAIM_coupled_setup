@@ -35,6 +35,4 @@ esac
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export ICON_THREADS=$SLURM_CPUS_PER_TASK
 
-echo "G${GLOBAL_RANK} - L${LOCAL_RANK} -> NODE: ${SLURM_NODEID} - NUMA: ${NUMA_NODE}"
-
 numactl --cpunodebind=$NUMA_NODE --membind=$NUMA_NODE bash -c "$@"

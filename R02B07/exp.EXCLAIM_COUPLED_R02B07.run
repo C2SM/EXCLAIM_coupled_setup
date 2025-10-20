@@ -109,8 +109,9 @@ case "${TARGET}" in
         export CPUS_PER_TASK=16
         ;;
     "cpu" | "cpu-cpu")
-        export OCE_COMP_TASKS_PER_NODE=9
-        export ATM_COMP_TASKS_PER_NODE=$((288 - OCE_COMP_TASKS_PER_NODE)) # TODO: this might need to be adapted as for the hybrid run
+        export ATM_COMP_TASKS_PER_NODE=256
+        export TOT_TASKS_PER_NODE=288
+        export CPUS_PER_TASK=1
         ;;
     *)
         echo "ERROR: target architecture must either be 'hybrid' or 'cpu'"
@@ -223,8 +224,10 @@ oce_inputs
 # ============================================================================
 # Config files
 compute_task_distribution_variables
-create_multiprog_file ${RUN_OPTIONS}
-create_slurm_hostfile
+create_multiprog_file
+if [[ "${TARGET}" == "hybrid" ]]; then
+    create_slurm_hostfile
+fi
 set_ocean_vertical_coordinate
 
 icon_master_nml

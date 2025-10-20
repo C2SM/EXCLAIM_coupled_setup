@@ -28,7 +28,7 @@ case "${TARGET}" in
 
         ((TOT_TASKS_PER_SOCKET=TOT_TASKS_PER_NODE / N_SOCKETS))
 
-        export NUMA_NODE=$((LOCAL_RANK / TOT_TASKS_PER_SOCKET))
+        export NUMA_NODE=$(((LOCAL_RANK / TOT_TASKS_PER_SOCKET) % N_SOCKETS))
         ;;
 esac
 

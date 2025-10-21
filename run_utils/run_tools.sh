@@ -140,6 +140,31 @@ run_model(){
    esac
 }
 
+date_cycle() {
+    local start_datetime="${1}"
+    local duration="${2#P}"
+    local end_datetime="${3}"
+
+    local date_part="${duration%%T*}"
+    local time_part="${duration#*T}"
+    [[ "$duration" != *T* ]] && time_part=""
+
+    local restart_datetime="${start_datetime}"
+
+    [[ "$date_part" =~ ([0-9]+)Y ]] && restart_datetime="$(date -u -d "$restart_datetime + ${BASH_REMATCH[1]} years" +"%Y-%m-%dT%H:%M:%S")Z"
+    [[ "$date_part" =~ ([0-9]+)M ]] && restart_datetime="$(date -u -d "$restart_datetime + ${BASH_REMATCH[1]} months" +"%Y-%m-%dT%H:%M:%S")Z"
+    [[ "$date_part" =~ ([0-9]+)D ]] && restart_datetime="$(date -u -d "$restart_datetime + ${BASH_REMATCH[1]} days" +"%Y-%m-%dT%H:%M:%S")Z"
+    [[ "$time_part" =~ ([0-9]+)H ]] && restart_datetime="$(date -u -d "$restart_datetime + ${BASH_REMATCH[1]} hours" +"%Y-%m-%dT%H:%M:%S")Z"
+    [[ "$time_part" =~ ([0-9]+)M ]] && restart_datetime="$(date -u -d "$restart_datetime + ${BASH_REMATCH[1]} minutes" +"%Y-%m-%dT%H:%M:%S")Z"
+    [[ "$time_part" =~ ([0-9]+)S ]] && restart_datetime="$(date -u -d "$restart_datetime + ${BASH_REMATCH[1]} seconds" +"%Y-%m-%dT%H:%M:%S")Z"
+
+    if [[ $(date -u -d "$restart_datetime" +%s) < $(date -u -d "$end_datetime" +%s) ]]; then
+        echo "$restart_datetime"
+    else
+        echo "$end_datetime"
+    fi
+}
+
 restart_model(){
     status_file="finish.status"
     if [ ! -f "${status_file}" ]; then
@@ -284,16 +309,3 @@ set_ocean_vertical_coordinate(){
       lbgcadv=".FALSE."
    fi
 }
-
-# Activate py_run_tools
-pushd ../run_utils/py_run_utils 2>&1 >/dev/null || exit
-if [ -f .venv/bin/activate ]; then
-    source .venv/bin/activate || exit
-else
-    rm -rf .venv uv.lock
-    uv venv --relocatable --python="$(which python)"
-    source .venv/bin/activate
-    uv sync --no-cache --link-mode=copy --compile-bytecode --active --no-editable --inexact || exit
-fi
-popd 2>&1 >/dev/null || exit
-

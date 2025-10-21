@@ -188,11 +188,12 @@ restart_model(){
     sacct -j ${SLURM_JOB_ID} --format "ElapsedRaw, CPUTimeRAW, ConsumedEnergyRaw"
 
     if [ "${finish_status}" == "RESTART" ]; then
+        unset SLURM_HOSTFILE
         export lrestart=.true.
         export chunk_start_date="${chunk_end_date}"
         echo
         echo "submitting next chunk starting at ${chunk_start_date}"
-        sbatch "${RUNSCRIPT_PATH}" "${TARGET}"
+        sbatch "${RUNSCRIPT_PATH}" "${TARGET}" "${RUN_OPTIONS}"
     fi
 }
 

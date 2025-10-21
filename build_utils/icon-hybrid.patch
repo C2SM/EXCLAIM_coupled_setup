@@ -1,3 +1,78 @@
+diff --git a/src/atm_phy_nwp/mo_nwp_ecrad_interface.f90 b/src/atm_phy_nwp/mo_nwp_ecrad_interface.f90
+index e75e0f3764..37507e249b 100644
+--- a/src/atm_phy_nwp/mo_nwp_ecrad_interface.f90
++++ b/src/atm_phy_nwp/mo_nwp_ecrad_interface.f90
+@@ -208,15 +208,15 @@ CONTAINS
+     i_startblk = pt_patch%cells%start_block(rl_start)
+     i_endblk   = pt_patch%cells%end_block(rl_end)
+ 
+-!$OMP PARALLEL PRIVATE(cosmu0mask, opt_ptrs_lw, opt_ptrs_sw, jw, ptr_camsaermr, jt,  &
+-!$OMP                  zlwflx_up,     zlwflx_dn,     zswflx_up,     zswflx_dn,       &
+-!$OMP                  zlwflx_up_clr, zlwflx_dn_clr, zswflx_up_clr, zswflx_dn_clr,   &
+-!$OMP                  ecrad_aerosol,ecrad_single_level, ecrad_thermodynamics,       &
+-!$OMP                  ecrad_gas, ecrad_cloud, ecrad_flux)
++!!$OMP PARALLEL PRIVATE(cosmu0mask, opt_ptrs_lw, opt_ptrs_sw, jw, ptr_camsaermr, jt,  &
++!!$OMP                  zlwflx_up,     zlwflx_dn,     zswflx_up,     zswflx_dn,       &
++!!$OMP                  zlwflx_up_clr, zlwflx_dn_clr, zswflx_up_clr, zswflx_dn_clr,   &
++!!$OMP                  ecrad_aerosol,ecrad_single_level, ecrad_thermodynamics,       &
++!!$OMP                  ecrad_gas, ecrad_cloud, ecrad_flux)
+ 
+     IF (ecrad_check_input) THEN ! Check input fields for physical consistency
+-!$OMP DO PRIVATE(jb, i_startidx, i_endidx), &
+-!$OMP ICON_OMP_GUIDED_SCHEDULE
++!!$OMP DO PRIVATE(jb, i_startidx, i_endidx), &
++!!$OMP ICON_OMP_GUIDED_SCHEDULE
+       DO jb = i_startblk, i_endblk
+         CALL get_indices_c(pt_patch, jb, i_startblk, i_endblk, &
+           &                i_startidx, i_endidx, rl_start, rl_end)
+@@ -224,7 +224,7 @@ CONTAINS
+           &                           i_startidx, i_endidx, nlev,                     &
+           &                           pt_diag%pres(:,:,jb), pt_diag%pres_ifc(:,:,jb))
+       ENDDO
+-!$OMP END DO
++!!$OMP END DO
+     ENDIF
+ 
+     ALLOCATE( cosmu0mask   (nproma_sub)     )
+@@ -276,13 +276,13 @@ CONTAINS
+ 
+     CALL ecrad_flux%allocate(ecrad_conf, 1, nproma_sub, nlev)
+ 
+-!$OMP DO PRIVATE(jb, jc, i_startidx, i_endidx,                   &
+-!$OMP            jb_rad, jcs, jce, i_startidx_sub, i_endidx_sub, &
+-!$OMP            i_startidx_rad, i_endidx_rad,                   &
+-!$OMP            ptr_clc, ptr_acdnc, ptr_fr_land, ptr_fr_glac,   &
+-!$OMP            ptr_reff_qc, ptr_reff_qi, ptr_qr, ptr_reff_qr,  &
+-!$OMP            ptr_qs, ptr_reff_qs, ptr_qg, ptr_reff_qg),      &
+-!$OMP ICON_OMP_GUIDED_SCHEDULE
++!!$OMP DO PRIVATE(jb, jc, i_startidx, i_endidx,                   &
++!!$OMP            jb_rad, jcs, jce, i_startidx_sub, i_endidx_sub, &
++!!$OMP            i_startidx_rad, i_endidx_rad,                   &
++!!$OMP            ptr_clc, ptr_acdnc, ptr_fr_land, ptr_fr_glac,   &
++!!$OMP            ptr_reff_qc, ptr_reff_qi, ptr_qr, ptr_reff_qr,  &
++!!$OMP            ptr_qs, ptr_reff_qs, ptr_qg, ptr_reff_qg),      &
++!!$OMP ICON_OMP_GUIDED_SCHEDULE
+     DO jb = i_startblk, i_endblk
+       CALL get_indices_c(pt_patch, jb, i_startblk, i_endblk, &
+         &                i_startidx, i_endidx, rl_start, rl_end)
+@@ -505,7 +505,7 @@ CONTAINS
+ 
+       ENDDO ! jb_rad
+     ENDDO ! jb
+-!$OMP END DO
++!!$OMP END DO
+ 
+ ! CLEANUP
+     !$ACC WAIT
+@@ -528,7 +528,7 @@ CONTAINS
+     ENDDO
+     DEALLOCATE( opt_ptrs_lw, opt_ptrs_sw )
+     IF (irad_aero == iRadAeroCAMSclim .OR. irad_aero == iRadAeroCAMStd) DEALLOCATE( ptr_camsaermr )
+-!$OMP END PARALLEL
++!!$OMP END PARALLEL
+ 
+     !$ACC END DATA
+ 
 diff --git a/src/atm_phy_nwp/mo_nwp_vdiff_interface.f90 b/src/atm_phy_nwp/mo_nwp_vdiff_interface.f90
 index cca9b8cb83..ef117f7134 100644
 --- a/src/atm_phy_nwp/mo_nwp_vdiff_interface.f90

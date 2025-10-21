@@ -10,13 +10,16 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # ------------------------------------------
 
-export LOCAL_RANK=$SLURM_LOCALID
-export GLOBAL_RANK=$SLURM_PROCID
+LOCAL_RANK=$SLURM_LOCALID
+GLOBAL_RANK=$SLURM_PROCID
+N_SOCKETS=$(nvidia-smi --list-gpus | wc -l)
 
-export NUMA_IDS=(0 1 2 3)
-export NUMA_NODE=${NUMA_IDS[$LOCAL_RANK % 4]}
+export NUMA_NODE=$((LOCAL_RANK % N_SOCKETS))
 
-export CUDA_VISIBLE_DEVICES=$(($LOCAL_RANK % 4))
+export CUDA_VISIBLE_DEVICES=$NUMA_NODE
+
+export OMP_NUM_THREADS=1
+export ICON_THREADS=1
 
 if [[ $# -lt 2 ]]; then
     # only ICON binary as argument

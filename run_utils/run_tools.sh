@@ -1,33 +1,55 @@
 #!/usr/bin/bash
 
-compute_tasks_distribution(){
 
-   ((NTASKS_PER_NODE = N_OCE_TASKS_PER_NODE + N_ATM_TASKS_PER_NODE))
-   ((NTASKS = SLURM_JOB_NUM_NODES * NTASKS_PER_NODE))
+compute_task_distribution_variables(){
+
+   ((ATM_TOT_TASKS = ATM_COMP_TASKS_PER_NODE * SLURM_JOB_NUM_NODES + ATM_IO_TASKS))
+   ((TOT_TASKS = TOT_TASKS_PER_NODE * SLURM_JOB_NUM_NODES))
+}
+
+create_multiprog_file(){
 
    ATM_MIN_RANK=0
-   ((ATM_MAX_RANK = N_ATM_TASKS_PER_NODE * SLURM_JOB_NUM_NODES - 1))
+   ((ATM_MAX_RANK = ATM_TOT_TASKS - 1))
    ((OCE_MIN_RANK = ATM_MAX_RANK + 1))
-   ((OCE_MAX_RANK = NTASKS - 1))
+   ((OCE_MAX_RANK = TOT_TASKS - 1))
 
    # Write multi-prog distribution to file
    if [[ "${TARGET}" == "hybrid" ]]; then
       cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} ../run_utils/hybrid_wrapper.sh ${1-} ./icon_gpu
-${OCE_MIN_RANK}-${OCE_MAX_RANK} ../run_utils/hybrid_wrapper.sh ${1-} ./icon_cpu
+${ATM_MIN_RANK}-${ATM_MAX_RANK} ../run_utils/gpu_wrapper.sh $RUN_OPTIONS ./icon_cpu
+${OCE_MIN_RANK}-${OCE_MAX_RANK} ../run_utils/cpu_wrapper.sh ./icon_cpu
 EOF
       chmod 755 multi-prog.conf
    elif [[ "${TARGET}" == "cpu-cpu" ]]; then
       cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} ./icon_cpu
-${OCE_MIN_RANK}-${OCE_MAX_RANK} ./icon_cpu
+${ATM_MIN_RANK}-${ATM_MAX_RANK} ../run_utils/cpu_wrapper.sh ./icon_cpu
+${OCE_MIN_RANK}-${OCE_MAX_RANK} ../run_utils/cpu_wrapper.sh ./icon_cpu
 EOF
       chmod 755 multi-prog.conf
    fi
 }
 
+create_slurm_hostfile(){
+
+   python3 ../run_utils/create_slurm_hostfile.py \
+        --output_filepath "./hostfile-${SLURM_JOB_ID}" \
+        --tot_tasks_per_node "${TOT_TASKS_PER_NODE}" \
+        --atm_comp_tasks_per_node "${ATM_COMP_TASKS_PER_NODE}" \
+        --atm_io_tasks "${ATM_IO_TASKS}" \
+        --oce_io_tasks "${OCE_IO_TASKS}" \
+        --threads_per_task "${CPUS_PER_TASK}" \
+        --max_threads_per_node "$(grep -c ^processor /proc/cpuinfo)"
+   
+   exit_status=$?
+   if [ "$exit_status" -ne 0 ]; then
+      exit $status
+   fi
+
+   export SLURM_HOSTFILE="$(pwd)/hostfile-${SLURM_JOB_ID}"
+}
+
 set_environment(){
-   # TODO: Make wrapper target-specific and move environment settings there
 
    ulimit -s unlimited
    ulimit -c 0
@@ -38,11 +60,9 @@ set_environment(){
 
    # Libfabric / Slingshot
    # ---------------------
-   if [[ "${TARGET}" == "hybrid" ]]; then
-      export FI_CXI_SAFE_DEVMEM_COPY_THRESHOLD=0
-      export FI_CXI_RX_MATCH_MODE=software
-      export FI_MR_CACHE_MONITOR=disabled
-   fi
+   export FI_CXI_SAFE_DEVMEM_COPY_THRESHOLD=0
+   export FI_CXI_RX_MATCH_MODE=software
+   export FI_MR_CACHE_MONITOR=disabled
    export FI_MR_CACHE_MAX_COUNT=0
    export FI_CXI_OFLOW_BUF_COUNT=10
 
@@ -69,9 +89,7 @@ set_environment(){
 
    # OpenMP
    # ------
-   export OMP_NUM_THREADS=1
-   export ICON_THREADS=1
-   export OMP_SCHEDULE=dynamic,1
+   export OMP_SCHEDULE=guided,16
    export OMP_DYNAMIC="false"
    export OMP_STACKSIZE=200M
 
@@ -88,12 +106,11 @@ run_model(){
          srun \
             -l \
             --kill-on-bad-exit=1 \
-            --nodes="${SLURM_JOB_NUM_NODES:-1}" \
-            --distribution="plane=4" \
+            --distribution="arbitrary" \
             --hint="nomultithread" \
-            --ntasks="${NTASKS}" \
-            --ntasks-per-node="${NTASKS_PER_NODE}" \
-            --cpus-per-task="${OMP_NUM_THREADS}" \
+            --ntasks="${TOT_TASKS}" \
+            --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
+            --cpus-per-task="${CPUS_PER_TASK}" \
             --multi-prog multi-prog.conf
       ;;
       "cpu-cpu")
@@ -103,9 +120,9 @@ run_model(){
             --nodes="${SLURM_JOB_NUM_NODES:-1}" \
             --distribution="block:cyclic" \
             --hint="nomultithread" \
-            --ntasks="${NTASKS}" \
-            --ntasks-per-node="${NTASKS_PER_NODE}" \
-            --cpus-per-task="${OMP_NUM_THREADS}" \
+            --ntasks="${TOT_TASKS}" \
+            --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
+            --cpus-per-task="${CPUS_PER_TASK}" \
             --multi-prog multi-prog.conf
       ;;
       "cpu")
@@ -115,10 +132,10 @@ run_model(){
             --nodes="${SLURM_JOB_NUM_NODES:-1}" \
             --distribution="block:cyclic" \
             --hint="nomultithread" \
-            --ntasks="${NTASKS}" \
-            --ntasks-per-node="${NTASKS_PER_NODE}" \
-            --cpus-per-task="${OMP_NUM_THREADS}" \
-            "./icon_cpu"
+            --ntasks="${TOT_TASKS}" \
+            --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
+            --cpus-per-task="${CPUS_PER_TASK}" \
+            ../run_utils/cpu_wrapper.sh ./icon_cpu
       ;;
    esac
 }

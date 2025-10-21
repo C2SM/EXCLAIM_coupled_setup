@@ -1,16 +1,17 @@
 #!/bin/bash
 
 # ============================================================================
+#SBATCH --account=cwd01
 #SBATCH --uenv=icon/25.2:v3:/user-environment
 #SBATCH --view=default
 #SBATCH --job-name=EXCLAIM_COUPLED_R02B07
 #SBATCH --output=LOG.EXCLAIM_COUPLED_R02B07.%j
 #SBATCH --error=LOG.EXCLAIM_COUPLED_R02B07.%j
-#SBATCH --nodes=4
-#SBATCH --ntasks-per-node=8
 #SBATCH --time=00:15:00
+#SBATCH --nodes=4
+#SBATCH --gpus-per-node=4
+#SBATCH --mem=0
 #SBATCH --exclusive
-#SBATCH --account=cwd01
 # ============================================================================
 
 set -x
@@ -45,8 +46,8 @@ if [[ "${1}" != "cpu" ]] && [[ "${1}" != "cpu-cpu" ]] && [[ "${1}" != "hybrid" ]
     echo "ERROR: ${0} single argument must be either 'cpu', 'cpu-cpu' or hybrid'"
     exit 1
 fi
-TARGET="${1}"
-RUN_OPTIONS="${2-}"
+export TARGET="${1}"
+export RUN_OPTIONS="${2-}"
 
 # Experiment name
 # ---------------
@@ -88,7 +89,7 @@ fi
 
 export lrestart=${lrestart:-.false.}
 export restart_interval=${restart_interval:-"P1M"}
-export checkpoint_interval=${checkpoint_interval:-${restart_interval}}
+export checkpoint_interval=${checkpoint_interval:-"${restart_interval}"}
 
 export chunk_start_date=${chunk_start_date:-${start_date}}
 chunk_end_date=$(date_cycle "${chunk_start_date}" "${restart_interval}" "${end_date}")
@@ -115,22 +116,24 @@ atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets 
 # -----------------
 case "${TARGET}" in
     "hybrid")
-        N_OCE_TASKS_PER_NODE=4
-        N_ATM_TASKS_PER_NODE=4
+        export ATM_COMP_TASKS_PER_NODE=4
+        export TOT_TASKS_PER_NODE=16
+        export CPUS_PER_TASK=16
         ;;
     "cpu" | "cpu-cpu")
-        N_OCE_TASKS_PER_NODE=9
-        ((N_ATM_TASKS_PER_NODE = 288 - N_OCE_TASKS_PER_NODE))
+        export ATM_COMP_TASKS_PER_NODE=256
+        export TOT_TASKS_PER_NODE=288
+        export CPUS_PER_TASK=1
         ;;
     *)
         echo "ERROR: target architecture must either be 'hybrid', 'cpu' or 'cpu-cpu'"
         exit 1
         ;;
 esac
-ATM_IO_TASKS=1
-OCE_IO_TASKS=1
-ATM_RST_TASKS=0
-OCE_RST_TASKS=0
+export ATM_IO_TASKS=0
+export OCE_IO_TASKS=0
+export ATM_RST_TASKS=0
+export OCE_RST_TASKS=0
 
 # output interval
 #all_output_interval="PT30M"    # short test
@@ -220,9 +223,9 @@ start_fx=${start_date}  # output time of geometry file fx
 
 # Activate output streams
 # -----------------------
-export activate_output=${activate_output:-"true"}
+export activate_output=${activate_output:-"false"}
 export activate_output_dyamond=${activate_output_dyamond:-"false"}
-if [[ "${activate_output}" != "true" ]];then
+if [[ "${activate_output}" != "true" && "$activate_output_dyamond" != "true" ]];then
     ATM_IO_TASKS=0
     OCE_IO_TASKS=0
 fi
@@ -235,7 +238,11 @@ oce_inputs
 
 # ============================================================================
 # Config files
-compute_tasks_distribution ${RUN_OPTIONS}
+compute_task_distribution_variables
+create_multiprog_file
+if [[ "${TARGET}" == "hybrid" ]]; then
+    create_slurm_hostfile
+fi
 set_ocean_vertical_coordinate
 
 icon_master_nml

@@ -27,7 +27,7 @@ set -x
 # Get runscript path
 # ------------------
 RUNSCRIPT_PATH=$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}')
-RUNSCRIPT_DIR=$(dirname "${RUNSCRIPT_PATH}")
+RUNSCRIPT_DIR=$(cd $(dirname "${RUNSCRIPT_PATH}"); pwd)
 
 # Load Auxiliary functions
 # ------------------------

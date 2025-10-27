@@ -97,7 +97,6 @@ chunk_end_date=$(date_cycle "${chunk_start_date}" "${restart_interval}" "${end_d
 start_year=${start_date:0:4}
 chunk_start_year=${chunk_start_date:0:4}
 chunk_end_year=${chunk_end_date:0:4}
-end_year=${end_date:0:4}
 
 if [ "${chunk_start_year}" !=  "${chunk_end_year}" ]; then
     echo "ERROR: chunk ends in the different year than it starts"

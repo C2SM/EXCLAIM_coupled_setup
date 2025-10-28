@@ -104,8 +104,3 @@ def main():
         for i in range(oce_io_tasks):
             nid = nodes[(atm_io_tasks + i) % number_of_nodes]
             file.write(nid + '\n')
-
-
-
-if __name__ == "__main__":
-    main()

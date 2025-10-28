@@ -11,9 +11,10 @@ requires-python = ">=3.10"
 dependencies = ["isoduration"]
 
 [project.scripts]
-date_add = "py_run_utils.main:date_add"
-date_min = "py_run_utils.main:date_min"
-date_cycle = "py_run_utils.main:date_cycle"
+date_add = "py_run_utils.dates:date_add"
+date_min = "py_run_utils.dates:date_min"
+date_cycle = "py_run_utils.dates:date_cycle"
+create_slurm_hostfile = "py_run_utils.create_slurm_hostfile:main"
 
 [tool.hatch.build.targets.sdist]
 include = [

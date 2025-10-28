@@ -30,25 +30,6 @@ EOF
    fi
 }
 
-create_slurm_hostfile(){
-
-   python3 ../run_utils/create_slurm_hostfile.py \
-        --output_filepath "./hostfile-${SLURM_JOB_ID}" \
-        --tot_tasks_per_node "${TOT_TASKS_PER_NODE}" \
-        --atm_comp_tasks_per_node "${ATM_COMP_TASKS_PER_NODE}" \
-        --atm_io_tasks "${ATM_IO_TASKS}" \
-        --oce_io_tasks "${OCE_IO_TASKS}" \
-        --threads_per_task "${CPUS_PER_TASK}" \
-        --max_threads_per_node "$(grep -c ^processor /proc/cpuinfo)"
-   
-   exit_status=$?
-   if [ "$exit_status" -ne 0 ]; then
-      exit $status
-   fi
-
-   export SLURM_HOSTFILE="$(pwd)/hostfile-${SLURM_JOB_ID}"
-}
-
 set_environment(){
 
    ulimit -s unlimited

@@ -4,9 +4,9 @@
 #SBATCH --account=cwd01
 #SBATCH --uenv=icon/25.2:v3:/user-environment
 #SBATCH --view=default
-#SBATCH --job-name=EXCLAIM_COUPLED_R02B07
-#SBATCH --output=LOG.EXCLAIM_COUPLED_R02B07.%j
-#SBATCH --error=LOG.EXCLAIM_COUPLED_R02B07.%j
+#SBATCH --job-name=EXCLAIM_COUPLED
+#SBATCH --output=LOG.EXCLAIM_COUPLED.%j
+#SBATCH --error=LOG.EXCLAIM_COUPLED.%j
 #SBATCH --time=00:15:00
 #SBATCH --nodes=4
 #SBATCH --gpus-per-node=4

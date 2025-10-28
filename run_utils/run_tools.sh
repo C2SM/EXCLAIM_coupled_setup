@@ -149,7 +149,8 @@ restart_model(){
         export chunk_start_date="${chunk_end_date}"
         echo
         echo "submitting next chunk starting at ${chunk_start_date}"
-        sbatch "${RUNSCRIPT_PATH}" "${TARGET}" "${RUN_OPTIONS}"
+        SBATCH_OPTIONS="--time=${SBATCH_TIMELIMIT} --nodes=${SLURM_NNODES} --output=${SBATCH_OUTPUT} --error=${SBATCH_ERROR}"
+        sbatch "${SBATCH_OPTIONS}" "${RUNSCRIPT_PATH}" "${TARGET}" "${RUN_OPTIONS}"
     fi
 }
 

@@ -30,25 +30,6 @@ EOF
    fi
 }
 
-create_slurm_hostfile(){
-
-   python3 ../run_utils/create_slurm_hostfile.py \
-        --output_filepath "./hostfile-${SLURM_JOB_ID}" \
-        --tot_tasks_per_node "${TOT_TASKS_PER_NODE}" \
-        --atm_comp_tasks_per_node "${ATM_COMP_TASKS_PER_NODE}" \
-        --atm_io_tasks "${ATM_IO_TASKS}" \
-        --oce_io_tasks "${OCE_IO_TASKS}" \
-        --threads_per_task "${CPUS_PER_TASK}" \
-        --max_threads_per_node "$(grep -c ^processor /proc/cpuinfo)"
-   
-   exit_status=$?
-   if [ "$exit_status" -ne 0 ]; then
-      exit $status
-   fi
-
-   export SLURM_HOSTFILE="$(pwd)/hostfile-${SLURM_JOB_ID}"
-}
-
 set_environment(){
 
    ulimit -s unlimited
@@ -138,6 +119,38 @@ run_model(){
             ../run_utils/cpu_wrapper.sh ./icon_cpu
       ;;
    esac
+}
+
+restart_model(){
+    status_file="finish.status"
+    if [ ! -f "${status_file}" ]; then
+        echo
+        echo "============================"
+        echo "Script failed"
+        echo "============================"
+        echo
+        exit 1
+    fi
+
+    finish_status=$(cat "${status_file}" | xargs echo)
+    echo
+    echo "============================"
+    echo "Script ran successfully: ${finish_status}"
+    echo "============================"
+    echo
+    echo
+
+    echo "Accounting"
+    sacct -j "${SLURM_JOB_ID}" --format "ElapsedRaw, CPUTimeRAW, ConsumedEnergyRaw"
+
+    if [ "${finish_status}" == "RESTART" ]; then
+        unset SLURM_HOSTFILE
+        export lrestart=.true.
+        export chunk_start_date="${chunk_end_date}"
+        echo
+        echo "submitting next chunk starting at ${chunk_start_date}"
+        sbatch "${RUNSCRIPT_PATH}" "${TARGET}" "${RUN_OPTIONS}"
+    fi
 }
 
 set_ocean_vertical_coordinate(){
@@ -253,3 +266,16 @@ set_ocean_vertical_coordinate(){
       lbgcadv=".FALSE."
    fi
 }
+
+# Activate py_run_tools
+pushd ../run_utils/py_run_utils 2>&1 >/dev/null || exit
+if [ -f .venv/bin/activate ]; then
+    source .venv/bin/activate || exit
+else
+    rm -rf .venv uv.lock
+    uv venv --relocatable --python="$(which python)"
+    source .venv/bin/activate
+    uv sync --no-cache --link-mode=copy --compile-bytecode --active --no-editable --inexact || exit
+fi
+popd 2>&1 >/dev/null || exit
+

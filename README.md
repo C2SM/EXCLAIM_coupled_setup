@@ -55,5 +55,5 @@ cd EXCLAIM_coupled_setup/R02B07
 jid=$(sbatch --parsable exp.EXCLAIM_COUPLED_R02B07.run hybrid)
 
 # Inspect the logfile at the end
-vim LOG.EXCLAIM_COUPLED_R02B07.${jid}
+less LOG.EXCLAIM_COUPLED_R02B07.${jid}
 ```

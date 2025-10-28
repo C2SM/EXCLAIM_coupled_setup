@@ -26,7 +26,8 @@ set -x
 
 # Get runscript path
 # ------------------
-RUNSCRIPT_DIR=$(cd $(dirname "$(scontrol show job "$SLURM_JOB_ID" | awk -F= '/Command=/{print $2}')"); pwd)
+RUNSCRIPT_PATH=$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}')
+RUNSCRIPT_DIR=$(cd $(dirname "${RUNSCRIPT_PATH}"); pwd)
 
 # Load Auxiliary functions
 # ------------------------
@@ -70,9 +71,9 @@ ocean_refinement="R02B07"
 
 # Input data directories
 # ----------------------
-clim_data_poolFolder="/capstor/store/cscs/userlab/cws01/input/icon/global/grids"
+common_data_poolFolder="/capstor/store/cscs/userlab/cws01/input/icon/common"
 icon_data_poolFolder="/capstor/store/cscs/userlab/cws01/input/icon/global/grids"
-atmo_data_InputFolder="${clim_data_poolFolder}/atmo/${atmos_refinement}_${atmos_gridID}"
+atmo_data_InputFolder="${icon_data_poolFolder}/atmo/${atmos_refinement}_${atmos_gridID}"
 atmos_grid_folder="${icon_data_poolFolder}/atmo/${atmos_refinement}_${atmos_gridID}"
 ocean_grid_folder="${icon_data_poolFolder}/ocean/${ocean_refinement}_${ocean_gridID}"
 
@@ -86,11 +87,21 @@ else
     export end_date=${end_date:-"1979-01-01T02:00:00Z"}
 fi
 
+export lrestart=${lrestart:-.false.}
 export restart_interval=${restart_interval:-"P1M"}
-export checkpoint_interval=${checkpoint_interval:-"${restart_interval}"}
+export checkpoint_interval=${checkpoint_interval:-${restart_interval}}
 
-start_year=${start_date%%-*}
-end_year=${end_date%%-*}
+export chunk_start_date=${chunk_start_date:-${start_date}}
+chunk_end_date=$(date_cycle "${chunk_start_date}" "${restart_interval}" "${end_date}")
+
+start_year=${start_date:0:4}
+chunk_start_year=${chunk_start_date:0:4}
+chunk_end_year=${chunk_end_date:0:4}
+
+if [ "${chunk_start_year}" !=  "${chunk_end_year}" ]; then
+    echo "ERROR: chunk ends in the different year than it starts"
+    exit 1
+fi
 
 # Time steps
 # ----------
@@ -114,7 +125,7 @@ case "${TARGET}" in
         export CPUS_PER_TASK=1
         ;;
     *)
-        echo "ERROR: target architecture must either be 'hybrid' or 'cpu'"
+        echo "ERROR: target architecture must either be 'hybrid', 'cpu' or 'cpu-cpu'"
         exit 1
         ;;
 esac
@@ -131,8 +142,13 @@ all_output_interval="PT300S"      # monthly output - production
 
 # Type of experiment
 # ------------------
-export exptype=${exptype:-"control"} #"picontrol" # "hist"
-control_year=1979 #will not change hardcoded ghg concentrations, only file names
+export exptype=${exptype:-"control"} # "hist"
+if [ "${exptype}" != "control" ] && [ "${exptype}" != "hist" ]; then
+    echo "ERROR: unsupported experiment type: ${exptype}"
+    exit 1
+fi
+export control_year=${control_year:-1979} # use 1850 for picontrol
+# TODO: use ssp
 ssp="370"
 initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphere + hdext cold-started from scratch
 
@@ -180,16 +196,12 @@ case "${exptype}" in
         ighg1=2    # const. vert. prof. of GHGs defined with vmr_* for CO2, O2, CFC11, CFC12
         ighg2=3    # tanh-profile with surface concentration given by vmr_ch4/n2o for CH4, N2O
     ;;
-    "picontrol")
-        irad_aero=12
-        ighg1=2    # const. vert. prof. of GHGs defined with vmr_* for CO2, O2, CFC11, CFC12
-        ighg2=3    # tanh-profile with surface concentration given by vmr_ch4/n2o for CH4, N2O
-    ;;
-    *)
+    "hist")
         irad_aero=18 # background aero. from Kinne + volcanic aero. + anthropogenic aero. from Simple Plume
         ighg1=4    # greenhouse gases from external file
         ighg2=4    # greenhouse gases from external file
         ;;
+    *) echo "ERROR: unsupported experiment type: ${exptype}"; exit 1 ;;
 esac
 
 atm_file_interval="P1M"
@@ -210,10 +222,12 @@ start_fx=${start_date}  # output time of geometry file fx
 
 # Activate output streams
 # -----------------------
-# activate_output="true"
-activate_output="false"
-#activate_output_dyamond="true"
-activate_output_dyamond="false"
+export activate_output=${activate_output:-"true"}
+export activate_output_dyamond=${activate_output_dyamond:-"false"}
+if [[ "${activate_output}" != "true" ]];then
+    ATM_IO_TASKS=0
+    OCE_IO_TASKS=0
+fi
 
 # ============================================================================
 # Input files
@@ -226,7 +240,16 @@ oce_inputs
 compute_task_distribution_variables
 create_multiprog_file
 if [[ "${TARGET}" == "hybrid" ]]; then
-    create_slurm_hostfile
+    create_slurm_hostfile \
+        --output_filepath "./hostfile-${SLURM_JOB_ID}" \
+        --tot_tasks_per_node "${TOT_TASKS_PER_NODE}" \
+        --atm_comp_tasks_per_node "${ATM_COMP_TASKS_PER_NODE}" \
+        --atm_io_tasks "${ATM_IO_TASKS}" \
+        --oce_io_tasks "${OCE_IO_TASKS}" \
+        --threads_per_task "${CPUS_PER_TASK}" \
+        --max_threads_per_node "$(grep -c ^processor /proc/cpuinfo)" || exit
+
+   export SLURM_HOSTFILE="$(pwd)/hostfile-${SLURM_JOB_ID}"
 fi
 set_ocean_vertical_coordinate
 
@@ -262,42 +285,42 @@ if [[ "${activate_output}" == "true" ]];then
     output_oce_flux
     output_oce_mon
     output_oce_moc
+    
+    # Dyamond output streams. Comment out to deactivate
+    if [ "${activate_output_dyamond}" == "true" ]; then
+        output_stream_1_1
+        output_stream_1_2
+        output_stream_1_3
+        output_stream_1_4
+        output_stream_1_5
+        output_stream_2
+        output_stream_3 
+        output_stream_4
+        output_stream_5
+        output_stream_6
+        output_stream_7
+        output_stream_8
+        output_stream_9
+        output_stream_10
+        output_stream_11
+        output_stream_12
+        output_stream_13
+        output_stream_14
+        #output_stream_15_1
+        #output_stream_15_2
+        #output_stream_15_3
+        #output_stream_15_4
+        #output_stream_15_5
+        #output_stream_15_6
+        #output_stream_15_7
+        #output_stream_15_8
+        #output_stream_15_9
+        #output_stream_15_10
+        #output_stream_15_11
+        #output_stream_15_12
+        #output_stream_15_13
+    fi
 fi
-# Dyamond output streams. Comment out to deactivate
-if [ "${activate_output_dyamond}" == "true" ]; then
-    output_stream_1_1
-    output_stream_1_2
-    output_stream_1_3
-    output_stream_1_4
-    output_stream_1_5
-    output_stream_2
-    output_stream_3 
-    output_stream_4
-    output_stream_5
-    output_stream_6
-    output_stream_7
-    output_stream_8
-    output_stream_9
-    output_stream_10
-    output_stream_11
-    output_stream_12
-    output_stream_13
-    output_stream_14
-    #output_stream_15_1
-    #output_stream_15_2
-    #output_stream_15_3
-    #output_stream_15_4
-    #output_stream_15_5
-    #output_stream_15_6
-    #output_stream_15_7
-    #output_stream_15_8
-    #output_stream_15_9
-    #output_stream_15_10
-    #output_stream_15_11
-    #output_stream_15_12
-    #output_stream_15_13
-fi
-
 
 # ============================================================================
 # Executables
@@ -318,3 +341,7 @@ set_environment
 # MPI run
 # -------
 run_model
+
+# Restart
+# -------
+restart_model

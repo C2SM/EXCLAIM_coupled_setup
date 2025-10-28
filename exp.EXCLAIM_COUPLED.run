@@ -14,7 +14,7 @@
 #SBATCH --exclusive
 # ============================================================================
 
-set -x
+# set -x
 
 # ============================================================================
 # CAUTION
@@ -29,12 +29,6 @@ set -x
 RUNSCRIPT_PATH=$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}')
 RUNSCRIPT_DIR=$(cd $(dirname "${RUNSCRIPT_PATH}"); pwd)
 
-# Load Auxiliary functions
-# ------------------------
-source ../run_utils/run_tools.sh
-source namelists.sh
-source inputs.sh
-
 # Target architecture
 # -------------------
 if [[ "$#" -lt 1 ]]; then
@@ -43,7 +37,7 @@ if [[ "$#" -lt 1 ]]; then
     exit 1
 fi
 if [[ "${1}" != "cpu" ]] && [[ "${1}" != "cpu-cpu" ]] && [[ "${1}" != "hybrid" ]]; then
-    echo "ERROR: ${0} single argument must be either 'cpu', 'cpu-cpu' or hybrid'"
+    echo "ERROR: ${0} first argument must be either 'cpu', 'cpu-cpu' or hybrid'"
     exit 1
 fi
 export TARGET="${1}"
@@ -55,19 +49,24 @@ export EXPNAME=${EXPNAME:-"EXCLAIM_coupled_${TARGET}"}
 
 # Base ICON directory
 # -------------------
-export basedir=${basedir:-"${RUNSCRIPT_DIR}/../../icon-hybrid"}
+export basedir=${basedir:-"${RUNSCRIPT_DIR}/../icon-hybrid"}
 
 # Executables
 # -----------
 export icon_cpu=${icon_cpu:-"${basedir}/build-cpu/bin/icon"}
 export icon_gpu=${icon_gpu:-"${basedir}/build-gpu/bin/icon"}
 
-# Grids
-# -----
-atmos_gridID="0061"             #  icon-nwp grid
-atmos_refinement="R02B07"
-ocean_gridID="0062"             #  icon-oce r2b7 grid
-ocean_refinement="R02B07"
+# Load Auxiliary functions
+# ------------------------
+export CASE="${CASE:-R02B07-R02B07}"
+if [[ "${CASE}" != "R02B07-R02B07" ]]; then
+    echo "ERROR: CASE must be 'R02B07-R02B07'"
+    exit 1
+fi
+source "settings_${CASE}.sh"
+source run_utils/run_tools.sh
+source namelists.sh
+source inputs.sh
 
 # Input data directories
 # ----------------------
@@ -87,11 +86,10 @@ else
     export end_date=${end_date:-"1979-01-01T02:00:00Z"}
 fi
 
-export lrestart=${lrestart:-.false.}
-export restart_interval=${restart_interval:-"P1M"}
+lrestart=${lrestart:-.false.}
 export checkpoint_interval=${checkpoint_interval:-${restart_interval}}
 
-export chunk_start_date=${chunk_start_date:-${start_date}}
+chunk_start_date=${chunk_start_date:-${start_date}}
 chunk_end_date=$(date_cycle "${chunk_start_date}" "${restart_interval}" "${end_date}")
 
 start_year=${start_date:0:4}
@@ -102,43 +100,6 @@ if [ "${chunk_start_year}" !=  "${chunk_end_year}" ]; then
     echo "ERROR: chunk ends in the different year than it starts"
     exit 1
 fi
-
-# Time steps
-# ----------
-atmTimeStep="PT150S"            # atmos time step (for coupler)  (same as dtime!!)
-dtime=150                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
-dt_rad=300.                     # NWP radiation timestep (s) - must match coupling/ocean time step
-oceTimeStep="PT5M"              # corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
-atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
-
-# Task distribution
-# -----------------
-case "${TARGET}" in
-    "hybrid")
-        export ATM_COMP_TASKS_PER_NODE=4
-        export TOT_TASKS_PER_NODE=16
-        export CPUS_PER_TASK=16
-        ;;
-    "cpu" | "cpu-cpu")
-        export ATM_COMP_TASKS_PER_NODE=256
-        export TOT_TASKS_PER_NODE=288
-        export CPUS_PER_TASK=1
-        ;;
-    *)
-        echo "ERROR: target architecture must either be 'hybrid', 'cpu' or 'cpu-cpu'"
-        exit 1
-        ;;
-esac
-export ATM_IO_TASKS=0
-export OCE_IO_TASKS=0
-export ATM_RST_TASKS=0
-export OCE_RST_TASKS=0
-
-# output interval
-#all_output_interval="PT30M"    # short test
-#all_output_interval="PT60M"     # short test
-#all_output_interval="P1D"      # daily output
-all_output_interval="PT300S"      # monthly output - production
 
 # Type of experiment
 # ------------------
@@ -159,26 +120,10 @@ atm_namelist="NAMELIST_${EXPNAME}_atm"
 oce_namelist="NAMELIST_${EXPNAME}_oce"
 lnd_namelist="NAMELIST_${EXPNAME}_lnd"
 
-# Coupling settings
-# -----------------
-atm_lag=1
-oce_lag=1
 
 # Atmosphere settings
 # -------------------
-case "${TARGET}" in
-    "hybrid")
-        nproma_atm=83752
-        nproma_sub=10469
-        ecrad_isolver=2  # (0 for CPU/vector, 2 for GPU)
-        ;;
-    "cpu" | "cpu-cpu")
-        nproma_atm=16
-        nproma_sub=16
-        ecrad_isolver=0  # (0 for CPU/vector, 2 for GPU)
-        ;;
-esac
-
+atmos_grid_target="icon_grid_${atmos_gridID}_${atmos_refinement}_G.nc"
 atmo_model_equations=3 # equation system
 #                     1=hydrost. atm. (T dynamics)
 #                     2=hydrost. atm. (theta dynamics)
@@ -187,8 +132,7 @@ atmo_model_equations=3 # equation system
 #                    -2=hydrost. ocean
 
 nlev=120          # nlev = number of full levels
-iforcing=3        # 3 for inwp forcing; 0 for no forcing
-atmos_grid_target="icon_grid_${atmos_gridID}_${atmos_refinement}_G.nc"
+iforcing=3
 
 case "${exptype}" in
     "control")
@@ -201,23 +145,14 @@ case "${exptype}" in
         ighg1=4    # greenhouse gases from external file
         ighg2=4    # greenhouse gases from external file
         ;;
-    *) echo "ERROR: unsupported experiment type: ${exptype}"; exit 1 ;;
 esac
-
-atm_file_interval="P1M"
-atm_output_interval=${all_output_interval}
-atm_hfreq_output_interval="PT6H"
 
 # Ocean settings
 # --------------
-nproma_oce=16
 ocean_grid_target="icon_grid_${ocean_gridID}_${ocean_refinement}_O.nc"
 VERT_COR=1
 ocean_vertical_levels="L72"
 use_hamocc="no"
-oce_file_interval="P1M"
-oce_output_interval=${all_output_interval}
-oce_output_interval_def="P1D"
 start_fx=${start_date}  # output time of geometry file fx
 
 # Activate output streams

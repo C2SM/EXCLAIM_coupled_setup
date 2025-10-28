@@ -2,11 +2,11 @@
 
 # Grids
 # -----
-atmos_gridID="0061"             #  icon-nwp grid
-atmos_refinement="R02B07"
-atmos_refinement_short="r2b7"
-ocean_gridID="0062"             #  icon-oce r2b7 grid
-ocean_refinement="R02B07"
+atmos_gridID="0033"             #  icon-nwp r2b8 grid
+atmos_refinement="R02B08"
+atmos_refinement_short="r2b8"
+ocean_gridID="0016"             #  icon-oce r2b8 grid
+ocean_refinement="R02B09"
 
 # Dates and intervals
 # -------------------
@@ -14,11 +14,11 @@ export restart_interval=${restart_interval:-"P1M"}
 
 # Time steps
 # ----------
-atmTimeStep="PT150S"            # atmos time step (for coupler)  (same as dtime!!)
-dtime=150                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
-dt_rad=300.                     # NWP radiation timestep (s) - must match coupling/ocean time step
-oceTimeStep="PT5M"              # corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
-atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
+atmTimeStep="PT60S"            # atmos time step (for coupler)  (same as dtime!!)
+dtime=60                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
+dt_rad=120.                     # NWP radiation timestep (s) - must match coupling/ocean time step
+oceTimeStep="PT2M"              # corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
+atm_oce_coupling_timestep="PT20M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
 
 # Task distribution
 # -----------------
@@ -66,14 +66,14 @@ atm_output_interval=${all_output_interval}
 atm_hfreq_output_interval="PT6H"
 
 # inputs
-datadir_hd_tag="r0100"
+datadir_hd_tag="r0002"
 bc_land_hd_name="mc_maxl_s_v1"
-ic_land_hd_name="mc_maxl_s_v1"
+ic_land_hd_name="mc_maxl_s_v1_1"
 
 # Ocean settings
 # --------------
 nproma_oce=16
-GMRedi_configuration=1
+GMRedi_configuration=0
 
 # output intervals
 oce_file_interval="P1M"
@@ -82,7 +82,7 @@ oce_output_interval_def="P1D"
 
 # Land settings
 # --------------
-extpar_tag="20250509"
+extpar_tag="20250708"
 
 # Output Streams
 # --------------
@@ -95,8 +95,6 @@ coupled_streams(){
     output_atm_hfreq
     output_atm_3d
     output_atm_latlon
-    # output_atm_icon
-    # output_atm_spot
     output_jsb_2d
     output_lnd_mon
     # output_lnd_dbg

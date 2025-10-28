@@ -813,7 +813,7 @@ EOF
 }
 
 #DYAMOND output from PPK
-output_stream_1_1(){
+dyamond_stream_1_1(){
     # FOR DYAMOND PROTOCOL # 3D Variables on native grid, 3 hourly (as per the
     # Dyamond Protocol 6 hourly), 37 pressure levels.
     # => This needs to be interpolated onto 10KM (25KM for Dyamond)
@@ -837,7 +837,7 @@ output_stream_1_1(){
 EOF
 }
 
-output_stream_1_2(){
+dyamond_stream_1_2(){
     # FOR DYAMOND PROTOCOL # 3D Variables on native grid, 3 hourly (as per the
     # Dyamond Protocol 6 hourly), 37 pressure levels.
     # => This needs to be interpolated onto 10KM (25KM for Dyamond)
@@ -861,7 +861,7 @@ output_stream_1_2(){
 EOF
 }
 
-output_stream_1_3(){
+dyamond_stream_1_3(){
     stream="${EXPNAME}_dyamond_atm_1_3"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -882,7 +882,7 @@ output_stream_1_3(){
 EOF
 }
 
-output_stream_1_4(){
+dyamond_stream_1_4(){
     stream="${EXPNAME}_dyamond_atm_1_4"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -904,7 +904,7 @@ EOF
 }
 
 
-output_stream_1_5(){
+dyamond_stream_1_5(){
     stream="${EXPNAME}_dyamond_atm_1_5"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -925,7 +925,7 @@ output_stream_1_5(){
 EOF
 }
 
-output_stream_2(){
+dyamond_stream_2(){
     stream="${EXPNAME}_dyamond_atm_2"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -945,7 +945,7 @@ output_stream_2(){
 EOF
 }
 
-output_stream_3(){
+dyamond_stream_3(){
     stream="${EXPNAME}_dyamond_atm_3" 
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -965,7 +965,7 @@ output_stream_3(){
 EOF
 }
 
-output_stream_4(){
+dyamond_stream_4(){
     stream="${EXPNAME}_dyamond_atm_4"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -986,7 +986,7 @@ output_stream_4(){
 EOF
 }
 
-output_stream_5(){
+dyamond_stream_5(){
     stream="${EXPNAME}_dyamond_atm_5"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1006,7 +1006,7 @@ output_stream_5(){
 EOF
 }
 
-output_stream_6(){
+dyamond_stream_6(){
     stream="${EXPNAME}_dyamond_atm_6"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1032,7 +1032,7 @@ EOF
 }
 
 
-output_stream_7(){
+dyamond_stream_7(){
     stream="${EXPNAME}_dyamond_atm_7"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1052,7 +1052,7 @@ output_stream_7(){
 EOF
 }
 
-output_stream_8(){
+dyamond_stream_8(){
     stream="${EXPNAME}_dyamond_atm_8"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1073,7 +1073,7 @@ EOF
     # LPI and LPI_MAX do not work, as they are only ported on Reduced Grid, as MeteoSwiss uses reduced grid.
 }
 
-output_stream_9(){
+dyamond_stream_9(){
     stream="${EXPNAME}_dyamond_atm_9"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1093,7 +1093,7 @@ output_stream_9(){
 EOF
 }
 
-output_stream_10(){
+dyamond_stream_10(){
     stream="${EXPNAME}_dyamond_atm_10"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1113,7 +1113,7 @@ output_stream_10(){
 EOF
 }
 
-output_stream_11(){
+dyamond_stream_11(){
     stream="${EXPNAME}_dyamond_atm_11"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1134,7 +1134,7 @@ output_stream_11(){
 EOF
 }
 
-output_stream_12(){
+dyamond_stream_12(){
     stream="${EXPNAME}_dyamond_atm_12"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1154,7 +1154,7 @@ output_stream_12(){
 EOF
 }
 
-output_stream_13(){
+dyamond_stream_13(){
     stream="${EXPNAME}_dyamond_atm_13"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1175,7 +1175,7 @@ output_stream_13(){
 EOF
 }
 
-output_stream_14(){
+dyamond_stream_14(){
     stream="${EXPNAME}_dyamond_atm_14"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1196,7 +1196,7 @@ output_stream_14(){
 EOF
 }
 
-output_stream_15_1(){
+dyamond_stream_15_1(){
     stream="${EXPNAME}_dyamond_atm_15_1"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1217,7 +1217,7 @@ output_stream_15_1(){
 EOF
 }
 
-output_stream_15_2(){
+dyamond_stream_15_2(){
     stream="${EXPNAME}_dyamond_atm_15_2"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1238,7 +1238,7 @@ output_stream_15_2(){
 EOF
 }
 
-output_stream_15_3(){
+dyamond_stream_15_3(){
     stream="${EXPNAME}_dyamond_atm_15_3"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1259,7 +1259,7 @@ output_stream_15_3(){
 EOF
 }
 
-output_stream_15_4(){
+dyamond_stream_15_4(){
     stream="${EXPNAME}_dyamond_atm_15_4"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1280,7 +1280,7 @@ output_stream_15_4(){
 EOF
 }
 
-output_stream_15_5(){
+dyamond_stream_15_5(){
     stream="${EXPNAME}_dyamond_atm_15_5"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1301,7 +1301,7 @@ output_stream_15_5(){
 EOF
 }
 
-output_stream_15_6(){
+dyamond_stream_15_6(){
     stream="${EXPNAME}_dyamond_atm_15_6"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1322,7 +1322,7 @@ output_stream_15_6(){
 EOF
 }
 
-output_stream_15_7(){
+dyamond_stream_15_7(){
     stream="${EXPNAME}_dyamond_atm_15_7"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1343,7 +1343,7 @@ output_stream_15_7(){
 EOF
 }
 
-output_stream_15_8(){
+dyamond_stream_15_8(){
     stream="${EXPNAME}_dyamond_atm_15_8"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1364,7 +1364,7 @@ output_stream_15_8(){
 EOF
 }
 
-output_stream_15_9(){
+dyamond_stream_15_9(){
     stream="${EXPNAME}_dyamond_atm_15_9"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1385,7 +1385,7 @@ output_stream_15_9(){
 EOF
 }
 
-output_stream_15_10(){
+dyamond_stream_15_10(){
     stream="${EXPNAME}_dyamond_atm_15_10"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1406,7 +1406,7 @@ output_stream_15_10(){
 EOF
 }
 
-output_stream_15_11(){
+dyamond_stream_15_11(){
     stream="${EXPNAME}_dyamond_atm_15_11"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1427,7 +1427,7 @@ output_stream_15_11(){
 EOF
 }
 
-output_stream_15_12(){
+dyamond_stream_15_12(){
     stream="${EXPNAME}_dyamond_atm_15_12"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1448,7 +1448,7 @@ output_stream_15_12(){
 EOF
 }
 
-output_stream_15_13(){
+dyamond_stream_15_13(){
     stream="${EXPNAME}_dyamond_atm_15_13"
     mkdir -p "${stream}"
     cat >> ${atmo_namelist} << EOF
@@ -1573,6 +1573,7 @@ oce_nml(){
  num_prefetch_proc           = 0
  p_test_run                  = .FALSE.
  l_fast_sum                  = .FALSE.
+ iorder_sendrecv             = 3
 /
 &grid_nml
  dynamics_grid_filename      = "${ocean_grid_target}"
@@ -1689,7 +1690,7 @@ oce_nml(){
   use_lbound_dirichlet                       = .FALSE.
 /
 &ocean_GentMcWilliamsRedi_nml
-  GMRedi_configuration                       = 1           ! 0=cartesian diffusion; 1=GM-Redi: bolus advection + isopycnal diffusion
+  GMRedi_configuration                       = ${GMRedi_configuration}  ! 0=cartesian diffusion; 1=GM-Redi: bolus advection + isopycnal diffusion
   tapering_scheme                            = 1
   GMRedi_usesRelativeMaxSlopes               = .FALSE.
   S_max                                      = 1.0e-3      ! 3e-5
@@ -1794,7 +1795,7 @@ EOF
   !write_last_restart                         = .TRUE.           ! def=F; T: force writing restart at end of job
   restart_write_mode                         = "joint procs multifile"  ! not yet available in ocean model
   lnetcdf_flt64_output                       = .FALSE.          ! T: 64 bit output in all files
-  lkeep_in_sync                              = .TRUE.           ! sync after each timestep
+  !lkeep_in_sync                              = .TRUE.           ! sync after each timestep
 /
 EOF
 }
@@ -1847,6 +1848,50 @@ output_oce_def(){
   m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
   !ml_varlist                 = 'group:oce_default', 'group:oce_essentials'
   ml_varlist                 = 'group:oce_default', 'group:oce_essentials','A_veloc_v','A_tracer_v_to'
+/
+EOF
+}
+
+output_oce_6h(){
+  stream="${EXPNAME}_oce_6h"
+  mkdir -p "${stream}"
+  cat >> ${oce_namelist} << EOF
+&output_nml
+  filetype                   = 5
+  filename_format            = "${stream}/${stream}_<datetime2>"
+  output_start               = "${start_date}"                  ! start in ISO-format
+  output_end                 = "${end_date}"                    ! end in ISO-format
+  output_interval            = "PT6H"     ! interval in ISO-format
+  file_interval              = "P1D"
+  mode                       = 1                                ! 1: forecast mode (relative t-axis)
+                                                                ! 2: climate mode (absolute t-axis)
+  include_last               = .FALSE.
+  output_grid                = .TRUE.
+  operation                  = "mean"
+  m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
+  ml_varlist                 = 'ssh', 'tos', 'sos', 'zos', 'mld', 'mlotst10'
+/
+EOF
+}
+
+output_oce_day(){
+  stream="${EXPNAME}_oce_day"
+  mkdir -p "${stream}"
+  cat >> ${oce_namelist} << EOF
+&output_nml
+  filetype                   = 5
+  filename_format            = "${stream}/${stream}_<datetime2>"
+  output_start               = "${start_date}"                  ! start in ISO-format
+  output_end                 = "${end_date}"                    ! end in ISO-format
+  output_interval            = "P1D"     ! interval in ISO-format
+  file_interval              = "P1D"
+  mode                       = 1                                ! 1: forecast mode (relative t-axis)
+                                                                ! 2: climate mode (absolute t-axis)
+  include_last               = .FALSE.
+  output_grid                = .TRUE.
+  operation                  = "mean"
+  m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
+  ml_varlist                 = 'to', 'so', 'u', 'v', 'w', 'rhopot', 'rho', 'u_vint', 'v_vint', 'heat_content_snow', 'heat_content_seaice', 'heat_content_total', 'heat_content_300m', 'heat_content_700m', 'rsdoabsorb', 'swrab', 'swsum', 'heatabs', 'mass_flux'
 /
 EOF
 }

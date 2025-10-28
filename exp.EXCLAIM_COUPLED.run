@@ -59,8 +59,8 @@ export icon_gpu=${icon_gpu:-"${basedir}/build-gpu/bin/icon"}
 # Load Auxiliary functions
 # ------------------------
 export CASE="${CASE:-R02B07-R02B07}"
-if [[ "${CASE}" != "R02B07-R02B07" ]]; then
-    echo "ERROR: CASE must be 'R02B07-R02B07'"
+if [[ "${CASE}" != "R02B07-R02B07" ]] && [[ "${CASE}" != "R02B08-R02B09" ]]; then
+    echo "ERROR: CASE must be either 'R02B07-R02B07' or 'R02B08-R02B09'"
     exit 1
 fi
 source "settings_${CASE}.sh"
@@ -195,65 +195,41 @@ lnd_nml
 oce_nml
 
 if [[ "${activate_output}" == "true" ]];then
-    # Atmosphere / Land
-    # -----------------
-    output_atm_mon
-    output_atm_2d
-    output_energy_budget
-    output_atm_hfreq
-    output_atm_3d
-    output_atm_latlon
-    # output_atm_icon
-    # output_atm_spot
-    output_jsb_2d
-    output_lnd_mon
-    # output_lnd_dbg
-    # output_hyd_dbg
-    # output_lnd_wat
-    # output_atm_alb
-
-    # Ocean
-    # -----
-    output_oce_fx
-    output_oce_def
-    output_oce_ice
-    output_oce_flux
-    output_oce_mon
-    output_oce_moc
+    coupled_streams
     
     # Dyamond output streams. Comment out to deactivate
     if [ "${activate_output_dyamond}" == "true" ]; then
-        output_stream_1_1
-        output_stream_1_2
-        output_stream_1_3
-        output_stream_1_4
-        output_stream_1_5
-        output_stream_2
-        output_stream_3 
-        output_stream_4
-        output_stream_5
-        output_stream_6
-        output_stream_7
-        output_stream_8
-        output_stream_9
-        output_stream_10
-        output_stream_11
-        output_stream_12
-        output_stream_13
-        output_stream_14
-        #output_stream_15_1
-        #output_stream_15_2
-        #output_stream_15_3
-        #output_stream_15_4
-        #output_stream_15_5
-        #output_stream_15_6
-        #output_stream_15_7
-        #output_stream_15_8
-        #output_stream_15_9
-        #output_stream_15_10
-        #output_stream_15_11
-        #output_stream_15_12
-        #output_stream_15_13
+        dyamond_stream_1_1
+        dyamond_stream_1_2
+        dyamond_stream_1_3
+        dyamond_stream_1_4
+        dyamond_stream_1_5
+        dyamond_stream_2
+        dyamond_stream_3 
+        dyamond_stream_4
+        dyamond_stream_5
+        dyamond_stream_6
+        dyamond_stream_7
+        dyamond_stream_8
+        dyamond_stream_9
+        dyamond_stream_10
+        dyamond_stream_11
+        dyamond_stream_12
+        dyamond_stream_13
+        dyamond_stream_14
+        #dyamond_stream_15_1
+        #dyamond_stream_15_2
+        #dyamond_stream_15_3
+        #dyamond_stream_15_4
+        #dyamond_stream_15_5
+        #dyamond_stream_15_6
+        #dyamond_stream_15_7
+        #dyamond_stream_15_8
+        #dyamond_stream_15_9
+        #dyamond_stream_15_10
+        #dyamond_stream_15_11
+        #dyamond_stream_15_12
+        #dyamond_stream_15_13
     fi
 fi
 

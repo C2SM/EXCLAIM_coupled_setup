@@ -2,11 +2,11 @@
 
 # Grids
 # -----
-atmos_gridID="0061"             #  icon-nwp grid
-atmos_refinement="R02B07"
-atmos_refinement_short="r2b7"
-ocean_gridID="0062"             #  icon-oce r2b7 grid
-ocean_refinement="R02B07"
+atmos_gridID="0056"             #  icon-nwp grid
+atmos_refinement="R02B10"
+atmos_refinement_short="r2b10"
+ocean_gridID="0059"             #  icon-oce r2b7 grid
+ocean_refinement="R02B10"
 
 # Dates and intervals
 # -------------------
@@ -14,10 +14,10 @@ export restart_interval=${restart_interval:-"P1M"}
 
 # Time steps
 # ----------
-atmTimeStep="PT150S"            # atmos time step (for coupler)  (same as dtime!!)
-dtime=150                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
-dt_rad=300.                     # NWP radiation timestep (s) - must match coupling/ocean time step
-oceTimeStep="PT5M"              # corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
+atmTimeStep="PT20S"            #10s from dyamonds runs # atmos time step (for coupler)  (same as dtime!!)
+dtime=20                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
+dt_rad=600.                     # NWP radiation timestep (s) - must match coupling/ocean time step
+oceTimeStep="PT2M"              # corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
 atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
 
 # Task distribution
@@ -34,8 +34,8 @@ case "${TARGET}" in
         export CPUS_PER_TASK=1
         ;;
 esac
-export ATM_IO_TASKS=2
-export OCE_IO_TASKS=2
+export ATM_IO_TASKS=8
+export OCE_IO_TASKS=6
 export ATM_RST_TASKS=0
 export OCE_RST_TASKS=0
 
@@ -56,14 +56,14 @@ esac        # 3 for inwp forcing; 0 for no forcing
 
 # inputs
 datadir_hd_tag="r0100"
-bc_land_hd_name="mc_maxl_s_v1"
-ic_land_hd_name="mc_maxl_s_v1"
+bc_land_hd_name="mc_s_v1"
+ic_land_hd_name="mc_s_v1_1"
 
 # Ocean settings
 # --------------
 nproma_oce=16
-GMRedi_configuration=1
-initial_state_sub_path="rcscs/tsi_oras5_icon_icon_grid_${ocean_gridID}_${ocean_refinement}_O_${ocean_vertical_levels}.nc_${start_year}-01-01"
+GMRedi_configuration=0
+initial_state_sub_path="rhaak/R2B10L72_spinup.nc"
 
 # Land settings
 # --------------

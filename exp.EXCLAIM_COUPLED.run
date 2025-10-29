@@ -43,6 +43,23 @@ fi
 export TARGET="${1}"
 export RUN_OPTIONS="${2-}"
 
+# Case settings - 1 
+# -----------------
+# Some main settings depend on case settings and vice-versa
+# so we need to source the case settings twice
+export CASE="${CASE:-R02B07-R02B07}"
+if [[ "${CASE}" != "R02B07-R02B07" ]] && [[ "${CASE}" != "R02B08-R02B09" ]] && [[ "${CASE}" != "R02B10-R02B10" ]]; then
+    echo "ERROR: CASE must be either 'R02B07-R02B07', 'R02B08-R02B09' or 'R02B10-R02B10'"
+    exit 1
+fi
+source "settings_${CASE}.sh"
+
+# Load Auxiliary functions
+# ------------------------
+source run_utils/run_tools.sh
+source namelists.sh
+source inputs.sh
+
 # Experiment name
 # ---------------
 export EXPNAME=${EXPNAME:-"EXCLAIM_coupled_${TARGET}"}
@@ -55,18 +72,6 @@ export basedir=${basedir:-"${RUNSCRIPT_DIR}/../icon-hybrid"}
 # -----------
 export icon_cpu=${icon_cpu:-"${basedir}/build-cpu/bin/icon"}
 export icon_gpu=${icon_gpu:-"${basedir}/build-gpu/bin/icon"}
-
-# Load Auxiliary functions
-# ------------------------
-export CASE="${CASE:-R02B07-R02B07}"
-if [[ "${CASE}" != "R02B07-R02B07" ]] && [[ "${CASE}" != "R02B08-R02B09" ]]; then
-    echo "ERROR: CASE must be either 'R02B07-R02B07' or 'R02B08-R02B09'"
-    exit 1
-fi
-source "settings_${CASE}.sh"
-source run_utils/run_tools.sh
-source namelists.sh
-source inputs.sh
 
 # Input data directories
 # ----------------------
@@ -100,6 +105,8 @@ if [ "${chunk_start_year}" !=  "${chunk_end_year}" ]; then
     echo "ERROR: chunk ends in the different year than it starts"
     exit 1
 fi
+
+all_output_interval="PT300S"      # monthly output - production
 
 # Type of experiment
 # ------------------
@@ -139,13 +146,18 @@ case "${exptype}" in
         irad_aero=12
         ighg1=2    # const. vert. prof. of GHGs defined with vmr_* for CO2, O2, CFC11, CFC12
         ighg2=3    # tanh-profile with surface concentration given by vmr_ch4/n2o for CH4, N2O
-    ;;
+        ;;
     "hist")
         irad_aero=18 # background aero. from Kinne + volcanic aero. + anthropogenic aero. from Simple Plume
         ighg1=4    # greenhouse gases from external file
         ighg2=4    # greenhouse gases from external file
         ;;
 esac
+
+# output intervals
+atm_file_interval="P1M"
+atm_output_interval=${all_output_interval}
+atm_hfreq_output_interval="PT6H"
 
 # Ocean settings
 # --------------
@@ -155,6 +167,11 @@ ocean_vertical_levels="L72"
 use_hamocc="no"
 start_fx=${start_date}  # output time of geometry file fx
 
+# output intervals
+oce_file_interval="P1M"
+oce_output_interval=${all_output_interval}
+oce_output_interval_def="P1D"
+
 # Activate output streams
 # -----------------------
 export activate_output=${activate_output:-"true"}
@@ -163,6 +180,12 @@ if [[ "${activate_output}" != "true" ]];then
     ATM_IO_TASKS=0
     OCE_IO_TASKS=0
 fi
+
+# Case settings - 2 
+# -----------------
+# Some main settings depend on case settings and vice-versa
+# so we need to source the case settings twice
+source "settings_${CASE}.sh"
 
 # ============================================================================
 # Input files
@@ -199,6 +222,7 @@ if [[ "${activate_output}" == "true" ]];then
     
     # Dyamond output streams. Comment out to deactivate
     if [ "${activate_output_dyamond}" == "true" ]; then
+        # NOTE: That could also be gathered in a function in the case-specific settings
         dyamond_stream_1_1
         dyamond_stream_1_2
         dyamond_stream_1_3

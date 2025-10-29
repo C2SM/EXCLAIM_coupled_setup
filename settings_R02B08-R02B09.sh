@@ -39,12 +39,6 @@ export OCE_IO_TASKS=2
 export ATM_RST_TASKS=0
 export OCE_RST_TASKS=0
 
-# output intervals
-#all_output_interval="PT30M"    # short test
-#all_output_interval="PT60M"     # short test
-#all_output_interval="P1D"      # daily output
-all_output_interval="PT300S"      # monthly output - production
-
 # Atmosphere settings
 # -------------------
 case "${TARGET}" in
@@ -60,11 +54,6 @@ case "${TARGET}" in
         ;;
 esac        # 3 for inwp forcing; 0 for no forcing
 
-# output intervals
-atm_file_interval="P1M"
-atm_output_interval=${all_output_interval}
-atm_hfreq_output_interval="PT6H"
-
 # inputs
 datadir_hd_tag="r0002"
 bc_land_hd_name="mc_maxl_s_v1"
@@ -74,11 +63,7 @@ ic_land_hd_name="mc_maxl_s_v1_1"
 # --------------
 nproma_oce=16
 GMRedi_configuration=0
-
-# output intervals
-oce_file_interval="P1M"
-oce_output_interval=${all_output_interval}
-oce_output_interval_def="P1D"
+initial_state_sub_path="rcscs/tsi_oras5_icon_icon_grid_${ocean_gridID}_${ocean_refinement}_O_${ocean_vertical_levels}.nc_${start_year}-01-01"
 
 # Land settings
 # --------------

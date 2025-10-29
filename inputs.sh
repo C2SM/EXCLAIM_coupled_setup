@@ -86,7 +86,7 @@ oce_inputs(){
     ln -sf ${ocean_grid_folder}/${ocean_grid_target} .
 
     if [[ "${initialiseOcean}" == "fromClimatology" ]]; then
-        ln -sf "${ocean_grid_folder}/ocean/initial_conditions/rcscs/tsi_oras5_icon_icon_grid_${ocean_gridID}_${ocean_refinement}_O_${ocean_vertical_levels}.nc_${start_year}-01-01" ./initial_state.nc
+        ln -sf "${ocean_grid_folder}/ocean/initial_conditions/${initial_state_sub_path}" ./initial_state.nc
     else
         echo "ERROR: initialiseOcean mode not supported (yet?): ${initialiseOcean}"
         exit 1

@@ -54,10 +54,9 @@ EOF
 # ================================================================
 # Coupling
 
-atm_lag=1
-oce_lag=1
-
 coupling_yaml(){
+local atm_lag=1
+local oce_lag=1
   cat > ./coupling.yaml << EOF
 definitions:
   atm2oce: &atm2oce

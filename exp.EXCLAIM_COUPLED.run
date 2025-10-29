@@ -62,7 +62,7 @@ source inputs.sh
 
 # Experiment name
 # ---------------
-export EXPNAME=${EXPNAME:-"EXCLAIM_coupled_${TARGET}"}
+export EXPNAME=${EXPNAME:-"EXCLAIM_coupled_${CASE}_${TARGET}"}
 
 # Base ICON directory
 # -------------------

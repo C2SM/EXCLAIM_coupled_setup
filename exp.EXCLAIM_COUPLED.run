@@ -172,6 +172,12 @@ oce_file_interval="P1M"
 oce_output_interval=${all_output_interval}
 oce_output_interval_def="P1D"
 
+# Case settings - 2 
+# -----------------
+# Some main settings depend on case settings and vice-versa
+# so we need to source the case settings twice
+source "settings_${CASE}.sh"
+
 # Activate output streams
 # -----------------------
 export activate_output=${activate_output:-"true"}
@@ -180,12 +186,6 @@ if [[ "${activate_output}" != "true" ]];then
     ATM_IO_TASKS=0
     OCE_IO_TASKS=0
 fi
-
-# Case settings - 2 
-# -----------------
-# Some main settings depend on case settings and vice-versa
-# so we need to source the case settings twice
-source "settings_${CASE}.sh"
 
 # ============================================================================
 # Input files

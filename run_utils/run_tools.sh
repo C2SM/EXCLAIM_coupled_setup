@@ -147,6 +147,7 @@ restart_model(){
         unset SLURM_HOSTFILE
         export lrestart=.true.
         export chunk_start_date="${chunk_end_date}"
+        [ -n "${SBATCH_TIMELIMIT}" ] && export SBATCH_TIMELIMIT
         echo
         SBATCH_OPTIONS="--nodes=${SLURM_NNODES}"
         submit_cmd="sbatch ${SBATCH_OPTIONS} ${RUNSCRIPT_PATH} ${TARGET} ${RUN_OPTIONS}"

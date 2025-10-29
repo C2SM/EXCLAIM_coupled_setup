@@ -43,8 +43,8 @@ export OCE_RST_TASKS=0
 # -------------------
 case "${TARGET}" in
     "hybrid")
-        nproma_atm=83752
-        nproma_sub=10469
+        nproma_atm=40000
+        nproma_sub=6000
         ecrad_isolver=2  # (0 for CPU/vector, 2 for GPU)
         ;;
     "cpu" | "cpu-cpu")

@@ -197,18 +197,18 @@ oce_inputs
 # Config files
 compute_task_distribution_variables
 create_multiprog_file
-if [[ "${TARGET}" == "hybrid" ]]; then
-    create_slurm_hostfile \
-        --output_filepath "./hostfile-${SLURM_JOB_ID}" \
-        --tot_tasks_per_node "${TOT_TASKS_PER_NODE}" \
-        --atm_comp_tasks_per_node "${ATM_COMP_TASKS_PER_NODE}" \
-        --atm_io_tasks "${ATM_IO_TASKS}" \
-        --oce_io_tasks "${OCE_IO_TASKS}" \
-        --threads_per_task "${CPUS_PER_TASK}" \
-        --max_threads_per_node "$(grep -c ^processor /proc/cpuinfo)" || exit
 
-   export SLURM_HOSTFILE="$(pwd)/hostfile-${SLURM_JOB_ID}"
-fi
+create_slurm_hostfile \
+    --output_filepath "./hostfile-${SLURM_JOB_ID}" \
+    --tot_tasks_per_node "${TOT_TASKS_PER_NODE}" \
+    --atm_comp_tasks_per_node "${ATM_COMP_TASKS_PER_NODE}" \
+    --atm_io_tasks "${ATM_IO_TASKS}" \
+    --oce_io_tasks "${OCE_IO_TASKS}" \
+    --threads_per_task "${CPUS_PER_TASK}" \
+    --max_threads_per_node "$(grep -c ^processor /proc/cpuinfo)" || exit
+
+export SLURM_HOSTFILE="$(pwd)/hostfile-${SLURM_JOB_ID}"
+
 set_ocean_vertical_coordinate
 
 icon_master_nml

@@ -54,6 +54,8 @@ set_environment(){
       # export MPICH_GPU_IPC_ENABLED=0
       export MPICH_RDMA_ENABLED_CUDA=1
       export MPICH_OFI_NIC_POLICY=GPU
+   else
+      export MPICH_OFI_NIC_POLICY=NUMA
    fi
 
    # NVHPC/CUDA
@@ -98,8 +100,7 @@ run_model(){
          srun \
             -l \
             --kill-on-bad-exit=1 \
-            --nodes="${SLURM_JOB_NUM_NODES:-1}" \
-            --distribution="block:cyclic" \
+            --distribution="arbitrary" \
             --hint="nomultithread" \
             --ntasks="${TOT_TASKS}" \
             --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
@@ -110,8 +111,7 @@ run_model(){
          srun \
             -l \
             --kill-on-bad-exit=1 \
-            --nodes="${SLURM_JOB_NUM_NODES:-1}" \
-            --distribution="block:cyclic" \
+            --distribution="arbitrary" \
             --hint="nomultithread" \
             --ntasks="${TOT_TASKS}" \
             --ntasks-per-node="${TOT_TASKS_PER_NODE}" \

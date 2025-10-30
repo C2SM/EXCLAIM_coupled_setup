@@ -180,6 +180,8 @@ source "settings_${CASE}.sh"
 
 # Activate output streams
 # -----------------------
+
+
 export activate_output=${activate_output:-"true"}
 export activate_output_dyamond=${activate_output_dyamond:-"false"}
 if [[ "${activate_output}" != "true" ]];then

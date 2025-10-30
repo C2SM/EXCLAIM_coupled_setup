@@ -66,7 +66,16 @@ coupled_streams(){
     output_atm_2d
     output_energy_budget
     output_atm_hfreq
-    output_atm_3d
+    output_atm_pres
+    output_atm_geopot
+    output_atm_temp
+    output_atm_u
+    output_atm_v
+    output_atm_qv
+    output_atm_rh
+    output_atm_clc
+    output_atm_tot_qc_dia
+    output_atm_tot_qi_dia
     output_atm_latlon
     output_jsb_2d
     output_lnd_mon

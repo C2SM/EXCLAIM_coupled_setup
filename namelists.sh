@@ -541,10 +541,9 @@ output_atm_hfreq(){
 EOF
 }
 
-
-output_atm_3d(){
+output_atm_pres(){
   # native time mean output 3-dim averaged over OUTPUT_INTERVAL:
-  stream="${EXPNAME}_atm_3d_ml"
+  stream="${EXPNAME}_atm_pres_ml"
   mkdir -p "${stream}"
   cat >> ${atm_namelist} << EOF
 &output_nml
@@ -559,8 +558,205 @@ output_atm_3d(){
  filename_format         = "${stream}/${stream}_<datetime2>"
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
- !ml_varlist              = 'pres', 'geopot', 'temp', 'u', 'v', 'qv', 'rh', 'clc', 'tot_qc_dia', 'tot_qi_dia'
- ml_varlist              = 'pres', 'geopot', 'temp', 'u', 'v', 'qv', 'rh', 'clc', 'tot_qc_dia', 'tot_qi_dia', 'runoff_s','runoff_g'
+ ml_varlist              = 'pres'
+/
+EOF
+}
+
+output_atm_geopot(){
+  # native time mean output 3-dim averaged over OUTPUT_INTERVAL:
+  stream="${EXPNAME}_atm_geopot_ml"
+  mkdir -p "${stream}"
+  cat >> ${atm_namelist} << EOF
+&output_nml
+ output_start            = "${start_date}"
+ output_end              = "${end_date}"
+ output_interval         = "${atm_output_interval}"  ! the output interval and
+ file_interval           = "${atm_file_interval}"    ! the file interval
+ filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
+ dom                     = -1
+ mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
+ include_last            = .FALSE.                   ! flag whether to include the last time step
+ filename_format         = "${stream}/${stream}_<datetime2>"
+ remap                   = 0                         ! 1: latlon,  0: native grid
+ operation               = "mean"                    ! works on icon grid only (remap=0)
+ ml_varlist              = 'geopot'
+/
+EOF
+}
+
+output_atm_temp(){
+  # native time mean output 3-dim averaged over OUTPUT_INTERVAL:
+  stream="${EXPNAME}_atm_temp_ml"
+  mkdir -p "${stream}"
+  cat >> ${atm_namelist} << EOF
+&output_nml
+ output_start            = "${start_date}"
+ output_end              = "${end_date}"
+ output_interval         = "${atm_output_interval}"  ! the output interval and
+ file_interval           = "${atm_file_interval}"    ! the file interval
+ filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
+ dom                     = -1
+ mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
+ include_last            = .FALSE.                   ! flag whether to include the last time step
+ filename_format         = "${stream}/${stream}_<datetime2>"
+ remap                   = 0                         ! 1: latlon,  0: native grid
+ operation               = "mean"                    ! works on icon grid only (remap=0)
+ ml_varlist              = 'temp'
+/
+EOF
+}
+
+output_atm_u(){
+  # native time mean output 3-dim averaged over OUTPUT_INTERVAL:
+  stream="${EXPNAME}_atm_u_ml"
+  mkdir -p "${stream}"
+  cat >> ${atm_namelist} << EOF
+&output_nml
+ output_start            = "${start_date}"
+ output_end              = "${end_date}"
+ output_interval         = "${atm_output_interval}"  ! the output interval and
+ file_interval           = "${atm_file_interval}"    ! the file interval
+ filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
+ dom                     = -1
+ mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
+ include_last            = .FALSE.                   ! flag whether to include the last time step
+ filename_format         = "${stream}/${stream}_<datetime2>"
+ remap                   = 0                         ! 1: latlon,  0: native grid
+ operation               = "mean"                    ! works on icon grid only (remap=0)
+ ml_varlist              = 'u'
+/
+EOF
+}
+
+output_atm_v(){
+  # native time mean output 3-dim averaged over OUTPUT_INTERVAL:
+  stream="${EXPNAME}_atm_v_ml"
+  mkdir -p "${stream}"
+  cat >> ${atm_namelist} << EOF
+&output_nml
+ output_start            = "${start_date}"
+ output_end              = "${end_date}"
+ output_interval         = "${atm_output_interval}"  ! the output interval and
+ file_interval           = "${atm_file_interval}"    ! the file interval
+ filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
+ dom                     = -1
+ mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
+ include_last            = .FALSE.                   ! flag whether to include the last time step
+ filename_format         = "${stream}/${stream}_<datetime2>"
+ remap                   = 0                         ! 1: latlon,  0: native grid
+ operation               = "mean"                    ! works on icon grid only (remap=0)
+ ml_varlist              = 'v'
+/
+EOF
+}
+
+output_atm_qv(){
+  # native time mean output 3-dim averaged over OUTPUT_INTERVAL:
+  stream="${EXPNAME}_atm_qv_ml"
+  mkdir -p "${stream}"
+  cat >> ${atm_namelist} << EOF
+&output_nml
+ output_start            = "${start_date}"
+ output_end              = "${end_date}"
+ output_interval         = "${atm_output_interval}"  ! the output interval and
+ file_interval           = "${atm_file_interval}"    ! the file interval
+ filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
+ dom                     = -1
+ mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
+ include_last            = .FALSE.                   ! flag whether to include the last time step
+ filename_format         = "${stream}/${stream}_<datetime2>"
+ remap                   = 0                         ! 1: latlon,  0: native grid
+ operation               = "mean"                    ! works on icon grid only (remap=0)
+ ml_varlist              = 'qv'
+/
+EOF
+}
+
+output_atm_rh(){
+  # native time mean output 3-dim averaged over OUTPUT_INTERVAL:
+  stream="${EXPNAME}_atm_rh_ml"
+  mkdir -p "${stream}"
+  cat >> ${atm_namelist} << EOF
+&output_nml
+ output_start            = "${start_date}"
+ output_end              = "${end_date}"
+ output_interval         = "${atm_output_interval}"  ! the output interval and
+ file_interval           = "${atm_file_interval}"    ! the file interval
+ filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
+ dom                     = -1
+ mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
+ include_last            = .FALSE.                   ! flag whether to include the last time step
+ filename_format         = "${stream}/${stream}_<datetime2>"
+ remap                   = 0                         ! 1: latlon,  0: native grid
+ operation               = "mean"                    ! works on icon grid only (remap=0)
+ ml_varlist              = 'rh'
+/
+EOF
+}
+
+output_atm_clc(){
+  # native time mean output 3-dim averaged over OUTPUT_INTERVAL:
+  stream="${EXPNAME}_atm_clc_ml"
+  mkdir -p "${stream}"
+  cat >> ${atm_namelist} << EOF
+&output_nml
+ output_start            = "${start_date}"
+ output_end              = "${end_date}"
+ output_interval         = "${atm_output_interval}"  ! the output interval and
+ file_interval           = "${atm_file_interval}"    ! the file interval
+ filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
+ dom                     = -1
+ mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
+ include_last            = .FALSE.                   ! flag whether to include the last time step
+ filename_format         = "${stream}/${stream}_<datetime2>"
+ remap                   = 0                         ! 1: latlon,  0: native grid
+ operation               = "mean"                    ! works on icon grid only (remap=0)
+ ml_varlist              = 'clc'
+/
+EOF
+}
+
+output_atm_tot_qc_dia(){
+  # native time mean output 3-dim averaged over OUTPUT_INTERVAL:
+  stream="${EXPNAME}_atm_tot_qc_dia_ml"
+  mkdir -p "${stream}"
+  cat >> ${atm_namelist} << EOF
+&output_nml
+ output_start            = "${start_date}"
+ output_end              = "${end_date}"
+ output_interval         = "${atm_output_interval}"  ! the output interval and
+ file_interval           = "${atm_file_interval}"    ! the file interval
+ filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
+ dom                     = -1
+ mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
+ include_last            = .FALSE.                   ! flag whether to include the last time step
+ filename_format         = "${stream}/${stream}_<datetime2>"
+ remap                   = 0                         ! 1: latlon,  0: native grid
+ operation               = "mean"                    ! works on icon grid only (remap=0)
+ ml_varlist              = 'tot_qc_dia'
+/
+EOF
+}
+
+output_atm_tot_qi_dia(){
+  # native time mean output 3-dim averaged over OUTPUT_INTERVAL:
+  stream="${EXPNAME}_atm_tot_qi_dia_ml"
+  mkdir -p "${stream}"
+  cat >> ${atm_namelist} << EOF
+&output_nml
+ output_start            = "${start_date}"
+ output_end              = "${end_date}"
+ output_interval         = "${atm_output_interval}"  ! the output interval and
+ file_interval           = "${atm_file_interval}"    ! the file interval
+ filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
+ dom                     = -1
+ mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
+ include_last            = .FALSE.                   ! flag whether to include the last time step
+ filename_format         = "${stream}/${stream}_<datetime2>"
+ remap                   = 0                         ! 1: latlon,  0: native grid
+ operation               = "mean"                    ! works on icon grid only (remap=0)
+ ml_varlist              = 'tot_qi_dia'
 /
 EOF
 }

@@ -549,7 +549,7 @@ output_atm_pres(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
+ output_interval         = "PT1H"                    ! the output interval and
  file_interval           = "${atm_file_interval}"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
@@ -571,7 +571,7 @@ output_atm_geopot(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
+ output_interval         = "PT1H"                    ! the output interval and
  file_interval           = "${atm_file_interval}"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
@@ -593,7 +593,7 @@ output_atm_temp(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
+ output_interval         = "PT1H"                    ! the output interval and
  file_interval           = "${atm_file_interval}"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
@@ -615,7 +615,7 @@ output_atm_u(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
+ output_interval         = "PT1H"                    ! the output interval and
  file_interval           = "${atm_file_interval}"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
@@ -637,7 +637,7 @@ output_atm_v(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
+ output_interval         = "PT1H"                    ! the output interval and
  file_interval           = "${atm_file_interval}"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
@@ -659,7 +659,7 @@ output_atm_qv(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
+ output_interval         = "PT1H"                    ! the output interval and
  file_interval           = "${atm_file_interval}"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
@@ -681,7 +681,7 @@ output_atm_rh(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
+ output_interval         = "PT1H"                    ! the output interval and
  file_interval           = "${atm_file_interval}"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
@@ -703,7 +703,7 @@ output_atm_clc(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
+ output_interval         = "PT1H"                    ! the output interval and
  file_interval           = "${atm_file_interval}"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
@@ -725,7 +725,7 @@ output_atm_tot_qc_dia(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
+ output_interval         = "PT1H"                    ! the output interval and
  file_interval           = "${atm_file_interval}"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
@@ -747,7 +747,7 @@ output_atm_tot_qi_dia(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
+ output_interval         = "PT1H"                    ! the output interval and
  file_interval           = "${atm_file_interval}"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1

@@ -28,14 +28,14 @@ create_multiprog_file(){
    # Write multi-prog distribution to file
    if [[ "${TARGET}" == "hybrid" ]]; then
       cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} run_utils/gpu_wrapper.sh ./icon_gpu
-${OCE_MIN_RANK}-${OCE_MAX_RANK} run_utils/cpu_wrapper.sh ./icon_cpu
+${ATM_MIN_RANK}-${ATM_MAX_RANK} run_utils/run_wrappers/hybrid_atm_wrapper.sh ./icon_gpu
+${OCE_MIN_RANK}-${OCE_MAX_RANK} run_utils/run_wrappers/hybrid_oce_wrapper.sh ./icon_cpu
 EOF
       chmod 755 multi-prog.conf
    elif [[ "${TARGET}" == "cpu-cpu" ]]; then
       cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} run_utils/cpu_wrapper.sh ./icon_cpu
-${OCE_MIN_RANK}-${OCE_MAX_RANK} run_utils/cpu_wrapper.sh ./icon_cpu
+${ATM_MIN_RANK}-${ATM_MAX_RANK} run_utils/run_wrappers/cpu-cpu_atm_wrapper.sh ./icon_cpu
+${OCE_MIN_RANK}-${OCE_MAX_RANK} run_utils/run_wrappers/cpu-cpu_oce_wrapper.sh ./icon_cpu
 EOF
       chmod 755 multi-prog.conf
    fi
@@ -127,7 +127,7 @@ run_model(){
             --ntasks="${TOT_TASKS}" \
             --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
             --cpus-per-task="${CPUS_PER_TASK}" \
-            run_utils/cpu_wrapper.sh ./icon_cpu
+            run_utils/run_wrappers/cpu_atm-oce_wrapper.sh ./icon_cpu
       ;;
    esac
 }

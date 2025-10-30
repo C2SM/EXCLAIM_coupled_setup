@@ -60,6 +60,20 @@ def create_slurm_hostfile_load_balanced():
     oce_io_tasks            = args.oce_io_tasks
     threads_per_task        = args.threads_per_task
 
+    # ATTENTION:
+    # Do not remove the following checks on IO tasks if you don't know what you
+    # are doing, you might mess up the whole task distribution logic and 
+    # negatively impact performance
+    if atm_io_tasks > number_of_nodes:
+        raise ValueError(f"The total number of IO tasks for the atmosphere ({atm_io_tasks}) exceeds the number of nodes ({number_of_nodes}). "
+                          "Only 1 atmosphere IO task per node is allowed. "
+                          "Stopping execution!")
+
+    if oce_io_tasks > number_of_nodes:
+        raise ValueError(f"The total number of IO tasks for the ocean ({oce_io_tasks}) exceeds the number of nodes ({number_of_nodes}). "
+                          "Only 1 ocean IO task per node is allowed. "
+                          "Stopping execution!")
+
     tot_threads_per_node = tot_tasks_per_node * threads_per_task
 
     if tot_threads_per_node > max_threads_per_node:

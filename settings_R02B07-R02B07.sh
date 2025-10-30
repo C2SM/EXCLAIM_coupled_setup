@@ -29,8 +29,8 @@ case "${TARGET}" in
         export CPUS_PER_TASK=16
         ;;
     "cpu" | "cpu-cpu")
-        export ATM_COMP_TASKS_PER_NODE=256
-        export TOT_TASKS_PER_NODE=288
+        export ATM_COMP_TASKS_PER_NODE=108
+        export TOT_TASKS_PER_NODE=144
         export CPUS_PER_TASK=1
         ;;
 esac

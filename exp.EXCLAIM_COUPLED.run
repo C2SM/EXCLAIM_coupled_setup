@@ -183,6 +183,26 @@ oce_file_interval="P1M"
 oce_output_interval=${all_output_interval}
 oce_output_interval_def="P1D"
 
+# Task distribution
+# -----------------
+case "${TARGET}" in
+    "hybrid")
+        if [ "$SEPARATE_IO" = true ]; then
+            export TOT_TASKS_PER_COMP_NODE=16
+            export MAX_TASKS_PER_IO_NODE=4
+        else
+            export TOT_TASKS_PER_NODE=16
+        fi
+        export ATM_COMP_TASKS_PER_NODE=4
+        export CPUS_PER_TASK=16
+        ;;
+    "cpu" | "cpu-cpu")
+        export TOT_TASKS_PER_NODE=144
+        export ATM_COMP_TASKS_PER_NODE=108
+        export CPUS_PER_TASK=1
+        ;;
+esac
+
 # Case settings - 2 
 # -----------------
 # Some main settings depend on case settings and vice-versa
@@ -193,7 +213,7 @@ source "settings_${CASE}.sh"
 # -----------------------
 export activate_output=${activate_output:-"true"}
 export activate_output_dyamond=${activate_output_dyamond:-"false"}
-if [[ "${activate_output}" != "true" ]];then
+if [[ "${activate_output}" != "true" ]]; then
     ATM_IO_TASKS=0
     OCE_IO_TASKS=0
 fi
@@ -209,14 +229,26 @@ oce_inputs
 compute_task_distribution_variables
 create_multiprog_file
 
-create_slurm_hostfile \
-    --output_filepath "./hostfile-${SLURM_JOB_ID}" \
-    --tot_tasks_per_node "${TOT_TASKS_PER_NODE}" \
-    --atm_comp_tasks_per_node "${ATM_COMP_TASKS_PER_NODE}" \
-    --atm_io_tasks "${ATM_IO_TASKS}" \
-    --oce_io_tasks "${OCE_IO_TASKS}" \
-    --threads_per_task "${CPUS_PER_TASK}" \
-    --max_threads_per_node "$(grep -c ^processor /proc/cpuinfo)" || exit
+if [ "$SEPARATE_IO" = true ]; then
+    create_slurm_hostfile_separate_io \
+        --output_filepath "./hostfile-${SLURM_JOB_ID}" \
+        --tot_tasks_per_comp_node "${TOT_TASKS_PER_COMP_NODE}" \
+        --max_tasks_per_io_node "${MAX_TASKS_PER_IO_NODE}" \
+        --atm_comp_tasks_per_node "${ATM_COMP_TASKS_PER_NODE}" \
+        --atm_io_tasks "${ATM_IO_TASKS}" \
+        --oce_io_tasks "${OCE_IO_TASKS}" \
+        --threads_per_task "${CPUS_PER_TASK}" \
+        --max_threads_per_node "$(grep -c ^processor /proc/cpuinfo)" || exit
+else
+    create_slurm_hostfile_load_balanced \
+        --output_filepath "./hostfile-${SLURM_JOB_ID}" \
+        --tot_tasks_per_node "${TOT_TASKS_PER_NODE}" \
+        --atm_comp_tasks_per_node "${ATM_COMP_TASKS_PER_NODE}" \
+        --atm_io_tasks "${ATM_IO_TASKS}" \
+        --oce_io_tasks "${OCE_IO_TASKS}" \
+        --threads_per_task "${CPUS_PER_TASK}" \
+        --max_threads_per_node "$(grep -c ^processor /proc/cpuinfo)" || exit
+fi
 
 export SLURM_HOSTFILE="$(pwd)/hostfile-${SLURM_JOB_ID}"
 

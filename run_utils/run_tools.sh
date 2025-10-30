@@ -4,7 +4,18 @@
 compute_task_distribution_variables(){
 
    ((ATM_TOT_TASKS = ATM_COMP_TASKS_PER_NODE * SLURM_JOB_NUM_NODES + ATM_IO_TASKS))
-   ((TOT_TASKS = TOT_TASKS_PER_NODE * SLURM_JOB_NUM_NODES))
+
+   if [ "$SEPARATE_IO" = true ]; then
+      ((TOT_IO_TASKS = ATM_IO_TASKS + OCE_IO_TASKS))
+
+      # Adding (MAX_TASKS_PER_IO_NODE - 1) to TOT_IO_TASKS to mimic rounding up the result of the division
+      ((TOT_IO_NODES = (TOT_IO_TASKS + MAX_TASKS_PER_IO_NODE - 1) / MAX_TASKS_PER_IO_NODE ))
+      ((TOT_COMP_NODES = SLURM_JOB_NUM_NODES - TOT_IO_NODES))
+
+      ((TOT_TASKS = TOT_TASKS_PER_COMP_NODE * TOT_COMP_NODES + TOT_IO_TASKS))
+   else
+      ((TOT_TASKS = TOT_TASKS_PER_NODE * SLURM_JOB_NUM_NODES))
+   fi
 }
 
 create_multiprog_file(){

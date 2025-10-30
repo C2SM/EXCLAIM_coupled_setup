@@ -18,7 +18,7 @@ atm_inputs(){
     datadir_ozone="${atmo_data_InputFolder}/ozone/${revision}"
     datadir_rad="${common_data_poolFolder}/solar_radiation"
     datadir_ghg="${common_data_poolFolder}/greenhouse_gases"
-    datadir_hd="${icon_data_poolFolder}/atmo/${atmos_gridID}-${ocean_gridID}/hd/r0100"
+    datadir_hd="${icon_data_poolFolder}/atmo/${atmos_gridID}-${ocean_gridID}/hd/${datadir_hd_tag}"
 
     case "${exptype}" in
         "control")
@@ -77,16 +77,16 @@ atm_inputs(){
             exit 1
             ;;
     esac
-
-    ln -sf "${datadir_hd}/hdpara_r2b7_${atmos_gridID}_${ocean_gridID}_mc_maxl_s_v1.nc" ./bc_land_hd.nc   #  mask for routing_scheme='full'
-    ln -sf "${datadir_hd}/hdstart_r2b7_${atmos_gridID}_${ocean_gridID}_mc_maxl_s_v1.nc" ./ic_land_hd.nc
+    
+    ln -sf "${datadir_hd}/hdpara_${atmos_refinement_short}_${atmos_gridID}_${ocean_gridID}_${bc_land_hd_name}.nc" ./bc_land_hd.nc   #  mask for routing_scheme='full'
+    ln -sf "${datadir_hd}/hdstart_${atmos_refinement_short}_${atmos_gridID}_${ocean_gridID}_${ic_land_hd_name}.nc" ./ic_land_hd.nc
 }
 
 oce_inputs(){
     ln -sf ${ocean_grid_folder}/${ocean_grid_target} .
 
     if [[ "${initialiseOcean}" == "fromClimatology" ]]; then
-        ln -sf "${ocean_grid_folder}/ocean/initial_conditions/rcscs/tsi_oras5_icon_icon_grid_${ocean_gridID}_${ocean_refinement}_O_${ocean_vertical_levels}.nc_${start_year}-01-01" ./initial_state.nc
+        ln -sf "${ocean_grid_folder}/ocean/initial_conditions/${initial_state_sub_path}" ./initial_state.nc
     else
         echo "ERROR: initialiseOcean mode not supported (yet?): ${initialiseOcean}"
         exit 1
@@ -135,7 +135,7 @@ lnd_inputs(){
     ln -sf "${datadir_land}/${jsbach_ic_soil}" .
     ln -sf "${datadir_land}/${jsbach_sso}" .
 
-    extpar_filename="${datadir_land}/icon_extpar4jsbach_${atmos_gridID}_20250509_tiles_jsb.nc"
+    extpar_filename="${datadir_land}/icon_extpar4jsbach_${atmos_gridID}_${extpar_tag}_tiles_jsb.nc"
     extpar_targetname="extpar_icon_grid_${atmos_gridID}_${atmos_refinement}_G.nc"
     ln -sf "${extpar_filename}" "${extpar_targetname}"
 }

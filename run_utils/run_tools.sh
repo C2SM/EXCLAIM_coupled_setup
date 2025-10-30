@@ -17,14 +17,14 @@ create_multiprog_file(){
    # Write multi-prog distribution to file
    if [[ "${TARGET}" == "hybrid" ]]; then
       cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} ../run_utils/gpu_wrapper.sh $RUN_OPTIONS ./icon_gpu
-${OCE_MIN_RANK}-${OCE_MAX_RANK} ../run_utils/cpu_wrapper.sh ./icon_cpu
+${ATM_MIN_RANK}-${ATM_MAX_RANK} run_utils/gpu_wrapper.sh $RUN_OPTIONS ./icon_gpu
+${OCE_MIN_RANK}-${OCE_MAX_RANK} run_utils/cpu_wrapper.sh ./icon_cpu
 EOF
       chmod 755 multi-prog.conf
    elif [[ "${TARGET}" == "cpu-cpu" ]]; then
       cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} ../run_utils/cpu_wrapper.sh ./icon_cpu
-${OCE_MIN_RANK}-${OCE_MAX_RANK} ../run_utils/cpu_wrapper.sh ./icon_cpu
+${ATM_MIN_RANK}-${ATM_MAX_RANK} run_utils/cpu_wrapper.sh ./icon_cpu
+${OCE_MIN_RANK}-${OCE_MAX_RANK} run_utils/cpu_wrapper.sh ./icon_cpu
 EOF
       chmod 755 multi-prog.conf
    fi
@@ -116,7 +116,7 @@ run_model(){
             --ntasks="${TOT_TASKS}" \
             --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
             --cpus-per-task="${CPUS_PER_TASK}" \
-            ../run_utils/cpu_wrapper.sh ./icon_cpu
+            run_utils/cpu_wrapper.sh ./icon_cpu
       ;;
    esac
 }
@@ -147,9 +147,13 @@ restart_model(){
         unset SLURM_HOSTFILE
         export lrestart=.true.
         export chunk_start_date="${chunk_end_date}"
+        [ -n "${SBATCH_TIMELIMIT}" ] && export SBATCH_TIMELIMIT
         echo
-        echo "submitting next chunk starting at ${chunk_start_date}"
-        sbatch "${RUNSCRIPT_PATH}" "${TARGET}" "${RUN_OPTIONS}"
+        SBATCH_OPTIONS="--nodes=${SLURM_NNODES}"
+        submit_cmd="sbatch ${SBATCH_OPTIONS} ${RUNSCRIPT_PATH} ${TARGET} ${RUN_OPTIONS}"
+        echo "submitting next chunk starting at ${chunk_start_date} with ${submit_cmd}"
+        echo "${submit_cmd}"
+        ${submit_cmd}
     fi
 }
 
@@ -268,7 +272,7 @@ set_ocean_vertical_coordinate(){
 }
 
 # Activate py_run_tools
-pushd ../run_utils/py_run_utils 2>&1 >/dev/null || exit
+pushd run_utils/py_run_utils 2>&1 >/dev/null || exit
 if [ -f .venv/bin/activate ]; then
     source .venv/bin/activate || exit
 else

@@ -660,7 +660,7 @@ dyamond_stream_1_1(){
     # => This needs to be interpolated onto 10KM (25KM for Dyamond)
     stream="${EXPNAME}_dyamond_atm_1_1"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_1_1/${EXPNAME}_out_1_1_<datetime2>"
@@ -684,7 +684,7 @@ dyamond_stream_1_2(){
     # => This needs to be interpolated onto 10KM (25KM for Dyamond)
     stream="${EXPNAME}_dyamond_atm_1_2"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_1_2/${EXPNAME}_out_1_2_<datetime2>"
@@ -705,7 +705,7 @@ EOF
 dyamond_stream_1_3(){
     stream="${EXPNAME}_dyamond_atm_1_3"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_1_3/${EXPNAME}_out_1_3_<datetime2>"
@@ -726,7 +726,7 @@ EOF
 dyamond_stream_1_4(){
     stream="${EXPNAME}_dyamond_atm_1_4"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_1_4/${EXPNAME}_out_1_4_<datetime2>"
@@ -748,7 +748,7 @@ EOF
 dyamond_stream_1_5(){
     stream="${EXPNAME}_dyamond_atm_1_5"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_1_5/${EXPNAME}_out_1_5_<datetime2>"
@@ -769,7 +769,7 @@ EOF
 dyamond_stream_2(){
     stream="${EXPNAME}_dyamond_atm_2"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_2/${EXPNAME}_out_2_<datetime2>"
@@ -789,7 +789,7 @@ EOF
 dyamond_stream_3(){
     stream="${EXPNAME}_dyamond_atm_3" 
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_3/${EXPNAME}_out_3_<datetime2>"
@@ -809,7 +809,7 @@ EOF
 dyamond_stream_4(){
     stream="${EXPNAME}_dyamond_atm_4"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_4/<output_filename>${EXPNAME}_out_4_<datetime2>"
@@ -830,7 +830,7 @@ EOF
 dyamond_stream_5(){
     stream="${EXPNAME}_dyamond_atm_5"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_5/${EXPNAME}_out_5_<datetime2>"
@@ -850,7 +850,7 @@ EOF
 dyamond_stream_6(){
     stream="${EXPNAME}_dyamond_atm_6"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_6/${EXPNAME}_out_6_<datetime2>"
@@ -876,7 +876,7 @@ EOF
 dyamond_stream_7(){
     stream="${EXPNAME}_dyamond_atm_7"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_7/${EXPNAME}_out_7_<datetime2>"
@@ -896,7 +896,7 @@ EOF
 dyamond_stream_8(){
     stream="${EXPNAME}_dyamond_atm_8"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_8/${EXPNAME}_out_8_<datetime2>"
@@ -917,7 +917,7 @@ EOF
 dyamond_stream_9(){
     stream="${EXPNAME}_dyamond_atm_9"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_9/${EXPNAME}_out_9_<datetime2>"
@@ -937,7 +937,7 @@ EOF
 dyamond_stream_10(){
     stream="${EXPNAME}_dyamond_atm_10"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_10/${EXPNAME}_out_10_<datetime2>"
@@ -957,7 +957,7 @@ EOF
 dyamond_stream_11(){
     stream="${EXPNAME}_dyamond_atm_11"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_11/${EXPNAME}_out_11_<datetime2>"
@@ -978,7 +978,7 @@ EOF
 dyamond_stream_12(){
     stream="${EXPNAME}_dyamond_atm_12"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_12/${EXPNAME}_out_12_<datetime2>"
@@ -998,7 +998,7 @@ EOF
 dyamond_stream_13(){
     stream="${EXPNAME}_dyamond_atm_13"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_13/${EXPNAME}_out_13_<datetime2>"
@@ -1019,7 +1019,7 @@ EOF
 dyamond_stream_14(){
     stream="${EXPNAME}_dyamond_atm_14"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_14/${EXPNAME}_out_14_<datetime2>"
@@ -1040,7 +1040,7 @@ EOF
 dyamond_stream_15_1(){
     stream="${EXPNAME}_dyamond_atm_15_1"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_15_1/${EXPNAME}_out_15_1_<datetime2>"
@@ -1061,7 +1061,7 @@ EOF
 dyamond_stream_15_2(){
     stream="${EXPNAME}_dyamond_atm_15_2"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_15_2/${EXPNAME}_out_15_2_<datetime2>"
@@ -1082,7 +1082,7 @@ EOF
 dyamond_stream_15_3(){
     stream="${EXPNAME}_dyamond_atm_15_3"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_15_3/${EXPNAME}_out_15_3_<datetime2>"
@@ -1103,7 +1103,7 @@ EOF
 dyamond_stream_15_4(){
     stream="${EXPNAME}_dyamond_atm_15_4"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_15_4/${EXPNAME}_out_15_4_<datetime2>"
@@ -1124,7 +1124,7 @@ EOF
 dyamond_stream_15_5(){
     stream="${EXPNAME}_dyamond_atm_15_5"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_15_5/${EXPNAME}_out_15_5_<datetime2>"
@@ -1145,7 +1145,7 @@ EOF
 dyamond_stream_15_6(){
     stream="${EXPNAME}_dyamond_atm_15_6"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_15_6/${EXPNAME}_out_15_6_<datetime2>"
@@ -1166,7 +1166,7 @@ EOF
 dyamond_stream_15_7(){
     stream="${EXPNAME}_dyamond_atm_15_7"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_15_7/${EXPNAME}_out_15_7_<datetime2>"
@@ -1187,7 +1187,7 @@ EOF
 dyamond_stream_15_8(){
     stream="${EXPNAME}_dyamond_atm_15_8"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_15_8/${EXPNAME}_out_15_8_<datetime2>"
@@ -1208,7 +1208,7 @@ EOF
 dyamond_stream_15_9(){
     stream="${EXPNAME}_dyamond_atm_15_9"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_15_9/${EXPNAME}_out_15_9_<datetime2>"
@@ -1229,7 +1229,7 @@ EOF
 dyamond_stream_15_10(){
     stream="${EXPNAME}_dyamond_atm_15_10"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_15_10/${EXPNAME}_out_15_10_<datetime2>"
@@ -1250,7 +1250,7 @@ EOF
 dyamond_stream_15_11(){
     stream="${EXPNAME}_dyamond_atm_15_11"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_15_11/${EXPNAME}_out_15_11_<datetime2>"
@@ -1271,7 +1271,7 @@ EOF
 dyamond_stream_15_12(){
     stream="${EXPNAME}_dyamond_atm_15_12"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_15_12/${EXPNAME}_out_15_12_<datetime2>"
@@ -1292,7 +1292,7 @@ EOF
 dyamond_stream_15_13(){
     stream="${EXPNAME}_dyamond_atm_15_13"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
  filename_format = "out_15_13/${EXPNAME}_out_15_13_<datetime2>"

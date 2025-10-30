@@ -1799,7 +1799,7 @@ output_oce_mon2d(){
   include_last               = .FALSE.
   output_grid                = .FALSE.
   operation                  = "mean"
-  m_levels                   = 1
+  m_levels                   = "1"
   ml_varlist                 = 'tos','sos','zos','u','v'
 /
 EOF

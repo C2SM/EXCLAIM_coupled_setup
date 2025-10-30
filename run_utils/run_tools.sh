@@ -17,7 +17,7 @@ create_multiprog_file(){
    # Write multi-prog distribution to file
    if [[ "${TARGET}" == "hybrid" ]]; then
       cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} run_utils/gpu_wrapper.sh $RUN_OPTIONS ./icon_gpu
+${ATM_MIN_RANK}-${ATM_MAX_RANK} run_utils/gpu_wrapper.sh ./icon_gpu
 ${OCE_MIN_RANK}-${OCE_MAX_RANK} run_utils/cpu_wrapper.sh ./icon_cpu
 EOF
       chmod 755 multi-prog.conf
@@ -150,7 +150,7 @@ restart_model(){
         [ -n "${SBATCH_TIMELIMIT}" ] && export SBATCH_TIMELIMIT
         echo
         SBATCH_OPTIONS="--nodes=${SLURM_NNODES}"
-        submit_cmd="sbatch ${SBATCH_OPTIONS} ${RUNSCRIPT_PATH} ${TARGET} ${RUN_OPTIONS}"
+        submit_cmd="sbatch ${SBATCH_OPTIONS} ${RUNSCRIPT_PATH} ${TARGET} ${RUN_OPTIONS[@]}"
         echo "submitting next chunk starting at ${chunk_start_date} with ${submit_cmd}"
         echo "${submit_cmd}"
         ${submit_cmd}

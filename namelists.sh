@@ -477,14 +477,14 @@ output_atm_mon2d(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "P1D"                     ! the output interval and
+ output_interval         = "P1M"                     ! the output interval and
  file_interval           = "P1M"                     ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
  filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
  ml_varlist              = 't_2m', 'sp_10m'
@@ -506,7 +506,7 @@ stream="${EXPNAME}_energy_budget"
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
  filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  !reg_lon_def             = 0.,1.,360.
  !reg_lat_def             = -90.,1.,90.
@@ -562,7 +562,7 @@ output_jsb_2d(){
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
  filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
    ml_varlist = 'group:jsb_seb_basic'!,'group:jsb_all_basic'
@@ -584,7 +584,7 @@ output_lnd_mon(){
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
  filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
   ! ml_varlist = 'hd_water_error_gsum_box',
@@ -614,7 +614,7 @@ output_lnd_dbg(){
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
  filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  !operation               = "mean"                    ! works on icon grid only (remap=0)
  ml_varlist              = 'u', 'v', 'w', 'temp', 'theta_v', 'exner', 'pres', 'pres_msl', 'rho', 'rho_ic',
@@ -644,7 +644,7 @@ output_hyd_dbg(){
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
  filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  !operation               = "mean"                    ! works on icon grid only (remap=0)
  ml_varlist              = 'group:land_vars'
@@ -672,7 +672,7 @@ dyamond_stream_1_1(){
  include_last    = .true.
  pl_varlist      = 'geopot','qv','rh'
  p_levels        = 100,200,300,500,700,1000,2000,3000,5000,7000,10000,12500,15000,17500,20000,22500,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,77500,80000,82500,85000,87500,90000,92500,95000,97500,100000
- output_grid     = .true.
+ output_grid     = .TRUE.
  mode            = 1
 /
 EOF
@@ -696,7 +696,7 @@ dyamond_stream_1_2(){
  include_last    = .true.
  pl_varlist      = 'qc','qr','qi'
  p_levels        = 100,200,300,500,700,1000,2000,3000,5000,7000,10000,12500,15000,17500,20000,22500,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,77500,80000,82500,85000,87500,90000,92500,95000,97500,100000
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -717,7 +717,7 @@ dyamond_stream_1_3(){
  include_last    = .true.
  pl_varlist      = 'qs','qg','temp'
  p_levels        = 100,200,300,500,700,1000,2000,3000,5000,7000,10000,12500,15000,17500,20000,22500,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,77500,80000,82500,85000,87500,90000,92500,95000,97500,100000
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -738,7 +738,7 @@ dyamond_stream_1_4(){
  include_last    = .true.
  pl_varlist      = 'u','v','w'
  p_levels        = 100,200,300,500,700,1000,2000,3000,5000,7000,10000,12500,15000,17500,20000,22500,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,77500,80000,82500,85000,87500,90000,92500,95000,97500,100000
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -760,7 +760,7 @@ dyamond_stream_1_5(){
  include_last    = .true.
  pl_varlist      = 'omega','rho','pv','tke'
  p_levels        = 100,200,300,500,700,1000,2000,3000,5000,7000,10000,12500,15000,17500,20000,22500,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,77500,80000,82500,85000,87500,90000,92500,95000,97500,100000
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -780,7 +780,7 @@ dyamond_stream_2(){
  file_interval   = "P1D"
  ml_varlist      = 'tot_prec','DHAIL_MX'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -800,7 +800,7 @@ dyamond_stream_3(){
  file_interval   = "P1D"
  ml_varlist      = 'pres_sfc','pres_msl','u_10m','v_10m','qv_2m','t_2m','tqc','tqi','tqv','tqr','h_snow','gust10'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -821,7 +821,7 @@ dyamond_stream_4(){
  hl_varlist      = 'u','v','w'
  h_levels        =  10.0, 500.0, 2500, 5000, 7500
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -841,7 +841,7 @@ dyamond_stream_5(){
  file_interval   = "P1D"
  ml_varlist      = 'qhfl_s','lhfl_s','shfl_s', 'umfl_s','vmfl_s','pres_sfc','pres_msl'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -861,7 +861,7 @@ dyamond_stream_6(){
  file_interval   = "P1D"
  ml_varlist      = 'thu_s','sob_s','sob_t','sod_t','sodifd_s','thb_s','sou_s','thb_t','sobclr_s','sou_t','thbclr_s'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -887,7 +887,7 @@ dyamond_stream_7(){
  file_interval   = "P1D"
  ml_varlist      = 'clct','clcm','clcl','clch','qv_2m','rh_2m','t_2m','t_g','td_2m','u_10m','v_10m','sp_10m','gust10'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -907,7 +907,7 @@ dyamond_stream_8(){
  file_interval   = "P1D"
  include_last    = .true.
  ml_varlist      = 'cape_ml','cape','lcl_ml','lfc_ml','cin_ml','DBZ_CMAX','GRAUPEL_GSP'
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -928,7 +928,7 @@ dyamond_stream_9(){
  file_interval   = "P1D"
  ml_varlist      = 'smi','w_i','t_so','w_so','freshsnow','rho_snow','w_snow','t_s','t_g'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -948,7 +948,7 @@ dyamond_stream_10(){
  file_interval   = "P1D"
  ml_varlist      = 'runoff_g','runoff_s','snow_gsp','snow_melt'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -969,7 +969,7 @@ dyamond_stream_11(){
  pl_varlist      = 'geopot','temp','u','v','qv'
  p_levels        =  20000,50000,85000
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -989,7 +989,7 @@ dyamond_stream_12(){
  file_interval   = "P1D"
  ml_varlist      = 'tmax_2m','tmin_2m', 'lai', 'plcov', 'rootdp',
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -1009,7 +1009,7 @@ dyamond_stream_13(){
  file_interval   = "P1D"
  ml_varlist      = 'pres'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1031,7 +1031,7 @@ dyamond_stream_14(){
  ml_varlist      = 'lwflx_up', 'lwflx_dn', 'swflx_up', 'swflx_dn', 'lwflx_up_clr', 'lwflx_dn_clr', 'swflx_up_clr', 'swflx_dn_clr'
  m_levels        = "1,nlev"
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -1051,7 +1051,7 @@ dyamond_stream_15_1(){
  file_interval   = "P1D"
  ml_varlist      = 'geopot'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1072,7 +1072,7 @@ dyamond_stream_15_2(){
  file_interval   = "P1D"
  ml_varlist      = 'qv'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1093,7 +1093,7 @@ dyamond_stream_15_3(){
  file_interval   = "P1D"
  ml_varlist      = 'qc'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1114,7 +1114,7 @@ dyamond_stream_15_4(){
  file_interval   = "P1D"
  ml_varlist      = 'qr'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1135,7 +1135,7 @@ dyamond_stream_15_5(){
  file_interval   = "P1D"
  ml_varlist      = 'qi'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1156,7 +1156,7 @@ dyamond_stream_15_6(){
  file_interval   = "P1D"
  ml_varlist      = 'qs'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1177,7 +1177,7 @@ dyamond_stream_15_7(){
  file_interval   = "P1D"
  ml_varlist      = 'qg'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1198,7 +1198,7 @@ dyamond_stream_15_8(){
  file_interval   = "P1D"
  ml_varlist      = 'temp'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1219,7 +1219,7 @@ dyamond_stream_15_9(){
  file_interval   = "P1D"
  ml_varlist      = 'u'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1240,7 +1240,7 @@ dyamond_stream_15_10(){
  file_interval   = "P1D"
  ml_varlist      = 'v'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1261,7 +1261,7 @@ dyamond_stream_15_11(){
  file_interval   = "P1D"
  ml_varlist      = 'w'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1282,7 +1282,7 @@ dyamond_stream_15_12(){
  file_interval   = "P1D"
  ml_varlist      = 'rho'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1303,7 +1303,7 @@ dyamond_stream_15_13(){
  file_interval   = "P1D"
  ml_varlist      = 'tke'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1684,7 +1684,7 @@ output_oce_6h(){
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
   include_last               = .FALSE.
-  output_grid                = .TRUE.
+  output_grid                = .FALSE.
   operation                  = "mean"
   m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
   ml_varlist                 = 'ssh', 'tos', 'sos', 'zos', 'mld', 'mlotst10'
@@ -1706,7 +1706,7 @@ output_oce_day(){
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
   include_last               = .FALSE.
-  output_grid                = .TRUE.
+  output_grid                = .FALSE.
   operation                  = "mean"
   m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
   ml_varlist                 = 'to', 'so', 'u', 'v', 'w', 'rhopot', 'rho', 'u_vint', 'v_vint', 'heat_content_snow', 'heat_content_seaice', 'heat_content_total', 'heat_content_300m', 'heat_content_700m', 'rsdoabsorb', 'swrab', 'swsum', 'heatabs', 'mass_flux', 'atmos_fluxes_stress_x','atmos_fluxes_stress_y'
@@ -1727,7 +1727,7 @@ output_oce_ice(){
   mode             =  1                               ! 1: forecast mode (relative t-axis), 2: climate mode (absolute t-axis)
   operation        = 'mean'                           ! mean over output interval
   include_last     = .FALSE.                          ! set to false for asynchron output
-  output_grid      = .TRUE.
+  output_grid      = .FALSE.
   filename_format  = "${stream}/${stream}_<datetime2>"
   filetype         =  5                               ! output format: 2=GRIB2, 4=NETCDFv2, 5=NETCDFv4
   !m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
@@ -1750,7 +1750,7 @@ output_oce_flux(){
   mode             =  1                               ! 1: forecast mode (relative t-axis), 2: climate mode (absolute t-axis)
   operation        = 'mean'                           ! mean over output interval
   include_last     = .FALSE.                          ! set to false for asynchron output
-  output_grid      = .TRUE.
+  output_grid      = .FALSE.
   filename_format  = "${stream}/${stream}_<datetime2>"
   filetype         =  5                               ! output format: 2=GRIB2, 4=NETCDFv2, 5=NETCDFv4
   !m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
@@ -1771,7 +1771,7 @@ output_oce_mon(){
   filename_format            = "${stream}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  output_interval            = "P1M"
+  output_interval            = "P1D"
   file_interval              = "P1M"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
@@ -1792,7 +1792,7 @@ output_oce_mon2d(){
   filename_format            = "${stream}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  output_interval            = "P1D"
+  output_interval            = "P1M"
   file_interval              = "P1M"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)

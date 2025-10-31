@@ -164,7 +164,7 @@ def create_slurm_hostfile_separate_io():
     tot_io_nodes = math.ceil(tot_io_tasks / max_tasks_per_io_node)
 
     compute_nodes = nodes[:-tot_io_nodes]
-    io_nodes = [-tot_io_nodes:]
+    io_nodes = nodes[-tot_io_nodes:]
 
     n_available_cores = {nid: tot_threads_per_node for nid in nodes}
 

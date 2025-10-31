@@ -80,7 +80,7 @@ def create_slurm_hostfile_load_balanced():
         raise ValueError(f"The desired number of threads per node ({tot_tasks_per_node} * {threads_per_task} (threads per task) = {tot_threads_per_node}) exceeds the allowed maximum ({max_threads_per_node}). "
                           "Stopping execution!")
 
-    n_available_cores = {nid: tot_threads_per_node for nid in nodes}
+    n_available_threads = {nid: tot_threads_per_node for nid in nodes}
 
     with open(output_filepath, 'w') as file:
 
@@ -89,7 +89,7 @@ def create_slurm_hostfile_load_balanced():
         for nid in nodes:
             file.write((nid + '\n') * atm_comp_tasks_per_node)
 
-            n_available_cores[nid] -= atm_comp_tasks_per_node * threads_per_task
+            n_available_threads[nid] -= atm_comp_tasks_per_node * threads_per_task
 
         # Atmosphere IO procs
         # Equal to SLURM's --distribution="cyclic"
@@ -97,22 +97,22 @@ def create_slurm_hostfile_load_balanced():
             nid = nodes[i % number_of_nodes]
             file.write(nid + '\n')
 
-            n_available_cores[nid] -= 1 * threads_per_task
+            n_available_threads[nid] -= 1 * threads_per_task
 
         # Dry-run for ocean IO procs (to make sure we fill up to
         # tot_tasks_per_node with ocean compute procs)
         for i in range(oce_io_tasks):
             nid = nodes[(atm_io_tasks + i) % number_of_nodes]
 
-            n_available_cores[nid] -= 1 * threads_per_task
+            n_available_threads[nid] -= 1 * threads_per_task
 
         # Ocean compute procs
         # Fill up to the number of still available cores
         for nid in nodes:
-            n_remaining_tasks = (n_available_cores[nid] // threads_per_task)
+            n_remaining_tasks = (n_available_threads[nid] // threads_per_task)
             file.write((nid + '\n') * n_remaining_tasks)
 
-            n_available_cores[nid] -= n_remaining_tasks
+            n_available_threads[nid] -= n_remaining_tasks
 
         # Ocean IO procs (avoid overlap with atmosphere IO procs)
         # Equal to SLURM's --distribution="cyclic"
@@ -166,7 +166,7 @@ def create_slurm_hostfile_separate_io():
     compute_nodes = nodes[:-tot_io_nodes]
     io_nodes = nodes[-tot_io_nodes:]
 
-    n_available_cores = {nid: tot_threads_per_node for nid in nodes}
+    n_available_threads = {nid: tot_threads_per_node for nid in nodes}
 
     with open(output_filepath, 'w') as file:
 
@@ -175,7 +175,7 @@ def create_slurm_hostfile_separate_io():
         for nid in compute_nodes:
             file.write((nid + '\n') * atm_comp_tasks_per_node)
 
-            n_available_cores[nid] -= atm_comp_tasks_per_node * threads_per_task
+            n_available_threads[nid] -= atm_comp_tasks_per_node * threads_per_task
 
         # Atmosphere IO procs
         # Equal to SLURM's --distribution="plane=max_tasks_per_io_node", but less tasks on the last
@@ -184,15 +184,15 @@ def create_slurm_hostfile_separate_io():
             nid = io_nodes[i // max_tasks_per_io_node]
             file.write(nid + '\n')
 
-            n_available_cores[nid] -= 1 * threads_per_task
+            n_available_threads[nid] -= 1 * threads_per_task
 
         # Ocean compute procs
         # Fill up to the number of still available cores
         for nid in compute_nodes:
-            n_remaining_tasks = (n_available_cores[nid] // threads_per_task)
+            n_remaining_tasks = (n_available_threads[nid] // threads_per_task)
             file.write((nid + '\n') * n_remaining_tasks)
 
-            n_available_cores[nid] -= n_remaining_tasks
+            n_available_threads[nid] -= n_remaining_tasks
 
         # Ocean IO procs (avoid overlap with atmosphere IO procs)
         # Equal to SLURM's --distribution="plane=max_tasks_per_io_node", but less tasks on the first
@@ -202,4 +202,4 @@ def create_slurm_hostfile_separate_io():
             nid = io_nodes[(atm_io_tasks + i) // max_tasks_per_io_node]
             file.write(nid + '\n')
 
-            n_available_cores[nid] -= 1 * threads_per_task
+            n_available_threads[nid] -= 1 * threads_per_task

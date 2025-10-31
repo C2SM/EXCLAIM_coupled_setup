@@ -14,7 +14,8 @@ dependencies = ["isoduration"]
 date_add = "py_run_utils.dates:date_add"
 date_min = "py_run_utils.dates:date_min"
 date_cycle = "py_run_utils.dates:date_cycle"
-create_slurm_hostfile = "py_run_utils.create_slurm_hostfile:main"
+create_slurm_hostfile_load_balanced = "py_run_utils.create_slurm_hostfile:create_slurm_hostfile_load_balanced"
+create_slurm_hostfile_separate_io = "py_run_utils.create_slurm_hostfile:create_slurm_hostfile_separate_io"
 
 [tool.hatch.build.targets.sdist]
 include = [

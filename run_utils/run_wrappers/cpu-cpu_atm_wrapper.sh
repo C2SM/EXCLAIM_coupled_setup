@@ -10,27 +10,17 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # ------------------------------------------
 
+LOCAL_RANK=$SLURM_LOCALID
 GLOBAL_RANK=$SLURM_PROCID
 N_SOCKETS=$(nvidia-smi --list-gpus | wc -l)
 
-case "${TARGET}" in
-    "hybrid")
-        LOCAL_RANK=$((SLURM_LOCALID - ATM_COMP_TASKS_PER_NODE))
+if (( LOCAL_RANK < ATM_COMP_TASKS_PER_NODE )); then
+    ((ATM_COMP_TASKS_PER_SOCKET=ATM_COMP_TASKS_PER_NODE / N_SOCKETS))
 
-        ((NON_ATM_COMP_TASKS_PER_SOCKET=(TOT_TASKS_PER_NODE - ATM_COMP_TASKS_PER_NODE) / N_SOCKETS))
-
-        export NUMA_NODE=$(((LOCAL_RANK / NON_ATM_COMP_TASKS_PER_SOCKET) % N_SOCKETS))
-
-        export CUDA_VISIBLE_DEVICES=$NUMA_NODE
-        ;;
-    "cpu" | "cpu-cpu")
-        LOCAL_RANK=$SLURM_LOCALID
-
-        ((TOT_TASKS_PER_SOCKET=TOT_TASKS_PER_NODE / N_SOCKETS))
-
-        export NUMA_NODE=$(((LOCAL_RANK / TOT_TASKS_PER_SOCKET) % N_SOCKETS))
-        ;;
-esac
+    export NUMA_NODE=$(((LOCAL_RANK / ATM_COMP_TASKS_PER_SOCKET) % N_SOCKETS))  # Distribute ATM compute tasks (plane=$ATM_COMP_TASKS_PER_SOCKET)
+else
+    export NUMA_NODE=$(((LOCAL_RANK - ATM_COMP_TASKS_PER_NODE) % N_SOCKETS))    # Distribute ATM IO tasks (cyclic)
+fi
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export ICON_THREADS=$SLURM_CPUS_PER_TASK

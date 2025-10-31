@@ -16,6 +16,8 @@ compute_task_distribution_variables(){
    else
       ((TOT_TASKS = TOT_TASKS_PER_NODE * SLURM_JOB_NUM_NODES))
    fi
+
+   export TOT_TASKS
 }
 
 create_multiprog_file(){

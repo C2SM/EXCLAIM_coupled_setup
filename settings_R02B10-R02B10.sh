@@ -22,7 +22,7 @@ atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets 
 
 # IO and restart tasks
 # --------------------
-export ATM_IO_TASKS=8
+export ATM_IO_TASKS=17
 export OCE_IO_TASKS=6
 export ATM_RST_TASKS=0
 export OCE_RST_TASKS=0

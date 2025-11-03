@@ -31,8 +31,11 @@ export OCE_RST_TASKS=0
 # -------------------
 case "${TARGET}" in
     "hybrid")
-        nproma_atm=40000
-        nproma_sub=6000
+        # On 140 nodes: # cells up to halo level 2: max/min/avg  153733 151952 152139.73
+        default_nproma_atm=$(( (153733 * 140 - 1) / SLURM_NNODES + 1 ))
+        export nproma_atm=${nproma:-${default_nproma_atm}}
+        default_nproma_sub=$(( (nproma_atm - 1) / 24 + 1 ))
+        export nproma_sub=${nproma_sub:-${default_nproma_sub}}
         ecrad_isolver=2  # (0 for CPU/vector, 2 for GPU)
         ;;
     "cpu" | "cpu-cpu")

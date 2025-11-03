@@ -21,15 +21,11 @@ export CUDA_VISIBLE_DEVICES=$NUMA_NODE
 export OMP_NUM_THREADS=1
 export ICON_THREADS=1
 
-if [[ $# -lt 2 ]]; then
-    # only ICON binary as argument
-    numactl --cpunodebind=$NUMA_NODE --membind=$NUMA_NODE bash -c "$@"
-elif [[ "$1" = "--profile" ]]; then
+if [ "$PROFILE" = true ]; then
     NSYS_WRAPPER_PATH="$(cd $(dirname $0); pwd)/nsys_wrapper.sh"
 
-    shift
     numactl --cpunodebind=$NUMA_NODE --membind=$NUMA_NODE bash -c "${NSYS_WRAPPER_PATH} $@"
 else
-    echo "Error: Unrecognised command line option: $1"
-    exit 1
+    # only ICON binary as argument
+    numactl --cpunodebind=$NUMA_NODE --membind=$NUMA_NODE bash -c "$@"
 fi

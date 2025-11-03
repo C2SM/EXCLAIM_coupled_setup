@@ -20,22 +20,10 @@ dt_rad=300.                     # NWP radiation timestep (s) - must match coupli
 oceTimeStep="PT5M"              # corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
 atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
 
-# Task distribution
-# -----------------
-case "${TARGET}" in
-    "hybrid")
-        export ATM_COMP_TASKS_PER_NODE=4
-        export TOT_TASKS_PER_NODE=16
-        export CPUS_PER_TASK=16
-        ;;
-    "cpu" | "cpu-cpu")
-        export ATM_COMP_TASKS_PER_NODE=108
-        export TOT_TASKS_PER_NODE=144
-        export CPUS_PER_TASK=1
-        ;;
-esac
-export ATM_IO_TASKS=6
-export OCE_IO_TASKS=6
+# IO and restart tasks
+# --------------------
+export ATM_IO_TASKS=2
+export OCE_IO_TASKS=2
 export ATM_RST_TASKS=0
 export OCE_RST_TASKS=0
 

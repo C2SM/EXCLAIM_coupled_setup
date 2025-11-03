@@ -34,8 +34,8 @@ case "${TARGET}" in
         export CPUS_PER_TASK=1
         ;;
 esac
-export ATM_IO_TASKS=2
-export OCE_IO_TASKS=2
+export ATM_IO_TASKS=6
+export OCE_IO_TASKS=6
 export ATM_RST_TASKS=0
 export OCE_RST_TASKS=0
 
@@ -76,6 +76,7 @@ coupled_streams(){
     # -----------------
     output_atm_mon
     output_atm_mon2d
+    ouptut_atm_mean
     output_energy_budget
     output_atm_latlon
     output_jsb_2d
@@ -86,7 +87,7 @@ coupled_streams(){
     # Ocean
     # -----
     output_oce_fx
-    output_oce_6h
+    output_oce_3h
     output_oce_day
     output_oce_ice
     output_oce_flux

@@ -76,6 +76,7 @@ coupled_streams(){
     # -----------------
     output_atm_mon
     output_atm_mon2d
+    output_atm_mean
     output_energy_budget
     output_atm_latlon
     output_jsb_2d
@@ -86,7 +87,7 @@ coupled_streams(){
     # Ocean
     # -----
     output_oce_fx
-    output_oce_6h
+    output_oce_3h
     output_oce_day
     output_oce_ice
     output_oce_flux

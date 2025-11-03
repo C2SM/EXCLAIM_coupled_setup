@@ -1695,8 +1695,8 @@ output_oce_fx(){
 EOF
 }
 
-output_oce_6h(){
-  stream="${EXPNAME}_oce_6h"
+output_oce_3h(){
+  stream="${EXPNAME}_oce_3h"
   mkdir -p "${stream}"
   cat >> ${oce_namelist} << EOF
 &output_nml
@@ -1704,7 +1704,7 @@ output_oce_6h(){
   filename_format            = "${stream}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  output_interval            = "PT6H"     ! interval in ISO-format
+  output_interval            = "PT3H"     ! interval in ISO-format
   file_interval              = "P1D"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)

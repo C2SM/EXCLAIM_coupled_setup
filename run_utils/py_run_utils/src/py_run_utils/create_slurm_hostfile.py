@@ -163,10 +163,15 @@ def create_slurm_hostfile_separate_io():
     tot_io_tasks = atm_io_tasks + oce_io_tasks
     tot_io_nodes = math.ceil(tot_io_tasks / max_tasks_per_io_node)
 
-    compute_nodes = nodes[:-tot_io_nodes]
-    io_nodes = nodes[-tot_io_nodes:]
+    if tot_io_nodes == 0:
+        compute_nodes = nodes
+        io_nodes = []
+    else:
+        compute_nodes = nodes[:-tot_io_nodes]
+        io_nodes = nodes[-tot_io_nodes:]
 
-    n_available_threads = {nid: tot_threads_per_node for nid in nodes}
+    n_available_threads = {nid: tot_threads_per_comp_node for nid in compute_nodes}
+    n_available_threads.update({nid: max_threads_per_io_node for nid in io_nodes})
 
     with open(output_filepath, 'w') as file:
 

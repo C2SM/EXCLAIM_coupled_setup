@@ -54,6 +54,11 @@ for option in "${RUN_OPTIONS[@]}"; do
     fi
 done
 
+if [ "$SEPARATE_IO" = true ] && [ "$TARGET" != "hybrid" ]; then
+    echo "ERROR: Separate IO mode is only supported for the TARGET=hybrid."
+    exit 1
+fi
+
 # Case settings - 1 
 # -----------------
 # Some main settings depend on case settings and vice-versa

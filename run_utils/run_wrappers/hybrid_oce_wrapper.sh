@@ -13,11 +13,19 @@
 GLOBAL_RANK=$SLURM_PROCID
 N_SOCKETS=$(nvidia-smi --list-gpus | wc -l)
 
-# Check if current process is OCE IO
-if [ "$SEPARATE_IO" = true ] && (( GLOBAL_RANK >= TOT_TASKS - OCE_IO_TASKS && GLOBAL_RANK < TOT_TASKS )); then
-    LOCAL_RANK=$SLURM_LOCALID
+if [ "$SEPARATE_IO" = true ]; then
+    # Check if current process is OCE IO
+    if (( GLOBAL_RANK >= TOT_TASKS - OCE_IO_TASKS && GLOBAL_RANK < TOT_TASKS )); then
+        LOCAL_RANK=$SLURM_LOCALID
 
-    export NUMA_NODE=$((LOCAL_RANK % N_SOCKETS))
+        export NUMA_NODE=$((LOCAL_RANK % N_SOCKETS))
+    else
+        LOCAL_RANK=$((SLURM_LOCALID - ATM_COMP_TASKS_PER_NODE))
+
+        ((NON_ATM_COMP_TASKS_PER_SOCKET=(TOT_TASKS_PER_COMP_NODE - ATM_COMP_TASKS_PER_NODE) / N_SOCKETS))
+
+        export NUMA_NODE=$(((LOCAL_RANK / NON_ATM_COMP_TASKS_PER_SOCKET) % N_SOCKETS))
+    fi
 else
     LOCAL_RANK=$((SLURM_LOCALID - ATM_COMP_TASKS_PER_NODE))
 

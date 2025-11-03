@@ -3,7 +3,6 @@
 
 compute_task_distribution_variables(){
 
-   ((ATM_TOT_TASKS = ATM_COMP_TASKS_PER_NODE * SLURM_JOB_NUM_NODES + ATM_IO_TASKS))
 
    if [ "$SEPARATE_IO" = true ]; then
       ((TOT_IO_TASKS = ATM_IO_TASKS + OCE_IO_TASKS))
@@ -12,8 +11,10 @@ compute_task_distribution_variables(){
       ((TOT_IO_NODES = (TOT_IO_TASKS + MAX_TASKS_PER_IO_NODE - 1) / MAX_TASKS_PER_IO_NODE ))
       ((TOT_COMP_NODES = SLURM_JOB_NUM_NODES - TOT_IO_NODES))
 
+      ((ATM_TOT_TASKS = ATM_COMP_TASKS_PER_NODE * TOT_COMP_NODES + ATM_IO_TASKS))
       ((TOT_TASKS = TOT_TASKS_PER_COMP_NODE * TOT_COMP_NODES + TOT_IO_TASKS))
    else
+      ((ATM_TOT_TASKS = ATM_COMP_TASKS_PER_NODE * SLURM_JOB_NUM_NODES + ATM_IO_TASKS))
       ((TOT_TASKS = TOT_TASKS_PER_NODE * SLURM_JOB_NUM_NODES))
    fi
 
@@ -97,17 +98,29 @@ set_environment(){
 }
 
 run_model(){
+   set -x
    case "${TARGET}" in
       "hybrid")
-         srun \
-            -l \
-            --kill-on-bad-exit=1 \
-            --distribution="arbitrary" \
-            --hint="nomultithread" \
-            --ntasks="${TOT_TASKS}" \
-            --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
-            --cpus-per-task="${CPUS_PER_TASK}" \
-            --multi-prog multi-prog.conf
+         if [ "$SEPARATE_IO" = true ]; then
+            srun \
+               -l \
+               --kill-on-bad-exit=1 \
+               --distribution="arbitrary" \
+               --hint="nomultithread" \
+               --ntasks="${TOT_TASKS}" \
+               --cpus-per-task="${CPUS_PER_TASK}" \
+               --multi-prog multi-prog.conf
+         else
+            srun \
+               -l \
+               --kill-on-bad-exit=1 \
+               --distribution="arbitrary" \
+               --hint="nomultithread" \
+               --ntasks="${TOT_TASKS}" \
+               --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
+               --cpus-per-task="${CPUS_PER_TASK}" \
+               --multi-prog multi-prog.conf
+         fi
       ;;
       "cpu-cpu")
          srun \
@@ -132,6 +145,7 @@ run_model(){
             run_utils/run_wrappers/cpu_atm-oce_wrapper.sh ./icon_cpu
       ;;
    esac
+   set +x
 }
 
 restart_model(){

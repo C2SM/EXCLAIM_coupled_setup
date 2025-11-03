@@ -3,8 +3,22 @@
 
 compute_task_distribution_variables(){
 
-   ((ATM_TOT_TASKS = ATM_COMP_TASKS_PER_NODE * SLURM_JOB_NUM_NODES + ATM_IO_TASKS))
-   ((TOT_TASKS = TOT_TASKS_PER_NODE * SLURM_JOB_NUM_NODES))
+
+   if [ "$SEPARATE_IO" = true ]; then
+      ((TOT_IO_TASKS = ATM_IO_TASKS + OCE_IO_TASKS))
+
+      # Adding (MAX_TASKS_PER_IO_NODE - 1) to TOT_IO_TASKS to mimic rounding up the result of the division
+      ((TOT_IO_NODES = (TOT_IO_TASKS + MAX_TASKS_PER_IO_NODE - 1) / MAX_TASKS_PER_IO_NODE ))
+      ((TOT_COMP_NODES = SLURM_JOB_NUM_NODES - TOT_IO_NODES))
+
+      ((ATM_TOT_TASKS = ATM_COMP_TASKS_PER_NODE * TOT_COMP_NODES + ATM_IO_TASKS))
+      ((TOT_TASKS = TOT_TASKS_PER_COMP_NODE * TOT_COMP_NODES + TOT_IO_TASKS))
+   else
+      ((ATM_TOT_TASKS = ATM_COMP_TASKS_PER_NODE * SLURM_JOB_NUM_NODES + ATM_IO_TASKS))
+      ((TOT_TASKS = TOT_TASKS_PER_NODE * SLURM_JOB_NUM_NODES))
+   fi
+
+   export TOT_TASKS
 }
 
 create_multiprog_file(){
@@ -17,14 +31,14 @@ create_multiprog_file(){
    # Write multi-prog distribution to file
    if [[ "${TARGET}" == "hybrid" ]]; then
       cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} run_utils/gpu_wrapper.sh $RUN_OPTIONS ./icon_gpu
-${OCE_MIN_RANK}-${OCE_MAX_RANK} run_utils/cpu_wrapper.sh ./icon_cpu
+${ATM_MIN_RANK}-${ATM_MAX_RANK} run_utils/run_wrappers/hybrid_atm_wrapper.sh ./icon_gpu
+${OCE_MIN_RANK}-${OCE_MAX_RANK} run_utils/run_wrappers/hybrid_oce_wrapper.sh ./icon_cpu
 EOF
       chmod 755 multi-prog.conf
    elif [[ "${TARGET}" == "cpu-cpu" ]]; then
       cat > multi-prog.conf << EOF
-${ATM_MIN_RANK}-${ATM_MAX_RANK} run_utils/cpu_wrapper.sh ./icon_cpu
-${OCE_MIN_RANK}-${OCE_MAX_RANK} run_utils/cpu_wrapper.sh ./icon_cpu
+${ATM_MIN_RANK}-${ATM_MAX_RANK} run_utils/run_wrappers/cpu-cpu_atm_wrapper.sh ./icon_cpu
+${OCE_MIN_RANK}-${OCE_MAX_RANK} run_utils/run_wrappers/cpu-cpu_oce_wrapper.sh ./icon_cpu
 EOF
       chmod 755 multi-prog.conf
    fi
@@ -84,17 +98,29 @@ set_environment(){
 }
 
 run_model(){
+   set -x
    case "${TARGET}" in
       "hybrid")
-         srun \
-            -l \
-            --kill-on-bad-exit=1 \
-            --distribution="arbitrary" \
-            --hint="nomultithread" \
-            --ntasks="${TOT_TASKS}" \
-            --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
-            --cpus-per-task="${CPUS_PER_TASK}" \
-            --multi-prog multi-prog.conf
+         if [ "$SEPARATE_IO" = true ]; then
+            srun \
+               -l \
+               --kill-on-bad-exit=1 \
+               --distribution="arbitrary" \
+               --hint="nomultithread" \
+               --ntasks="${TOT_TASKS}" \
+               --cpus-per-task="${CPUS_PER_TASK}" \
+               --multi-prog multi-prog.conf
+         else
+            srun \
+               -l \
+               --kill-on-bad-exit=1 \
+               --distribution="arbitrary" \
+               --hint="nomultithread" \
+               --ntasks="${TOT_TASKS}" \
+               --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
+               --cpus-per-task="${CPUS_PER_TASK}" \
+               --multi-prog multi-prog.conf
+         fi
       ;;
       "cpu-cpu")
          srun \
@@ -116,9 +142,10 @@ run_model(){
             --ntasks="${TOT_TASKS}" \
             --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
             --cpus-per-task="${CPUS_PER_TASK}" \
-            run_utils/cpu_wrapper.sh ./icon_cpu
+            run_utils/run_wrappers/cpu_atm-oce_wrapper.sh ./icon_cpu
       ;;
    esac
+   set +x
 }
 
 restart_model(){
@@ -150,7 +177,7 @@ restart_model(){
         [ -n "${SBATCH_TIMELIMIT}" ] && export SBATCH_TIMELIMIT
         echo
         SBATCH_OPTIONS="--nodes=${SLURM_NNODES}"
-        submit_cmd="sbatch ${SBATCH_OPTIONS} ${RUNSCRIPT_PATH} ${TARGET} ${RUN_OPTIONS}"
+        submit_cmd="sbatch ${SBATCH_OPTIONS} ${RUNSCRIPT_PATH} ${TARGET} ${RUN_OPTIONS[@]}"
         echo "submitting next chunk starting at ${chunk_start_date} with ${submit_cmd}"
         echo "${submit_cmd}"
         ${submit_cmd}

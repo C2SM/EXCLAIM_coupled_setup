@@ -48,12 +48,12 @@ cd build-gpu && cao_rebuild && cd ..
 To run the coupled setup follow these steps:
 
 ```bash
-# From the base directory navigate to the R02B07 directory
-cd EXCLAIM_coupled_setup/R02B07
+# From the base directory navigate to the EXCLAIM_coupled_setup directory
+cd EXCLAIM_coupled_setup
 
 # Run the experiment for one of the three possible targets: 'hybrid', 'cpu', 'cpu-cpu'
-jid=$(sbatch --parsable exp.EXCLAIM_COUPLED_R02B07.run hybrid)
+jid=$(sbatch --parsable exp.EXCLAIM_COUPLED.run hybrid)
 
 # Inspect the logfile at the end
-less LOG.EXCLAIM_COUPLED_R02B07.${jid}
+less LOG.EXCLAIM_COUPLED.${jid}
 ```

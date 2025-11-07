@@ -168,7 +168,7 @@ restart_model(){
     echo
 
     echo "Accounting"
-    sacct -j "${SLURM_JOB_ID}" --format "ElapsedRaw, CPUTimeRAW, ConsumedEnergyRaw"
+    sacct -j "${SLURM_JOB_ID}" --format "JobID, JobName, AllocCPUs, Elapsed, ElapsedRaw, CPUTimeRAW, ConsumedEnergyRaw, MaxRSS, MaxVMSize, AveRSS"
 
     if [ "${finish_status}" == "RESTART" ]; then
         unset SLURM_HOSTFILE

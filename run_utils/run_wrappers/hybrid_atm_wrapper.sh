@@ -22,7 +22,7 @@ export OMP_NUM_THREADS=1
 export ICON_THREADS=1
 
 if [ "$PROFILE" = true ]; then
-    NSYS_WRAPPER_PATH="$(cd $(dirname $0); pwd)/nsys_wrapper.sh"
+    NSYS_WRAPPER_PATH="$(cd $(dirname $0)/../; pwd)/nsys_wrapper.sh"
 
     numactl --cpunodebind=$NUMA_NODE --membind=$NUMA_NODE bash -c "${NSYS_WRAPPER_PATH} $@"
 else

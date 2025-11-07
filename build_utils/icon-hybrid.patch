@@ -74,7 +74,7 @@ index e75e0f3764..37507e249b 100644
      !$ACC END DATA
  
 diff --git a/src/atm_phy_nwp/mo_nwp_vdiff_interface.f90 b/src/atm_phy_nwp/mo_nwp_vdiff_interface.f90
-index cca9b8cb83..ef117f7134 100644
+index cca9b8cb83..ad3cc586a6 100644
 --- a/src/atm_phy_nwp/mo_nwp_vdiff_interface.f90
 +++ b/src/atm_phy_nwp/mo_nwp_vdiff_interface.f90
 @@ -377,6 +377,8 @@ CONTAINS
@@ -192,7 +192,7 @@ index cca9b8cb83..ef117f7134 100644
      IF (is_coupled_to_ocean() .AND. .NOT. linit) THEN
        CALL sea_model_couple_ocean (&
            & patch=patch, &
-@@ -1346,25 +1380,6 @@ CONTAINS
+@@ -1346,24 +1380,8 @@ CONTAINS
          )
      END IF
  
@@ -214,11 +214,12 @@ index cca9b8cb83..ef117f7134 100644
 -#   undef LIST_CREATE3
 -#   undef LIST_CREATE2
 -#   undef LIST_CREATE1
--
++    !$ACC UPDATE DEVICE(diag_lnd%t_seasfc, diag_lnd%fr_seaice, prog_wtr_new%h_ice, mem%sea_state%ocean_u, &
++    !$ACC               mem%sea_state%ocean_v, mem%sea_state%flx_co2_natural_sea) ASYNC(1)
+ 
    END SUBROUTINE nwp_vdiff
  
- 
-@@ -2075,6 +2090,7 @@ CONTAINS
+@@ -2075,6 +2093,7 @@ CONTAINS
      !$OMP END PARALLEL
  
      !$ACC WAIT(1)
@@ -226,7 +227,7 @@ index cca9b8cb83..ef117f7134 100644
      !$ACC EXIT DATA DELETE(qtvar)
  
    END SUBROUTINE get_stddev_saturation_deficit
-@@ -2153,6 +2169,7 @@ CONTAINS
+@@ -2153,6 +2172,7 @@ CONTAINS
              & flx=vmfl_sft(:,isft) &
            )
        !$ACC WAIT(1)
@@ -234,7 +235,7 @@ index cca9b8cb83..ef117f7134 100644
        !$ACC EXIT DATA DETACH(u_sfc, v_sfc)
      END DO
  
-@@ -2219,6 +2236,7 @@ CONTAINS
+@@ -2219,6 +2239,7 @@ CONTAINS
          CALL copy(p_runoff(:,:), diag_lnd%runoff_s_inst_t(:,:,1), lacc=.TRUE., opt_acc_async=.TRUE.)
          CALL copy(p_drainage(:,:), diag_lnd%runoff_g_inst_t(:,:,1), lacc=.TRUE., opt_acc_async=.TRUE.)
        !$ACC WAIT(1)
@@ -242,7 +243,7 @@ index cca9b8cb83..ef117f7134 100644
        !$ACC EXIT DATA DETACH(p_runoff, p_drainage)
  
        ! Convert runoff rate [kg/(m**2 s)] to the amount of runoff in the current time step
-@@ -2496,6 +2514,7 @@ CONTAINS
+@@ -2496,6 +2517,7 @@ CONTAINS
      !$OMP END PARALLEL
  
      !$ACC WAIT(1)

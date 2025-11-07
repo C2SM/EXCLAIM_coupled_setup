@@ -1,4 +1,6 @@
-R02B07/*
-!R02B07/exp.EXCLAIM_COUPLED_R02B07.run
-!R02B07/inputs.sh
-!R02B07/namelists.sh
+run_utils/py_run_utils/uv.lock
+experiments/*
+!experiments/exp.EXCLAIM_COUPLED.run
+!experiments/inputs.sh
+!experiments/namelists.sh
+!experiments/settings*.sh

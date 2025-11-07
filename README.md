@@ -48,12 +48,28 @@ cd build-gpu && cao_rebuild && cd ..
 To run the coupled setup follow these steps:
 
 ```bash
-# From the base directory navigate to the EXCLAIM_coupled_setup directory
-cd EXCLAIM_coupled_setup
+# From the base directory navigate to the EXCLAIM_coupled_setup/experiments directory
+cd EXCLAIM_coupled_setup/experiments
+
+# Select the case you want to run: 'R02B07-R02B07' (default), 'R02B08-R02B09', 'R02B10-R02B10'
+export CASE='R02B07-R02B07'
 
 # Run the experiment for one of the three possible targets: 'hybrid', 'cpu', 'cpu-cpu'
 jid=$(sbatch --parsable exp.EXCLAIM_COUPLED.run hybrid)
 
 # Inspect the logfile at the end
 less LOG.EXCLAIM_COUPLED.${jid}
+```
+
+### Run Options
+
+We provide the following running options:
+
+- `--profile`: Run the Nsight Systems profiler and generate a profile file that can be inspected with *nsys-ui*.
+- `--separate-io`: Distribute the IO tasks of both ocean and atmosphere components on nodes that do not have compute tasks.
+
+You can add these options at the end of the sbatch command in any order. All of them are turned off by default if not provided.
+
+```bash
+jid=$(sbatch --parsable exp.EXCLAIM_COUPLED.run hybrid --profile)
 ```

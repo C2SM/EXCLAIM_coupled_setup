@@ -1,3 +1,4 @@
+run_utils/py_run_utils/uv.lock
 experiments/*
 !experiments/exp.EXCLAIM_COUPLED.run
 !experiments/inputs.sh

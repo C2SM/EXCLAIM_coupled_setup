@@ -68,7 +68,7 @@ We provide the following running options:
 - `--profile`: Run the Nsight Systems profiler and generate a profile file that can be inspected with *nsys-ui*.
 - `--separate-io`: Distribute the IO tasks of both ocean and atmosphere components on nodes that do not have compute tasks.
 
-You can add these options at the end of the sbatch command in any order. All of them are turned off by default if not provided.
+You can add these options at the end of the `sbatch` command in any order. All of them are turned off by default if not provided.
 
 ```bash
 jid=$(sbatch --parsable exp.EXCLAIM_COUPLED.run hybrid --profile)

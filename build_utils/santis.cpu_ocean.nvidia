@@ -54,7 +54,7 @@ CPPFLAGS="-I${uenv_view_path}/include/libxml2 -I${uenv_view_path}/include"
 CXX='mpicxx'
 
 FC='mpif90'
-FCFLAGS="-g -traceback -O2 -Mrecursive -Mallocatable=03 -Mpreprocess -Mstack_arrays ${SERIALBOXI} ${ECCODESI} ${NETCDFFI} -D__SWAPDIM -DNO_RTTOV"
+FCFLAGS="-g -traceback -O2 -Mrecursive -Mallocatable=03 -Mpreprocess -Mstack_arrays ${SERIALBOXI} ${ECCODESI} ${NETCDFFI} -D__SWAPDIM -DNO_RTTOV -D_USE_NVTX"
 LDFLAGS="-L${uenv_view_path}/lib64 -L${uenv_view_path}/lib -nvmalloc"
 
 FYAML_LIBS='-lfyaml'
@@ -65,7 +65,7 @@ FYAML_LIBS='-lfyaml'
 # LD_LIBRARY_PATH in advance (e.g. by loading an environment module). To solve
 # this issue, we overlink to libomptarget.so so that it can be found through
 # RPATH entries of the executable, which are injected by the compiler.
-LIBS="-Wl,--as-needed ${XML2_LIBS} ${BLAS_LAPACK_LIBS} ${SERIALBOX2_LIBS} ${FYAML_LIBS} ${STDCPP_LIBS} ${NETCDF_LIBS}"
+LIBS="-Wl,--as-needed ${XML2_LIBS} ${BLAS_LAPACK_LIBS} ${SERIALBOX2_LIBS} ${FYAML_LIBS} ${STDCPP_LIBS} ${NETCDF_LIBS} -lnvhpcwrapnvtx"
 
 CUDAARCHS='90'
 NVCC='nvcc'

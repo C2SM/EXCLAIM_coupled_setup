@@ -54,7 +54,7 @@ CPPFLAGS="-I${uenv_view_path}/include/libxml2 -I${uenv_view_path}/include"
 CXX='mpicxx'
 
 FC='mpif90'
-FCFLAGS="-g -traceback -O2 -acc=gpu,verystrict -Minfo=accel,inline -Mrecursive -Mallocatable=03 -Mpreprocess -Mstack_arrays ${SERIALBOXI} ${ECCODESI} ${NETCDFFI} -D__SWAPDIM -DNO_RTTOV"
+FCFLAGS="-g -traceback -O2 -acc=gpu,verystrict -Minfo=accel,inline -Mrecursive -Mallocatable=03 -Mpreprocess -Mstack_arrays ${SERIALBOXI} ${ECCODESI} ${NETCDFFI} -D__SWAPDIM -DNO_RTTOV -D_USE_NVTX"
 LDFLAGS="-L${uenv_view_path}/lib64 -L${uenv_view_path}/lib -L/user-environment/linux-sles15-neoverse_v2/gcc-13.2.0/cuda-12.6.0-cqxe545cshmxocfoqzdwolerb4i447t5/lib64 -nvmalloc"
 
 FYAML_LIBS='-lfyaml'
@@ -67,7 +67,7 @@ export LD_LIBRARY_PATH=/user-environment/linux-sles15-neoverse_v2/gcc-13.2.0/cud
 # LD_LIBRARY_PATH in advance (e.g. by loading an environment module). To solve
 # this issue, we overlink to libomptarget.so so that it can be found through
 # RPATH entries of the executable, which are injected by the compiler.
-LIBS="-Wl,--as-needed ${XML2_LIBS} ${BLAS_LAPACK_LIBS} ${SERIALBOX2_LIBS} ${FYAML_LIBS} ${STDCPP_LIBS} ${NETCDF_LIBS} -lcudart"
+LIBS="-Wl,--as-needed ${XML2_LIBS} ${BLAS_LAPACK_LIBS} ${SERIALBOX2_LIBS} ${FYAML_LIBS} ${STDCPP_LIBS} ${NETCDF_LIBS} -lcudart -lnvhpcwrapnvtx"
 
 CUDAARCHS='90'
 NVCC='nvcc'

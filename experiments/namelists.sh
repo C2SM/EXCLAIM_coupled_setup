@@ -477,7 +477,7 @@ output_atm_mon2d(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "P1M"                     ! the output interval and
+ output_interval         = "P1D"                     ! the output interval and
  file_interval           = "P1M"                     ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1

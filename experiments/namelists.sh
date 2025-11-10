@@ -656,8 +656,8 @@ output_lnd_dbg(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
+ output_interval         = "PT1H"  ! the output interval and
+ file_interval           = "P1D"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
@@ -686,8 +686,8 @@ output_hyd_dbg(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
+ output_interval         = "PT1H"  ! the output interval and
+ file_interval           = "P1D"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode

@@ -170,10 +170,6 @@ case "${exptype}" in
         ;;
 esac
 
-# output intervals
-atm_file_interval="P1M"
-atm_output_interval=${all_output_interval}
-
 # Ocean settings
 # --------------
 ocean_grid_target="icon_grid_${ocean_gridID}_${ocean_refinement}_O.nc"
@@ -181,10 +177,6 @@ VERT_COR=1
 ocean_vertical_levels="L72"
 use_hamocc="no"
 start_fx=${start_date}  # output time of geometry file fx
-
-# output intervals
-oce_file_interval="P1M"
-oce_output_interval=${all_output_interval}
 
 # Task distribution
 # -----------------

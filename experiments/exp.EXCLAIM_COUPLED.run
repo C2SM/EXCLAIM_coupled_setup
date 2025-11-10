@@ -122,8 +122,6 @@ if [ "${chunk_start_year}" !=  "${chunk_end_year}" ]; then
     exit 1
 fi
 
-all_output_interval="P1D"      # monthly output - production
-
 # Type of experiment
 # ------------------
 export exptype=${exptype:-"control"} # "hist"

@@ -500,7 +500,7 @@ output_atm_mean3d(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "PT1H"                     ! the output interval and
+ output_interval         = "P1D"                     ! the output interval and
  file_interval           = "P1M"                     ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
@@ -525,7 +525,7 @@ output_atm_mean(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "PT1H"                     ! the output interval and
+ output_interval         = "P1D"                     ! the output interval and
  file_interval           = "P1M"                     ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
@@ -1752,7 +1752,7 @@ output_oce_day(){
   filename_format            = "${stream}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  output_interval            = "PT1H"     ! interval in ISO-format
+  output_interval            = "P1D"     ! interval in ISO-format
   file_interval              = "P1D"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
@@ -1866,7 +1866,7 @@ output_oce_moc(){
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
   output_interval            = "P1M"
-  file_interval              = "P1M"
+  file_interval              = "P1D"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
   include_last               = .FALSE.

@@ -72,7 +72,7 @@ source "settings_${CASE}.sh"
 
 # Load Auxiliary functions
 # ------------------------
-source run_utils/run_tools.sh
+source ../run_utils/run_tools.sh
 source namelists.sh
 source inputs.sh
 
@@ -82,7 +82,7 @@ export EXPNAME=${EXPNAME:-"EXCLAIM_coupled_${CASE}_${TARGET}"}
 
 # Base ICON directory
 # -------------------
-export basedir=${basedir:-"${RUNSCRIPT_DIR}/../icon-hybrid"}
+export basedir=${basedir:-"${RUNSCRIPT_DIR}/../../icon-hybrid"}
 
 # Executables
 # -----------

@@ -560,7 +560,7 @@ stream="${EXPNAME}_energy_budget"
  !reg_lon_def             = 0.,1.,360.
  !reg_lat_def             = -90.,1.,90.
  operation               = "mean"                    ! works on icon grid only (remap=0)
-   ml_varlist = 'group:jsb_seb_basic', 'shfl_s', 'lhfl_s', 'thb_s', 'sou_s', 'sob_s', 'thb_t', 'sou_t', 'sod_t', 'sob_t'
+   ml_varlist = 'group:jsb_seb_basic', 'shfl_s', 'lhfl_s', 'thb_s', 'sou_s', 'sob_s', 'thb_t', 'sou_t', 'sod_t', 'sob_t', 'seb_forc_hflx_box'
 /
 EOF
 }

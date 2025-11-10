@@ -492,15 +492,15 @@ output_atm_mon2d(){
 EOF
 }
 
-output_atm_mean(){
+output_atm_mean3d(){
   # native time mean output 2-dim averaged over OUTPUT_INTERVAL:
-  stream="${EXPNAME}_atm_mean"
+  stream="${EXPNAME}_atm_mean3d"
   mkdir -p "${stream}"
   cat >> ${atm_namelist} << EOF
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "P1D"                     ! the output interval and
+ output_interval         = "PT1H"                     ! the output interval and
  file_interval           = "P1M"                     ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
@@ -510,8 +510,32 @@ output_atm_mean(){
  output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
- pl_varlist              = 'qv', 'pres_sfc', 'u', 'v', 't_2m'
+ pl_varlist              = 'u', 'v',
  p_levels                = 100,200,300,500,700,1000,2000,3000,5000,7000,10000,12500,15000,17500,20000,22500,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,77500,80000,82500,85000,87500,90000,92500,95000,97500,100000
+
+/
+EOF
+}
+
+output_atm_mean(){
+  # native time mean output 2-dim averaged over OUTPUT_INTERVAL:
+  stream="${EXPNAME}_atm_mean"
+  mkdir -p "${stream}"
+  cat >> ${atm_namelist} << EOF
+&output_nml
+ output_start            = "${start_date}"
+ output_end              = "${end_date}"
+ output_interval         = "PT1H"                     ! the output interval and
+ file_interval           = "P1M"                     ! the file interval
+ filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
+ dom                     = -1
+ mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
+ include_last            = .FALSE.                   ! flag whether to include the last time step
+ filename_format         = "${stream}/${stream}_<datetime2>"
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
+ remap                   = 0                         ! 1: latlon,  0: native grid
+ operation               = "mean"                    ! works on icon grid only (remap=0)
+ ml_varlist              = 'pres_sfc', 'qv', 't_2m'
 
 /
 EOF
@@ -1712,7 +1736,8 @@ output_oce_3h(){
   output_grid                = .FALSE.
   operation                  = "mean"
   m_levels                   = "1"
-  !m_levels                   = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
+  !m_levels                   = "1...25,29,34,41,44,51,55,60,65,69"  ! surface - 200m all levels, 300, 500, 800, 1000, 1500, 2000m, 3000m, 4000, 5000m
+
   ml_varlist                 = 'ssh', 'tos', 'sos', 'zos', 'mld', 'mlotst10', 'u', 'v', 'atmos_fluxes_stress_x','atmos_fluxes_stress_y'
 /
 EOF
@@ -1727,14 +1752,14 @@ output_oce_day(){
   filename_format            = "${stream}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  output_interval            = "P1D"     ! interval in ISO-format
+  output_interval            = "PT1H"     ! interval in ISO-format
   file_interval              = "P1D"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
   include_last               = .FALSE.
   output_grid                = .FALSE.
   operation                  = "mean"
-  m_levels                   = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
+  m_levels                   = "1...25,29,34,41,44,51,55,60,65,69"  ! surface - 200m all levels, 300, 500, 800, 1000, 1500, 2000m, 3000m, 4000, 5000m
   ml_varlist                 = 'to', 'so', 'u', 'v', 'w', 'rhopot', 'rho', 'u_vint', 'v_vint', 'heat_content_snow', 'heat_content_seaice', 'heat_content_total', 'heat_content_300m', 'heat_content_700m', 'rsdoabsorb', 'swrab', 'swsum', 'heatabs', 'mass_flux',
 /
 EOF
@@ -1756,7 +1781,7 @@ output_oce_ice(){
   output_grid      = .FALSE.
   filename_format  = "${stream}/${stream}_<datetime2>"
   filetype         =  5                               ! output format: 2=GRIB2, 4=NETCDFv2, 5=NETCDFv4
-  !m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
+  !m_levels                   = "1...25,29,34,41,44,51,55,60,65,69"  ! surface - 200m all levels, 300, 500, 800, 1000, 1500, 2000m, 3000m, 4000, 5000m
   ml_varlist       =  'draftave','hi','hs','conc','verticallyTotal_mass_flux_e', 'ice_u','ice_v',
                       'Qtop', 'Qbot', 'snow_to_ice', 'newice','FrshFlux_TotalIce'
 /
@@ -1779,7 +1804,7 @@ output_oce_flux(){
   output_grid      = .FALSE.
   filename_format  = "${stream}/${stream}_<datetime2>"
   filetype         =  5                               ! output format: 2=GRIB2, 4=NETCDFv2, 5=NETCDFv4
-  !m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
+  m_levels                   = "1...25,29,34,41,44,51,55,60,65,69"  ! surface - 200m all levels, 300, 500, 800, 1000, 1500, 2000m, 3000m, 4000, 5000m
   ml_varlist       = 'HeatFlux_Total','atmos_fluxes_HeatFlux_ShortWave','atmos_fluxes_HeatFlux_LongWave',
                       'HeatFlux_ShortWave','HeatFlux_LongWave','HeatFlux_Sensible','HeatFlux_Latent',
                       'FrshFlux_Runoff','FrshFlux_Precipitation','FrshFlux_Evaporation','FrshFlux_SnowFall',

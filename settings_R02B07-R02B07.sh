@@ -64,7 +64,8 @@ coupled_streams(){
     # -----------------
     output_atm_mon
     output_atm_mon2d
-    ouptut_atm_mean
+    output_atm_mean
+    #output_atm_mean3d
     output_energy_budget
     output_atm_latlon
     output_jsb_2d

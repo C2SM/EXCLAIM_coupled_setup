@@ -122,8 +122,6 @@ if [ "${chunk_start_year}" !=  "${chunk_end_year}" ]; then
     exit 1
 fi
 
-all_output_interval="PT300S"      # monthly output - production
-
 # Type of experiment
 # ------------------
 export exptype=${exptype:-"control"} # "hist"
@@ -170,11 +168,6 @@ case "${exptype}" in
         ;;
 esac
 
-# output intervals
-atm_file_interval="P1M"
-atm_output_interval=${all_output_interval}
-atm_hfreq_output_interval="PT6H"
-
 # Ocean settings
 # --------------
 ocean_grid_target="icon_grid_${ocean_gridID}_${ocean_refinement}_O.nc"
@@ -182,11 +175,6 @@ VERT_COR=1
 ocean_vertical_levels="L72"
 use_hamocc="no"
 start_fx=${start_date}  # output time of geometry file fx
-
-# output intervals
-oce_file_interval="P1M"
-oce_output_interval=${all_output_interval}
-oce_output_interval_def="P1D"
 
 # Task distribution
 # -----------------

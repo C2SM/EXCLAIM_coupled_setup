@@ -63,26 +63,24 @@ coupled_streams(){
     # Atmosphere / Land
     # -----------------
     output_atm_mon
-    output_atm_2d
+    output_atm_mon2d
+    output_atm_mean
+    #output_atm_mean3d
     output_energy_budget
-    output_atm_hfreq
-    output_atm_3d
     output_atm_latlon
-    # output_atm_icon
-    # output_atm_spot
     output_jsb_2d
     output_lnd_mon
     # output_lnd_dbg
     # output_hyd_dbg
-    # output_lnd_wat
-    # output_atm_alb
 
     # Ocean
     # -----
     output_oce_fx
-    output_oce_def
+    output_oce_3h
+    output_oce_day
     output_oce_ice
     output_oce_flux
     output_oce_mon
+    output_oce_mon2d
     output_oce_moc
 }

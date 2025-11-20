@@ -456,8 +456,8 @@ output_atm_mon(){
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
+ output_interval         = "P1D"                     ! the output interval and
+ file_interval           = "P1M"                     ! the file interval
  mode                    = 1                         ! 1: forecast mode (relative t-axis)
  operation               = "mean"                    ! works on icon grid only (remap=0)
  remap                   = 0                         ! 1: latlon,  0: native grid
@@ -469,103 +469,98 @@ output_atm_mon(){
 EOF
 }
 
-output_atm_2d(){
+output_atm_mon2d(){
   # native time mean output 2-dim averaged over OUTPUT_INTERVAL:
-  stream="${EXPNAME}_atm_2d_ml"
+  stream="${EXPNAME}_atm_mon2d"
   mkdir -p "${stream}"
   cat >> ${atm_namelist} << EOF
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
+ output_interval         = "P1D"                     ! the output interval and
+ file_interval           = "P1M"                     ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
  filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
- ml_varlist              = 'pres_msl', 'pres_sfc', 't_s', 'clct', 'tot_prec_rate',
-                           'tqv', 'tqv_dia', 'tqc_dia', 'tqi_dia', 'umfl_s', 'vmfl_s', 'sp_10m', 't_2m',
-                           'sob_t', 'sod_t', 'sou_t', 'thb_t', 'sob_s', 'sou_s', 'thb_s', 'shfl_s', 'lhfl_s',
-                           'snow_con_rate', 'snow_gsp_rate', 'ice_gsp_rate', 'qifl_s', 'qhfl_s',
-                           't_seasfc', 'fr_land', 'fr_seaice', 'condhf_ice', 'meltpot_ice', 't_ice', 'h_ice',
-                           'albvisdif', 'albvisdir', 'albnirdif', 'albnirdir'
+ ml_varlist              = 't_2m', 'sp_10m'
+/
+EOF
+}
+
+output_atm_mean3d(){
+  # native time mean output 2-dim averaged over OUTPUT_INTERVAL:
+  stream="${EXPNAME}_atm_mean3d"
+  mkdir -p "${stream}"
+  cat >> ${atm_namelist} << EOF
+&output_nml
+ output_start            = "${start_date}"
+ output_end              = "${end_date}"
+ output_interval         = "P1D"                     ! the output interval and
+ file_interval           = "P1M"                     ! the file interval
+ filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
+ dom                     = -1
+ mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
+ include_last            = .FALSE.                   ! flag whether to include the last time step
+ filename_format         = "${stream}/${stream}_<datetime2>"
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
+ remap                   = 0                         ! 1: latlon,  0: native grid
+ operation               = "mean"                    ! works on icon grid only (remap=0)
+ pl_varlist              = 'u', 'v',
+ p_levels                = 100,200,300,500,700,1000,2000,3000,5000,7000,10000,12500,15000,17500,20000,22500,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,77500,80000,82500,85000,87500,90000,92500,95000,97500,100000
+
+/
+EOF
+}
+
+output_atm_mean(){
+  # native time mean output 2-dim averaged over OUTPUT_INTERVAL:
+  stream="${EXPNAME}_atm_mean"
+  mkdir -p "${stream}"
+  cat >> ${atm_namelist} << EOF
+&output_nml
+ output_start            = "${start_date}"
+ output_end              = "${end_date}"
+ output_interval         = "P1D"                     ! the output interval and
+ file_interval           = "P1M"                     ! the file interval
+ filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
+ dom                     = -1
+ mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
+ include_last            = .FALSE.                   ! flag whether to include the last time step
+ filename_format         = "${stream}/${stream}_<datetime2>"
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
+ remap                   = 0                         ! 1: latlon,  0: native grid
+ operation               = "mean"                    ! works on icon grid only (remap=0)
+ ml_varlist              = 'pres_sfc', 'qv', 't_2m'
+
 /
 EOF
 }
 
 output_energy_budget(){
-  stream="${EXPNAME}_energy_budget"
+stream="${EXPNAME}_energy_budget"
   mkdir -p "${stream}"
   cat >> ${atm_namelist} << EOF
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "P1Y"                     ! the output interval and
- file_interval           = "P1Y"    ! the file interval
+ output_interval         = "P1M"                     ! the output interval and
+ file_interval           = "P1Y"                     ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
  filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  !reg_lon_def             = 0.,1.,360.
  !reg_lat_def             = -90.,1.,90.
  operation               = "mean"                    ! works on icon grid only (remap=0)
-   ml_varlist = 'group:jsb_seb_basic', 'shfl_s', 'lhfl_s', 'thb_s', 'sou_s', 'sob_s', 'thb_t', 'sou_t', 'sod_t', 'sob_t'
-/
-EOF
-}
-
-output_atm_hfreq(){
-  # native high-frequency time mean output 3-dim averaged:
-  stream="${EXPNAME}_atm_hfreq_ml"
-  mkdir -p "${stream}"
-  cat >> ${atm_namelist} << EOF
-&output_nml
- output_start            = "${start_date}"
- output_end              = "${end_date}"
- output_interval         = "${atm_hfreq_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
- filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
- dom                     = -1
- mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
- include_last            = .FALSE.                   ! flag whether to include the last time step
- filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
- remap                   = 0                         ! 1: latlon,  0: native grid
- operation               = "mean"                    ! works on icon grid only (remap=0)
- !ml_varlist              = 'pres', 'geopot', 'temp', 'u', 'v', 'w','rho'
- ml_varlist              = 'pres_sfc', 'pres', 'geopot', 'temp', 'u', 'v', 'w' ! , 'rho'
-/
-EOF
-}
-
-
-output_atm_3d(){
-  # native time mean output 3-dim averaged over OUTPUT_INTERVAL:
-  stream="${EXPNAME}_atm_3d_ml"
-  mkdir -p "${stream}"
-  cat >> ${atm_namelist} << EOF
-&output_nml
- output_start            = "${start_date}"
- output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
- filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
- dom                     = -1
- mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
- include_last            = .FALSE.                   ! flag whether to include the last time step
- filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
- remap                   = 0                         ! 1: latlon,  0: native grid
- operation               = "mean"                    ! works on icon grid only (remap=0)
- !ml_varlist              = 'pres', 'geopot', 'temp', 'u', 'v', 'qv', 'rh', 'clc', 'tot_qc_dia', 'tot_qi_dia'
- ml_varlist              = 'pres', 'geopot', 'temp', 'u', 'v', 'qv', 'rh', 'clc', 'tot_qc_dia', 'tot_qi_dia', 'runoff_s','runoff_g'
+   ml_varlist = 'group:jsb_seb_basic', 'shfl_s', 'lhfl_s', 'thb_s', 'sou_s', 'sob_s', 'thb_t', 'sou_t', 'sod_t', 'sob_t', 'seb_forc_hflx_box'
 /
 EOF
 }
@@ -602,61 +597,6 @@ output_atm_latlon(){
 EOF
 }
 
-output_atm_icon(){
-  # native time mean output (debug), averaged over OUTPUT_INTERVAL:
-  stream="${EXPNAME}_atm_icon"
-  mkdir -p "${stream}"
-  cat >> ${atm_namelist} << EOF
-&output_nml
- output_start            = "${start_date}"
- output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
- filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
- dom                     = -1
- mode                    = 1                         ! 1: forecast mode (relative t-axis)
- include_last            = .FALSE.                   ! set to false for asynchron output
- filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
- remap                   = 0                         ! 1: latlon,  0: native grid
- operation               = "mean"                    ! works on icon grid only (remap=0)
- ml_varlist              = 'pres_sfc', 'tot_prec_rate', 'sp_10m', 't_2m', 't_g', 'tqv', 'clct', 'h_ice', 't_ice',
-                           'shfl_s', 'lhfl_s', 'thb_s', 'sob_s','condhf_ice'
- !                         'shfl_s_t_7', 'shfl_s_t_9', 'lhfl_s_t_7', 'lhfl_s_t_9',
- !                         'thb_s_t_7', 'thb_s_t_9', 'sob_s_t_7', 'sob_s_t_9',
- !                         'frac_t_7', 'frac_t_8', 'frac_t_9'
-/
-EOF
-}
-
-output_atm_spot(){
-  # native spot value (debug) output 2d and
-  stream="${EXPNAME}_atm_spot"
-  mkdir -p "${stream}"
-  cat >> ${atm_namelist} << EOF
-&output_nml
- output_start            = "${start_date}"
- output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
- filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
- dom                     = -1
- mode                    = 1                         ! 1: forecast mode (relative t-axis)
- include_last            = .FALSE.                   ! set to false for asynchron output
- filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
- remap                   = 0                         ! 1: latlon,  0: native grid
- !operation               = "mean"                    ! works on icon grid only (remap=0)
- ml_varlist              = 'pres_sfc', 'tot_prec_rate', 'sp_10m', 't_2m', 't_g', 'tqv', 'clct', 'h_ice', 't_ice',
-                           'shfl_s', 'lhfl_s', 'thb_s', 'sob_s','condhf_ice',
-                           'fr_land', 'fr_lake', 'fr_seaice', 't_seasfc', 'lsm_switch', 'lsm_ctr_c', 'topography_c'
- !                         'shfl_s_t_7', 'shfl_s_t_9', 'lhfl_s_t_7', 'lhfl_s_t_9',
- !                         'thb_s_t_7', 'thb_s_t_9', 'sob_s_t_7', 'sob_s_t_9',
- !                         'condhf_ice', 'frac_t_7', 'frac_t_8', 'frac_t_9',
-/
-EOF
-}
-
 output_jsb_2d(){
   stream="${EXPNAME}_jsb_2d"
   mkdir -p "${stream}"
@@ -664,14 +604,14 @@ output_jsb_2d(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
+ output_interval         = "P1D"  ! the output interval and
+ file_interval           = "P1M"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
  filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
    ml_varlist = 'group:jsb_seb_basic'!,'group:jsb_all_basic'
@@ -686,14 +626,14 @@ output_lnd_mon(){
 &output_nml ! 'lnd_mon'
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
+ output_interval         = "P1D"  ! the output interval and
+ file_interval           = "P1M"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
  filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
   ! ml_varlist = 'hd_water_error_gsum_box',
@@ -716,14 +656,14 @@ output_lnd_dbg(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
+ output_interval         = "PT1H"  ! the output interval and
+ file_interval           = "P1D"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
  filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  !operation               = "mean"                    ! works on icon grid only (remap=0)
  ml_varlist              = 'u', 'v', 'w', 'temp', 'theta_v', 'exner', 'pres', 'pres_msl', 'rho', 'rho_ic',
@@ -746,67 +686,18 @@ output_hyd_dbg(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
+ output_interval         = "PT1H"  ! the output interval and
+ file_interval           = "P1D"    ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
  filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
+ output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  !operation               = "mean"                    ! works on icon grid only (remap=0)
  ml_varlist              = 'group:land_vars'
 
-/
-EOF
-}
-
-output_lnd_wat(){
-  # instantaneous output of water content box:
-  stream="${EXPNAME}_jsb_wbal"
-  mkdir -p "${stream}"
-  cat >> ${atm_namelist} << EOF
-&output_nml
- output_start            = "${start_date}"
- output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
- filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
- dom                     = -1
- mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
- include_last            = .FALSE.                   ! flag whether to include the last time step
- filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
- remap                   = 0                         ! 1: latlon,  0: native grid
- !operation               = "mean"                    ! works on icon grid only (remap=0)
- !ml_varlist              = 'hydro_water_content_box'
- ml_varlist              = 'hydro_weq_fluxes_box', 'hydro_weq_land_box', 'hydro_weq_balance_err_box',
-                           'hydro_runoff_box'   , 'hydro_drainage_box',
-                           'hd_water_budget_box', 'hd_local_wbal_error_box'
-/
-EOF
-}
-
-output_atm_alb(){
-# additional output of atmosphere albedo: albnir
-  stream="${EXPNAME}_atm_alb"
-  mkdir -p "${stream}"
-  cat >> ${atm_namelist} << EOF
-&output_nml
- output_start            = "${start_date}"
- output_end              = "${end_date}"
- output_interval         = "${atm_output_interval}"  ! the output interval and
- file_interval           = "${atm_file_interval}"    ! the file interval
- filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
- dom                     = -1
- mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
- include_last            = .FALSE.                   ! flag whether to include the last time step
- filename_format         = "${stream}/${stream}_<datetime2>"
- output_grid             = .TRUE.                    ! flag whether grid information is added to output.
- remap                   = 0                         ! 1: latlon,  0: native grid
- !operation               = "mean"                    ! works on icon grid only (remap=0)
- ml_varlist              = 'albvisdif', 'albvisdir', 'albnirdif', 'albnirdir', 'albdif'
 /
 EOF
 }
@@ -818,10 +709,10 @@ dyamond_stream_1_1(){
     # => This needs to be interpolated onto 10KM (25KM for Dyamond)
     stream="${EXPNAME}_dyamond_atm_1_1"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_1_1/${EXPNAME}_out_1_1_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_1_1_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -830,7 +721,7 @@ dyamond_stream_1_1(){
  include_last    = .true.
  pl_varlist      = 'geopot','qv','rh'
  p_levels        = 100,200,300,500,700,1000,2000,3000,5000,7000,10000,12500,15000,17500,20000,22500,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,77500,80000,82500,85000,87500,90000,92500,95000,97500,100000
- output_grid     = .true.
+ output_grid     = .TRUE.
  mode            = 1
 /
 EOF
@@ -842,10 +733,10 @@ dyamond_stream_1_2(){
     # => This needs to be interpolated onto 10KM (25KM for Dyamond)
     stream="${EXPNAME}_dyamond_atm_1_2"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_1_2/${EXPNAME}_out_1_2_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_1_2_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -854,7 +745,7 @@ dyamond_stream_1_2(){
  include_last    = .true.
  pl_varlist      = 'qc','qr','qi'
  p_levels        = 100,200,300,500,700,1000,2000,3000,5000,7000,10000,12500,15000,17500,20000,22500,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,77500,80000,82500,85000,87500,90000,92500,95000,97500,100000
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -863,10 +754,10 @@ EOF
 dyamond_stream_1_3(){
     stream="${EXPNAME}_dyamond_atm_1_3"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_1_3/${EXPNAME}_out_1_3_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_1_3_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -875,7 +766,7 @@ dyamond_stream_1_3(){
  include_last    = .true.
  pl_varlist      = 'qs','qg','temp'
  p_levels        = 100,200,300,500,700,1000,2000,3000,5000,7000,10000,12500,15000,17500,20000,22500,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,77500,80000,82500,85000,87500,90000,92500,95000,97500,100000
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -884,10 +775,10 @@ EOF
 dyamond_stream_1_4(){
     stream="${EXPNAME}_dyamond_atm_1_4"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_1_4/${EXPNAME}_out_1_4_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_1_4_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -896,7 +787,7 @@ dyamond_stream_1_4(){
  include_last    = .true.
  pl_varlist      = 'u','v','w'
  p_levels        = 100,200,300,500,700,1000,2000,3000,5000,7000,10000,12500,15000,17500,20000,22500,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,77500,80000,82500,85000,87500,90000,92500,95000,97500,100000
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -906,10 +797,10 @@ EOF
 dyamond_stream_1_5(){
     stream="${EXPNAME}_dyamond_atm_1_5"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_1_5/${EXPNAME}_out_1_5_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_1_5_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -918,7 +809,7 @@ dyamond_stream_1_5(){
  include_last    = .true.
  pl_varlist      = 'omega','rho','pv','tke'
  p_levels        = 100,200,300,500,700,1000,2000,3000,5000,7000,10000,12500,15000,17500,20000,22500,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,77500,80000,82500,85000,87500,90000,92500,95000,97500,100000
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -927,10 +818,10 @@ EOF
 dyamond_stream_2(){
     stream="${EXPNAME}_dyamond_atm_2"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_2/${EXPNAME}_out_2_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_2_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -938,7 +829,7 @@ dyamond_stream_2(){
  file_interval   = "P1D"
  ml_varlist      = 'tot_prec','DHAIL_MX'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -947,10 +838,10 @@ EOF
 dyamond_stream_3(){
     stream="${EXPNAME}_dyamond_atm_3" 
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_3/${EXPNAME}_out_3_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_3_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -958,7 +849,7 @@ dyamond_stream_3(){
  file_interval   = "P1D"
  ml_varlist      = 'pres_sfc','pres_msl','u_10m','v_10m','qv_2m','t_2m','tqc','tqi','tqv','tqr','h_snow','gust10'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -967,10 +858,10 @@ EOF
 dyamond_stream_4(){
     stream="${EXPNAME}_dyamond_atm_4"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_4/<output_filename>${EXPNAME}_out_4_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_4_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -979,7 +870,7 @@ dyamond_stream_4(){
  hl_varlist      = 'u','v','w'
  h_levels        =  10.0, 500.0, 2500, 5000, 7500
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -988,10 +879,10 @@ EOF
 dyamond_stream_5(){
     stream="${EXPNAME}_dyamond_atm_5"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_5/${EXPNAME}_out_5_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_5_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -999,7 +890,7 @@ dyamond_stream_5(){
  file_interval   = "P1D"
  ml_varlist      = 'qhfl_s','lhfl_s','shfl_s', 'umfl_s','vmfl_s','pres_sfc','pres_msl'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -1008,10 +899,10 @@ EOF
 dyamond_stream_6(){
     stream="${EXPNAME}_dyamond_atm_6"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_6/${EXPNAME}_out_6_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_6_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1019,7 +910,7 @@ dyamond_stream_6(){
  file_interval   = "P1D"
  ml_varlist      = 'thu_s','sob_s','sob_t','sod_t','sodifd_s','thb_s','sou_s','thb_t','sobclr_s','sou_t','thbclr_s'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -1034,10 +925,10 @@ EOF
 dyamond_stream_7(){
     stream="${EXPNAME}_dyamond_atm_7"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_7/${EXPNAME}_out_7_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_7_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1045,7 +936,7 @@ dyamond_stream_7(){
  file_interval   = "P1D"
  ml_varlist      = 'clct','clcm','clcl','clch','qv_2m','rh_2m','t_2m','t_g','td_2m','u_10m','v_10m','sp_10m','gust10'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -1054,10 +945,10 @@ EOF
 dyamond_stream_8(){
     stream="${EXPNAME}_dyamond_atm_8"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_8/${EXPNAME}_out_8_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_8_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1065,7 +956,7 @@ dyamond_stream_8(){
  file_interval   = "P1D"
  include_last    = .true.
  ml_varlist      = 'cape_ml','cape','lcl_ml','lfc_ml','cin_ml','DBZ_CMAX','GRAUPEL_GSP'
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -1075,10 +966,10 @@ EOF
 dyamond_stream_9(){
     stream="${EXPNAME}_dyamond_atm_9"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_9/${EXPNAME}_out_9_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_9_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1086,7 +977,7 @@ dyamond_stream_9(){
  file_interval   = "P1D"
  ml_varlist      = 'smi','w_i','t_so','w_so','freshsnow','rho_snow','w_snow','t_s','t_g'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -1095,10 +986,10 @@ EOF
 dyamond_stream_10(){
     stream="${EXPNAME}_dyamond_atm_10"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_10/${EXPNAME}_out_10_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_10_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1106,7 +997,7 @@ dyamond_stream_10(){
  file_interval   = "P1D"
  ml_varlist      = 'runoff_g','runoff_s','snow_gsp','snow_melt'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -1115,10 +1006,10 @@ EOF
 dyamond_stream_11(){
     stream="${EXPNAME}_dyamond_atm_11"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_11/${EXPNAME}_out_11_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_11_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1127,7 +1018,7 @@ dyamond_stream_11(){
  pl_varlist      = 'geopot','temp','u','v','qv'
  p_levels        =  20000,50000,85000
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -1136,10 +1027,10 @@ EOF
 dyamond_stream_12(){
     stream="${EXPNAME}_dyamond_atm_12"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_12/${EXPNAME}_out_12_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_12_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1147,7 +1038,7 @@ dyamond_stream_12(){
  file_interval   = "P1D"
  ml_varlist      = 'tmax_2m','tmin_2m', 'lai', 'plcov', 'rootdp',
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -1156,10 +1047,10 @@ EOF
 dyamond_stream_13(){
     stream="${EXPNAME}_dyamond_atm_13"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_13/${EXPNAME}_out_13_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_13_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1167,7 +1058,7 @@ dyamond_stream_13(){
  file_interval   = "P1D"
  ml_varlist      = 'pres'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1177,10 +1068,10 @@ EOF
 dyamond_stream_14(){
     stream="${EXPNAME}_dyamond_atm_14"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_14/${EXPNAME}_out_14_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_14_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1189,7 +1080,7 @@ dyamond_stream_14(){
  ml_varlist      = 'lwflx_up', 'lwflx_dn', 'swflx_up', 'swflx_dn', 'lwflx_up_clr', 'lwflx_dn_clr', 'swflx_up_clr', 'swflx_dn_clr'
  m_levels        = "1,nlev"
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
 /
 EOF
@@ -1198,10 +1089,10 @@ EOF
 dyamond_stream_15_1(){
     stream="${EXPNAME}_dyamond_atm_15_1"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_15_1/${EXPNAME}_out_15_1_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_15_1_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1209,7 +1100,7 @@ dyamond_stream_15_1(){
  file_interval   = "P1D"
  ml_varlist      = 'geopot'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1219,10 +1110,10 @@ EOF
 dyamond_stream_15_2(){
     stream="${EXPNAME}_dyamond_atm_15_2"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_15_2/${EXPNAME}_out_15_2_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_15_2_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1230,7 +1121,7 @@ dyamond_stream_15_2(){
  file_interval   = "P1D"
  ml_varlist      = 'qv'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1240,10 +1131,10 @@ EOF
 dyamond_stream_15_3(){
     stream="${EXPNAME}_dyamond_atm_15_3"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_15_3/${EXPNAME}_out_15_3_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_15_3_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1251,7 +1142,7 @@ dyamond_stream_15_3(){
  file_interval   = "P1D"
  ml_varlist      = 'qc'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1261,10 +1152,10 @@ EOF
 dyamond_stream_15_4(){
     stream="${EXPNAME}_dyamond_atm_15_4"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_15_4/${EXPNAME}_out_15_4_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_15_4_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1272,7 +1163,7 @@ dyamond_stream_15_4(){
  file_interval   = "P1D"
  ml_varlist      = 'qr'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1282,10 +1173,10 @@ EOF
 dyamond_stream_15_5(){
     stream="${EXPNAME}_dyamond_atm_15_5"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_15_5/${EXPNAME}_out_15_5_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_15_5_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1293,7 +1184,7 @@ dyamond_stream_15_5(){
  file_interval   = "P1D"
  ml_varlist      = 'qi'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1303,10 +1194,10 @@ EOF
 dyamond_stream_15_6(){
     stream="${EXPNAME}_dyamond_atm_15_6"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_15_6/${EXPNAME}_out_15_6_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_15_6_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1314,7 +1205,7 @@ dyamond_stream_15_6(){
  file_interval   = "P1D"
  ml_varlist      = 'qs'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1324,10 +1215,10 @@ EOF
 dyamond_stream_15_7(){
     stream="${EXPNAME}_dyamond_atm_15_7"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_15_7/${EXPNAME}_out_15_7_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_15_7_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1335,7 +1226,7 @@ dyamond_stream_15_7(){
  file_interval   = "P1D"
  ml_varlist      = 'qg'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1345,10 +1236,10 @@ EOF
 dyamond_stream_15_8(){
     stream="${EXPNAME}_dyamond_atm_15_8"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_15_8/${EXPNAME}_out_15_8_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_15_8_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1356,7 +1247,7 @@ dyamond_stream_15_8(){
  file_interval   = "P1D"
  ml_varlist      = 'temp'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1366,10 +1257,10 @@ EOF
 dyamond_stream_15_9(){
     stream="${EXPNAME}_dyamond_atm_15_9"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_15_9/${EXPNAME}_out_15_9_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_15_9_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1377,7 +1268,7 @@ dyamond_stream_15_9(){
  file_interval   = "P1D"
  ml_varlist      = 'u'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1387,10 +1278,10 @@ EOF
 dyamond_stream_15_10(){
     stream="${EXPNAME}_dyamond_atm_15_10"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_15_10/${EXPNAME}_out_15_10_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_15_10_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1398,7 +1289,7 @@ dyamond_stream_15_10(){
  file_interval   = "P1D"
  ml_varlist      = 'v'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1408,10 +1299,10 @@ EOF
 dyamond_stream_15_11(){
     stream="${EXPNAME}_dyamond_atm_15_11"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_15_11/${EXPNAME}_out_15_11_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_15_11_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1419,7 +1310,7 @@ dyamond_stream_15_11(){
  file_interval   = "P1D"
  ml_varlist      = 'w'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1429,10 +1320,10 @@ EOF
 dyamond_stream_15_12(){
     stream="${EXPNAME}_dyamond_atm_15_12"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_15_12/${EXPNAME}_out_15_12_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_15_12_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1440,7 +1331,7 @@ dyamond_stream_15_12(){
  file_interval   = "P1D"
  ml_varlist      = 'rho'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1450,10 +1341,10 @@ EOF
 dyamond_stream_15_13(){
     stream="${EXPNAME}_dyamond_atm_15_13"
     mkdir -p "${stream}"
-    cat >> ${atmo_namelist} << EOF
+    cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "out_15_13/${EXPNAME}_out_15_13_<datetime2>"
+ filename_format = "${stream}/${EXPNAME}_out_15_13_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1461,7 +1352,7 @@ dyamond_stream_15_13(){
  file_interval   = "P1D"
  ml_varlist      = 'tke'
  include_last    = .true.
- output_grid     = .true.
+ output_grid     = .FALSE.
  mode            = 1
  m_levels        = "60...nlev"
 /
@@ -1828,8 +1719,8 @@ output_oce_fx(){
 EOF
 }
 
-output_oce_def(){
-  stream="${EXPNAME}_oce_def"
+output_oce_3h(){
+  stream="${EXPNAME}_oce_3h"
   mkdir -p "${stream}"
   cat >> ${oce_namelist} << EOF
 &output_nml
@@ -1837,38 +1728,17 @@ output_oce_def(){
   filename_format            = "${stream}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  output_interval            = "PT6H"     ! interval in ISO-format
+  output_interval            = "PT3H"     ! interval in ISO-format
   file_interval              = "P1D"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
   include_last               = .FALSE.
-  output_grid                = .TRUE.
+  output_grid                = .FALSE.
   operation                  = "mean"
-  m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
-  !ml_varlist                 = 'group:oce_default', 'group:oce_essentials'
-  ml_varlist                 = 'group:oce_default', 'group:oce_essentials','A_veloc_v','A_tracer_v_to'
-/
-EOF
-}
+  m_levels                   = "1"
+  !m_levels                   = "1...25,29,34,41,44,51,55,60,65,69"  ! surface - 200m all levels, 300, 500, 800, 1000, 1500, 2000m, 3000m, 4000, 5000m
 
-output_oce_6h(){
-  stream="${EXPNAME}_oce_6h"
-  mkdir -p "${stream}"
-  cat >> ${oce_namelist} << EOF
-&output_nml
-  filetype                   = 5
-  filename_format            = "${stream}/${stream}_<datetime2>"
-  output_start               = "${start_date}"                  ! start in ISO-format
-  output_end                 = "${end_date}"                    ! end in ISO-format
-  output_interval            = "PT6H"     ! interval in ISO-format
-  file_interval              = "P1D"
-  mode                       = 1                                ! 1: forecast mode (relative t-axis)
-                                                                ! 2: climate mode (absolute t-axis)
-  include_last               = .FALSE.
-  output_grid                = .TRUE.
-  operation                  = "mean"
-  m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
-  ml_varlist                 = 'ssh', 'tos', 'sos', 'zos', 'mld', 'mlotst10'
+  ml_varlist                 = 'ssh', 'tos', 'sos', 'zos', 'mld', 'mlotst10', 'u', 'v', 'atmos_fluxes_stress_x','atmos_fluxes_stress_y'
 /
 EOF
 }
@@ -1887,10 +1757,10 @@ output_oce_day(){
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
   include_last               = .FALSE.
-  output_grid                = .TRUE.
+  output_grid                = .FALSE.
   operation                  = "mean"
-  m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
-  ml_varlist                 = 'to', 'so', 'u', 'v', 'w', 'rhopot', 'rho', 'u_vint', 'v_vint', 'heat_content_snow', 'heat_content_seaice', 'heat_content_total', 'heat_content_300m', 'heat_content_700m', 'rsdoabsorb', 'swrab', 'swsum', 'heatabs', 'mass_flux'
+  m_levels                   = "1...25,29,34,41,44,51,55,60,65,69"  ! surface - 200m all levels, 300, 500, 800, 1000, 1500, 2000m, 3000m, 4000, 5000m
+  ml_varlist                 = 'to', 'so', 'u', 'v', 'w', 'rhopot', 'rho', 'u_vint', 'v_vint', 'heat_content_snow', 'heat_content_seaice', 'heat_content_total', 'heat_content_300m', 'heat_content_700m', 'rsdoabsorb', 'swrab', 'swsum', 'heatabs', 'mass_flux',
 /
 EOF
 }
@@ -1903,17 +1773,17 @@ output_oce_ice(){
   filetype         = 5
   output_start     = "${start_date}"                  ! start date in ISO-format
   output_end       = "${end_date}"                    ! end date in ISO-format
-  output_interval  = "PT6H"         ! interval in ISO-format
-  file_interval    = "P1D"           ! interval in ISO-format
+  output_interval  = "P1D"         ! interval in ISO-format
+  file_interval    = "P1M"           ! interval in ISO-format
   mode             =  1                               ! 1: forecast mode (relative t-axis), 2: climate mode (absolute t-axis)
   operation        = 'mean'                           ! mean over output interval
   include_last     = .FALSE.                          ! set to false for asynchron output
-  output_grid      = .TRUE.
+  output_grid      = .FALSE.
   filename_format  = "${stream}/${stream}_<datetime2>"
   filetype         =  5                               ! output format: 2=GRIB2, 4=NETCDFv2, 5=NETCDFv4
-  !m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
+  !m_levels                   = "1...25,29,34,41,44,51,55,60,65,69"  ! surface - 200m all levels, 300, 500, 800, 1000, 1500, 2000m, 3000m, 4000, 5000m
   ml_varlist       =  'draftave','hi','hs','conc','verticallyTotal_mass_flux_e', 'ice_u','ice_v',
-                      'Qtop', 'Qbot'
+                      'Qtop', 'Qbot', 'snow_to_ice', 'newice','FrshFlux_TotalIce'
 /
 EOF
 }
@@ -1927,14 +1797,14 @@ output_oce_flux(){
   output_start     = "${start_date}"                  ! start date in ISO-format
   output_end       = "${end_date}"                    ! end date in ISO-format
   output_interval  = "P1D"         ! interval in ISO-format
-  file_interval    = "P1D"           ! interval in ISO-format
+  file_interval    = "P1M"           ! interval in ISO-format
   mode             =  1                               ! 1: forecast mode (relative t-axis), 2: climate mode (absolute t-axis)
   operation        = 'mean'                           ! mean over output interval
   include_last     = .FALSE.                          ! set to false for asynchron output
-  output_grid      = .TRUE.
+  output_grid      = .FALSE.
   filename_format  = "${stream}/${stream}_<datetime2>"
   filetype         =  5                               ! output format: 2=GRIB2, 4=NETCDFv2, 5=NETCDFv4
-  !m_levels         = "1...10,${levidx_100m},${levidx_200m},${levidx_500m},${levidx_1000m},${levidx_1500m},${levidx_2000m},${levidx_3000m}"  ! surface and 100, 200,500, 1000,1500, 2000m, 300m levels only
+  m_levels                   = "1...25,29,34,41,44,51,55,60,65,69"  ! surface - 200m all levels, 300, 500, 800, 1000, 1500, 2000m, 3000m, 4000, 5000m
   ml_varlist       = 'HeatFlux_Total','atmos_fluxes_HeatFlux_ShortWave','atmos_fluxes_HeatFlux_LongWave',
                       'HeatFlux_ShortWave','HeatFlux_LongWave','HeatFlux_Sensible','HeatFlux_Latent',
                       'FrshFlux_Runoff','FrshFlux_Precipitation','FrshFlux_Evaporation','FrshFlux_SnowFall',
@@ -1952,7 +1822,7 @@ output_oce_mon(){
   filename_format            = "${stream}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  output_interval            = "P1M"
+  output_interval            = "P1D"
   file_interval              = "P1M"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
@@ -1960,6 +1830,28 @@ output_oce_mon(){
   output_grid                = .FALSE.
   operation                  = "mean"
   ml_varlist                 = 'group:ocean_monitor'
+/
+EOF
+}
+
+output_oce_mon2d(){
+  stream="${EXPNAME}_oce_mon2d"
+  mkdir -p "${stream}"
+  cat >> ${oce_namelist} << EOF
+&output_nml
+  filetype                   = 5
+  filename_format            = "${stream}/${stream}_<datetime2>"
+  output_start               = "${start_date}"                  ! start in ISO-format
+  output_end                 = "${end_date}"                    ! end in ISO-format
+  output_interval            = "P1M"
+  file_interval              = "P1M"
+  mode                       = 1                                ! 1: forecast mode (relative t-axis)
+                                                                ! 2: climate mode (absolute t-axis)
+  include_last               = .FALSE.
+  output_grid                = .FALSE.
+  operation                  = "mean"
+  m_levels                   = "1"
+  ml_varlist                 = 'tos','sos','zos','u','v'
 /
 EOF
 }
@@ -1973,7 +1865,7 @@ output_oce_moc(){
   filename_format            = "${stream}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  output_interval            = "P1M"
+  output_interval            = "P1D"
   file_interval              = "P1M"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)

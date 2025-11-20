@@ -84,4 +84,3 @@ coupled_streams(){
     output_oce_mon2d
     output_oce_moc
 }
-

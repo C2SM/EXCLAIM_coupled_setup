@@ -1865,8 +1865,8 @@ output_oce_moc(){
   filename_format            = "${stream}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  output_interval            = "P1M"
-  file_interval              = "P1D"
+  output_interval            = "P1D"
+  file_interval              = "P1M"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
   include_last               = .FALSE.

@@ -24,8 +24,8 @@ source build_tools.sh
 cao_init
 
 # Build CPU and GPU with Spack
-mkdir -p icon-hybrid/build-cpu && pushd icon-hybrid/build-cpu && cao_build cpu && popd
-mkdir -p icon-hybrid/build-gpu && pushd icon-hybrid/build-gpu && cao_build gpu && popd
+pushd icon-hybrid/build-cpu && cao_build cpu && popd
+pushd icon-hybrid/build-gpu && cao_build gpu && popd
 ```
 
 Otherwise, if you want to build without Spack, but using our custom build scripts you can run the following instead:

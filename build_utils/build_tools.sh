@@ -9,6 +9,11 @@ CAO_ICON_BRANCH='fix_nwp_ocean_coupling_acc'
 CAO_BUILD_UTILS_DIR="${CAO_BASEDIR}/EXCLAIM_coupled_setup/build_utils/"
 CAO_ICON_DIR="${CAO_BASEDIR}/icon-hybrid"
 
+CAO_BUILD_DIRS=(
+  'build-cpu'
+  'build-gpu'
+)
+
 CAO_CONFIG_FILES=(
   'santis.cpu_nospack.nvhpc'
   'santis.gpu_nospack.nvhpc'
@@ -44,6 +49,12 @@ cao_init() {
     config_name=${config_name%%.*}
     cp ${CAO_BUILD_UTILS_DIR}/${spack_yaml_file} ${CAO_ICON_DIR}/config/cscs/spack/santis_${config_name}_double/spack.yaml
   done
+
+  pushd ${CAO_ICON_DIR}
+    for build_dir in "${CAO_BUILD_DIRS[@]}"; do
+      mkdir -p ${build_dir}
+    done
+  popd
 }
 
 cao_build() {

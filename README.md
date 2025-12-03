@@ -23,9 +23,17 @@ cp EXCLAIM_coupled_setup/build_utils/build_tools.sh .
 source build_tools.sh
 cao_init
 
-# Build CPU and GPU
-pushd icon-hybrid/build-cpu && cao_build cpu_ocean && popd
-pushd icon-hybrid/build-gpu && cao_build gpu_coupled && popd
+# Build CPU and GPU with Spack
+pushd icon-hybrid/build-cpu && cao_build cpu && popd
+pushd icon-hybrid/build-gpu && cao_build gpu && popd
+```
+
+Otherwise, if you want to build without Spack, but using our custom build scripts you can run the following instead:
+
+```bash
+# Build CPU and GPU without Spack
+pushd icon-hybrid/build-cpu && cao_build cpu_nospack && popd
+pushd icon-hybrid/build-gpu && cao_build gpu_nospack && popd
 ```
 
 If you only want to rebuild (e.g. after you made some changes in the code), enter the build directories and run

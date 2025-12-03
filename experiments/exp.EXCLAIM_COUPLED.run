@@ -136,6 +136,8 @@ initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphe
 
 # namelist files
 # --------------
+atm_model_name="atmo"
+oce_model_name="ocean"
 master_namelist="icon_master.namelist"
 atm_namelist="NAMELIST_${EXPNAME}_atm"
 oce_namelist="NAMELIST_${EXPNAME}_oce"

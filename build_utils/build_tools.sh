@@ -59,9 +59,15 @@ cao_init() {
 
 cao_build() {
   if [[ "$(pwd)" == "${CAO_ICON_DIR}" ]]; then
-    ./config/cscs/santis.${1}.nvhpc && make -j 24
+    ./config/cscs/santis.${1}.nvhpc
+    CONFIG_STATUS=$?
   else
-    ../config/cscs/santis.${1}.nvhpc && make -j 24
+    ../config/cscs/santis.${1}.nvhpc
+    CONFIG_STATUS=$?
+  fi
+
+  if [[ $CONFIG_STATUS == 0 && ${1} == *"nospack"* ]]; then
+    make -j 24
   fi
 }
 complete -W "${CAO_CONFIG_NAMES[*]}" cao_build

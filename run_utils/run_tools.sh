@@ -149,12 +149,12 @@ run_model(){
 }
 
 restart_model(){
-    atm_finish_status_file="finish.${atm_model_name}.status"
-    oce_finish_status_file="finish.${oce_model_name}.status"
+    atm_finish_status_file="finish_${atm_model_name}.status"
+    oce_finish_status_file="finish_${oce_model_name}.status"
     
-    if [ ! -f "${atm_finish_status}" ] || [ ! -f "${oce_finish_status}" ]; then
+    if [ ! -f "${atm_finish_status_file}" ] || [ ! -f "${oce_finish_status_file}" ]; then
         echo
-        echo "At least one of ${atm_finish_status} or ${oce_finish_status} file not found"
+        echo "At least one of ${atm_finish_status_file} or ${oce_finish_status_file} file not found"
         echo
         echo "============================"
         echo "Script failed"
@@ -166,7 +166,7 @@ restart_model(){
     atm_finish_status="$(cat "${atm_finish_status_file}" | xargs echo)"
     oce_finish_status="$(cat "${oce_finish_status_file}" | xargs echo)"
     
-    if [ ! -f "${atm_finish_status}" ] || [ ! -f "${oce_finish_status}" ]; then
+    if [ "${atm_finish_status}" != "${oce_finish_status}" ]; then
         echo
         echo "script ended with different finish status for ${atm_model_name} (${atm_finish_status}) and ${oce_model_name} (${oce_finish_status})"
         echo

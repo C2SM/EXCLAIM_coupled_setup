@@ -4,7 +4,7 @@
 CAO_BASEDIR="$(pwd)"
 
 CAO_ICON_REPO='git@gitlab.dkrz.de:icon/icon-nwp.git'
-CAO_ICON_BRANCH='fix_nwp_ocean_coupling_acc'
+CAO_ICON_BRANCH='master'
 
 CAO_BUILD_UTILS_DIR="${CAO_BASEDIR}/EXCLAIM_coupled_setup/build_utils/"
 CAO_ICON_DIR="${CAO_BASEDIR}/icon-hybrid"

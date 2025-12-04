@@ -208,7 +208,12 @@ source "settings_${CASE}.sh"
 # -----------------------
 export activate_output=${activate_output:-"true"}
 export activate_output_dyamond=${activate_output_dyamond:-"false"}
-if [[ "${activate_output}" != "true" ]]; then
+if [ "${activate_output}" == "true" ]; then
+    [ "${activate_output_dyamond}" == "true" ] && atm_streams+=( "${dyamond_streams[@]}" )
+    # For max parallelism, use 1 task per output stream
+    export ATM_IO_TASKS=${ATM_IO_TASKS:-${#atm_streams[@]}}
+    export OCE_IO_TASKS=${OCE_IO_TASKS:-${#oce_streams[@]}}
+else
     ATM_IO_TASKS=0
     OCE_IO_TASKS=0
 fi
@@ -255,44 +260,14 @@ atmo_nml
 lnd_nml
 oce_nml
 
-if [[ "${activate_output}" == "true" ]];then
-    coupled_streams
-    
-    # Dyamond output streams. Comment out to deactivate
-    if [ "${activate_output_dyamond}" == "true" ]; then
-        # NOTE: That could also be gathered in a function in the case-specific settings
-        dyamond_stream_1_1
-        dyamond_stream_1_2
-        dyamond_stream_1_3
-        dyamond_stream_1_4
-        dyamond_stream_1_5
-        dyamond_stream_2
-        dyamond_stream_3 
-        dyamond_stream_4
-        dyamond_stream_5
-        dyamond_stream_6
-        dyamond_stream_7
-        dyamond_stream_8
-        dyamond_stream_9
-        dyamond_stream_10
-        dyamond_stream_11
-        dyamond_stream_12
-        dyamond_stream_13
-        dyamond_stream_14
-        #dyamond_stream_15_1
-        #dyamond_stream_15_2
-        #dyamond_stream_15_3
-        #dyamond_stream_15_4
-        #dyamond_stream_15_5
-        #dyamond_stream_15_6
-        #dyamond_stream_15_7
-        #dyamond_stream_15_8
-        #dyamond_stream_15_9
-        #dyamond_stream_15_10
-        #dyamond_stream_15_11
-        #dyamond_stream_15_12
-        #dyamond_stream_15_13
-    fi
+if [ "${activate_output}" == "true" ]; then
+    for stream in "${atm_streams[@]}" "${oce_streams[@]}"; do
+        if [ "$(type -t ${stream})" != "function" ]; then
+           echo "function for output stream ${stream} not defined"
+           exit 1
+        fi
+        ${stream}
+    done
 fi
 
 # ============================================================================

@@ -20,13 +20,6 @@ dt_rad=300.                     # NWP radiation timestep (s) - must match coupli
 oceTimeStep="PT5M"              # corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
 atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)
 
-# IO and restart tasks
-# --------------------
-export ATM_IO_TASKS=2
-export OCE_IO_TASKS=2
-export ATM_RST_TASKS=0
-export OCE_RST_TASKS=0
-
 # Atmosphere settings
 # -------------------
 case "${TARGET}" in
@@ -59,28 +52,58 @@ extpar_tag="20250509"
 
 # Output Streams
 # --------------
-coupled_streams(){
-    # Atmosphere / Land
-    # -----------------
-    output_atm_mon
-    output_atm_mon2d
-    output_atm_mean
-    #output_atm_mean3d
-    output_energy_budget
-    output_atm_latlon
-    output_jsb_2d
-    output_lnd_mon
-    # output_lnd_dbg
-    # output_hyd_dbg
-
-    # Ocean
-    # -----
-    output_oce_fx
-    output_oce_3h
-    output_oce_day
-    output_oce_ice
-    output_oce_flux
-    output_oce_mon
-    output_oce_mon2d
-    output_oce_moc
-}
+atm_streams=(
+    "output_atm_mon"
+    "output_atm_mon2d"
+    "output_atm_mean"
+    # "output_atm_mean3d"
+    "output_energy_budget"
+    "output_atm_latlon"
+    "output_jsb_2d"
+    "output_lnd_mon"
+    # "output_lnd_dbg"
+    # "output_hyd_dbg"
+)
+oce_streams=(
+    "output_oce_fx"
+    "output_oce_3h"
+    "output_oce_day"
+    "output_oce_ice"
+    "output_oce_flux"
+    "output_oce_mon"
+    "output_oce_mon2d"
+    "output_oce_moc"    
+)
+dyamond_streams=(
+    "dyamond_stream_1_1"
+    "dyamond_stream_1_2"
+    "dyamond_stream_1_3"
+    "dyamond_stream_1_4"
+    "dyamond_stream_1_5"
+    "dyamond_stream_2"
+    "dyamond_stream_3" 
+    "dyamond_stream_4"
+    "dyamond_stream_5"
+    "dyamond_stream_6"
+    "dyamond_stream_7"
+    "dyamond_stream_8"
+    "dyamond_stream_9"
+    "dyamond_stream_10"
+    "dyamond_stream_11"
+    "dyamond_stream_12"
+    "dyamond_stream_13"
+    "dyamond_stream_14"
+    # "dyamond_stream_15_1"
+    # "dyamond_stream_15_2"
+    # "dyamond_stream_15_3"
+    # "dyamond_stream_15_4"
+    # "dyamond_stream_15_5"
+    # "dyamond_stream_15_6"
+    # "dyamond_stream_15_7"
+    # "dyamond_stream_15_8"
+    # "dyamond_stream_15_9"
+    # "dyamond_stream_15_10"
+    # "dyamond_stream_15_11"
+    # "dyamond_stream_15_12"
+    # "dyamond_stream_15_13"
+)

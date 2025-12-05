@@ -1,6 +1,6 @@
 spack:
   specs:
-  - icon @develop %nvhpc +ecrad ~aes +jsbach +ocean +coupling ~rte-rrtmgp ~loop-exchange
+  - icon @develop %nvhpc +ecrad ~aes +jsbach +ocean +coupling ~rte-rrtmgp ~loop-exchange +async-io-rma
   view: true
   concretizer:
     unify: true

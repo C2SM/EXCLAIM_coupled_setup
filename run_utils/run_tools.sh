@@ -98,6 +98,7 @@ set_environment(){
 }
 
 run_model(){
+   rm -f finish*.status
    set -x
    case "${TARGET}" in
       "hybrid")

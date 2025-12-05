@@ -183,8 +183,8 @@ atmo_nml(){
  l_test_openmp           = .false.
  l_log_checks            = .false.
  num_io_procs            = ${ATM_IO_TASKS}
- pio_type                = 1                   ! default 1: asynchron io
- num_restart_procs       = ${ATM_RST_TASKS} ! number of procs for multifile restart
+ pio_type                = 1  ! default 1: asynchron io
+ num_restart_procs       = 0  ! number of procs for multifile restart
  num_dist_array_replicas = ${replicate_grid-1} ! can be 1 iff passive or active (see HAVE_SLOW_PASSIVE_TARGET_ONESIDED) target RMA works well
  io_proc_chunk_size      = 12              ! Used for Large Data writing requiring large memory (eg., 3D files)
  iorder_sendrecv         = 3               ! From CLM namelist  (isend/irec)
@@ -1459,7 +1459,7 @@ oce_nml(){
  num_io_procs                = ${OCE_IO_TASKS}
  io_proc_chunk_size          = 8
  pio_type                    = 1                                ! default 1: asynchron io
- num_restart_procs           = ${OCE_RST_TASKS}                 ! number of procs for multifile restart
+ num_restart_procs           = 0                                ! number of procs for multifile restart
  num_prefetch_proc           = 0
  p_test_run                  = .FALSE.
  l_fast_sum                  = .FALSE.

@@ -535,7 +535,7 @@ output_atm_mean(){
  output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
- ml_varlist              = 'pres_sfc', 'qv', 't_2m'
+ ml_varlist              = 'pres_sfc', 'qv', 't_2m', 'u_10m', 'v_10m' 
 
 /
 EOF

@@ -487,7 +487,7 @@ output_atm_mon2d(){
  output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
- ml_varlist              = 't_2m', 'sp_10m'
+ ml_varlist              = 't_2m', 'sp_10m', 'tqc_dia', 'tqi_dia', 't_g', 'qv_2m', 'h_ice', 't_ice'
 /
 EOF
 }

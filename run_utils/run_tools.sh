@@ -199,6 +199,7 @@ restart_model(){
         echo "submitting next chunk starting at ${chunk_start_date} with ${submit_cmd}"
         echo "${submit_cmd}"
         ${submit_cmd}
+        rm -f ${atm_finish_status_file} ${oce_finish_status_file}
     fi
 }
 

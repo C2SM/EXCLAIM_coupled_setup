@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # ============================================================================
-#SBATCH --account=cwd01
+#SBATCH --account=cwp07
+#SBATCH --partition=tier0
 #SBATCH --uenv=icon/25.2:v3:/user-environment
 #SBATCH --view=default
 #SBATCH --job-name=EXCLAIM_COUPLED
@@ -184,7 +185,7 @@ case "${TARGET}" in
     "hybrid")
         if [ "$SEPARATE_IO" = true ]; then
             export TOT_TASKS_PER_COMP_NODE=16
-            export MAX_TASKS_PER_IO_NODE=4
+            export MAX_TASKS_PER_IO_NODE=${MAX_TASKS_PER_IO_NODE:-4}
         else
             export TOT_TASKS_PER_NODE=16
         fi

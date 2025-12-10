@@ -1808,7 +1808,7 @@ output_oce_flux(){
   ml_varlist       = 'HeatFlux_Total','atmos_fluxes_HeatFlux_ShortWave','atmos_fluxes_HeatFlux_LongWave',
                       'HeatFlux_ShortWave','HeatFlux_LongWave','HeatFlux_Sensible','HeatFlux_Latent',
                       'FrshFlux_Runoff','FrshFlux_Precipitation','FrshFlux_Evaporation','FrshFlux_SnowFall',
-                      'FrshFlux_TotalOcean','FrshFlux_VolumeIce'
+                      'FrshFlux_TotalOcean','FrshFlux_VolumeIce', 'FrshFlux_TotalSalt'
 /
 EOF
 }

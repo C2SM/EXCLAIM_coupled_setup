@@ -44,7 +44,7 @@ ic_land_hd_name="mc_maxl_s_v1"
 # --------------
 nproma_oce=16
 GMRedi_configuration=1
-initial_state_sub_path="rcscs/tsi_oras5_icon_icon_grid_${ocean_gridID}_${ocean_refinement}_O_${ocean_vertical_levels}.nc_${start_year}-01-01"
+initial_state_sub_path="interpolated/icon_L72_spinup_r2b7.nc" 
 
 # Land settings
 # --------------

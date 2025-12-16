@@ -418,13 +418,14 @@ atmo_nml(){
  !zenith                  = 4           ! 4: NWP (def), 3: no annual cycle
  irad_o2                 = 2
 
- !NB update to year of simulation - O3
- vmr_co2                 = 336.6e-06   ! values for 1979 CE ! 284.3e-06   ! values for 1850 CE
- vmr_ch4                 = 1566.2e-09  ! values for 1979 CE ! 808.2e-09   ! values for 1850 CE
- vmr_n2o                 = 300.4e-09   ! values for 1979 CE ! 273.0e-09   ! values for 1850 CE
+ !NB update to year of simulation - source: https://gml.noaa.gov/ccgg/trends/gl_data.html
+ vmr_co2                 = 412.44e-06   ! values for 1979 CE ! 284.3e-06   ! values for 1850 CE
+ vmr_ch4                 = 1878.72e-09  ! values for 1979 CE ! 808.2e-09   ! values for 1850 CE
+ vmr_n2o                 = 333.01e-09   ! values for 1979 CE ! 273.0e-09   ! values for 1850 CE
  vmr_o2                  = 0.20946     ! preindustrial
- vmr_cfc11               = 157.6e-12   ! values for 1979 ! 0.0 ! preindustrial
- vmr_cfc12               = 286.5e-12   ! values for 1979 ! 0.0 ! preindustrial
+ !source: /pool/data/ICON/grids/public/mpim/common/greenhouse_gases/greenhouse_historical_plus.nc
+ vmr_cfc11               = 218.23e-12   ! values for 1979 ! 0.0 ! preindustrial
+ vmr_cfc12               = 495.02e-12   ! values for 1979 ! 0.0 ! preindustrial
  !NB double check file
  albedo_type             = 1          ! 1: dry soil (def); 2: Modis albedo
  direct_albedo           = 4
@@ -457,7 +458,7 @@ output_atm_mon(){
  output_start            = "${start_date}"
  output_end              = "${end_date}"
  output_interval         = "P1D"                     ! the output interval and
- file_interval           = "P1M"                     ! the file interval
+ file_interval           = "P1D"                     ! the file interval
  mode                    = 1                         ! 1: forecast mode (relative t-axis)
  operation               = "mean"                    ! works on icon grid only (remap=0)
  remap                   = 0                         ! 1: latlon,  0: native grid
@@ -478,7 +479,7 @@ output_atm_mon2d(){
  output_start            = "${start_date}"
  output_end              = "${end_date}"
  output_interval         = "P1D"                     ! the output interval and
- file_interval           = "P1M"                     ! the file interval
+ file_interval           = "P1D"                     ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
@@ -1760,7 +1761,7 @@ output_oce_day(){
   output_grid                = .FALSE.
   operation                  = "mean"
   m_levels                   = "1...25,29,34,41,44,51,55,60,65,69"  ! surface - 200m all levels, 300, 500, 800, 1000, 1500, 2000m, 3000m, 4000, 5000m
-  ml_varlist                 = 'to', 'so', 'u', 'v', 'w', 'rhopot', 'rho', 'u_vint', 'v_vint', 'heat_content_snow', 'heat_content_seaice', 'heat_content_total', 'heat_content_300m', 'heat_content_700m', 'rsdoabsorb', 'swrab', 'swsum', 'heatabs', 'mass_flux',
+  ml_varlist                 = 'to', 'so', 'u', 'v', 'w', 'rhopot', 'rho', 'u_vint', 'v_vint', 'rsdoabsorb', 'swrab', 'swsum', 'heatabs', 'mass_flux',
 /
 EOF
 }
@@ -1823,13 +1824,13 @@ output_oce_mon(){
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
   output_interval            = "P1D"
-  file_interval              = "P1M"
+  file_interval              = "P1D"
   mode                       = 1                                ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
   include_last               = .FALSE.
   output_grid                = .FALSE.
   operation                  = "mean"
-  ml_varlist                 = 'group:ocean_monitor'
+  ml_varlist                 = 'group:ocean_monitor', 'ice_volume_nh', 'ice_volume_nh', 'total_salt', 'heat_content_total', 'heat_content_300m', 'heat_content_700m','heat_content_snow', 'heat_content_seaice',
 /
 EOF
 }
@@ -1843,15 +1844,15 @@ output_oce_mon2d(){
   filename_format            = "${stream}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  output_interval            = "P1M"
-  file_interval              = "P1M"
-  mode                       = 1                                ! 1: forecast mode (relative t-axis)
+  output_interval            = "P1D"
+  file_interval              = "P1D"
+  mode                       = 1                               ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
   include_last               = .FALSE.
   output_grid                = .FALSE.
   operation                  = "mean"
   m_levels                   = "1"
-  ml_varlist                 = 'tos','sos','zos','u','v'
+  ml_varlist                 = 'tos','sos','zos','u','v',
 /
 EOF
 }

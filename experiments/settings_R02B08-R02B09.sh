@@ -47,7 +47,7 @@ ic_land_hd_name="mc_maxl_s_v1_1"
 # --------------
 nproma_oce=16
 GMRedi_configuration=0
-initial_state_sub_path="rcscs/tsi_oras5_icon_icon_grid_${ocean_gridID}_${ocean_refinement}_O_${ocean_vertical_levels}.nc_${start_year}-01-01"
+initial_state_sub_path="interpolated/icon_L72_spinup_r2b9.nc"
 
 # Land settings
 # --------------
@@ -61,7 +61,7 @@ atm_streams=(
     "output_atm_mean"
     # "output_atm_mean3d"
     "output_energy_budget"
-    "output_atm_latlon"
+    # "output_atm_latlon"
     "output_jsb_2d"
     "output_lnd_mon"
     # "output_lnd_dbg"

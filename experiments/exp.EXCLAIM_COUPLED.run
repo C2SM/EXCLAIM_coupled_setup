@@ -100,12 +100,12 @@ ocean_grid_folder="${icon_data_poolFolder}/ocean/${ocean_refinement}_${ocean_gri
 
 # Dates and intervals
 # -------------------
-export start_date=${start_date:-"1979-01-01T00:00:00Z"}
+export start_date=${start_date:-"2020-01-01T00:00:00Z"}
 
 if [ "$PROFILE" = true ]; then
-    export end_date=${end_date:-"1979-01-01T00:15:00Z"}
+    export end_date=${end_date:-"2020-01-01T00:15:00Z"}
 else
-    export end_date=${end_date:-"1979-01-01T02:00:00Z"}
+    export end_date=${end_date:-"2020-01-01T02:00:00Z"}
 fi
 
 lrestart=${lrestart:-.false.}
@@ -130,7 +130,7 @@ if [ "${exptype}" != "control" ] && [ "${exptype}" != "hist" ]; then
     echo "ERROR: unsupported experiment type: ${exptype}"
     exit 1
 fi
-export control_year=${control_year:-1979} # use 1850 for picontrol
+export control_year=${control_year:-2020} # use 1850 for picontrol
 # TODO: use ssp
 ssp="370"
 initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphere + hdext cold-started from scratch

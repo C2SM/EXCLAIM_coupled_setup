@@ -1,6 +1,6 @@
 spack:
   specs:
-  - icon @develop %nvhpc +ecrad gpu=nvidia-90 +mpi-gpu +realloc-buf ~aes +jsbach +ocean
+  - icon @develop %nvhpc +ecrad gpu=nvidia-90 ~mpi-gpu +realloc-buf ~aes +jsbach +ocean
     +coupling ~rte-rrtmgp ~loop-exchange +cuda-graphs fflags="-traceback" +pgi-inlib
   view: true
   concretizer:

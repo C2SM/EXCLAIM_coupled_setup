@@ -185,7 +185,7 @@ case "${TARGET}" in
     "hybrid")
         if [ "$SEPARATE_IO" = true ]; then
             export TOT_TASKS_PER_COMP_NODE=16
-            export MAX_TASKS_PER_IO_NODE=4
+            export MAX_TASKS_PER_IO_NODE=${MAX_TASKS_PER_IO_NODE:-4}
         else
             export TOT_TASKS_PER_NODE=16
         fi

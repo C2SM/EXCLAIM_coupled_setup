@@ -176,7 +176,7 @@ atmo_nml(){
 !
 &parallel_nml
  nproma                  = ${nproma_atm}
- !nblocks_c               = 1
+ nblocks_c               = ${nblocks_c}
  nproma_sub              = ${nproma_sub}
  p_test_run              = .false.
  !l_fast_sum              = .false.
@@ -582,7 +582,7 @@ output_atm_latlon(){
  include_last            = .FALSE.                   ! set to false for asynchron output
  filename_format         = "${stream}/${stream}_<datetime2>"
  output_grid             = .TRUE.                    ! flag whether grid information is added to output.
- remap                   = 1                         ! 1: latlon,  0: native grid
+ remap                   = 0                         ! 1: latlon,  0: native grid
  reg_lon_def             = 0.,1.,360.
  reg_lat_def             = -90.,1.,90.
  !operation               = 'mean'                   !mean operation doesn't seem to work with interpolated output

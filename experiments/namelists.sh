@@ -457,7 +457,7 @@ output_atm_mon(){
  output_start            = "${start_date}"
  output_end              = "${end_date}"
  output_interval         = "P1D"                     ! the output interval and
- file_interval           = "P1M"                     ! the file interval
+ file_interval           = "P1D"                     ! the file interval
  mode                    = 1                         ! 1: forecast mode (relative t-axis)
  operation               = "mean"                    ! works on icon grid only (remap=0)
  remap                   = 0                         ! 1: latlon,  0: native grid
@@ -478,7 +478,7 @@ output_atm_mon2d(){
  output_start            = "${start_date}"
  output_end              = "${end_date}"
  output_interval         = "P1D"                     ! the output interval and
- file_interval           = "P1M"                     ! the file interval
+ file_interval           = "P1D"                     ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode

@@ -58,14 +58,14 @@ atm_streams=(
     "output_atm_mean"
     # "output_atm_mean3d"
     "output_energy_budget"
-    "output_atm_latlon"
+    #"output_atm_latlon"
     "output_jsb_2d"
     "output_lnd_mon"
     # "output_lnd_dbg"
     # "output_hyd_dbg"
 )
 oce_streams=(
-    "output_oce_fx"
+    #"output_oce_fx"
     "output_oce_3h"
     "output_oce_day"
     "output_oce_ice"

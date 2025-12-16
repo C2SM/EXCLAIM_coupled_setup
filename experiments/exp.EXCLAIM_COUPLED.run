@@ -9,7 +9,7 @@
 #SBATCH --output=LOG.EXCLAIM_COUPLED.%j
 #SBATCH --error=LOG.EXCLAIM_COUPLED.%j
 #SBATCH --time=00:15:00
-#SBATCH --nodes=4
+#SBATCH --nodes=10
 #SBATCH --gpus-per-node=4
 #SBATCH --mem=0
 #SBATCH --exclusive
@@ -130,7 +130,7 @@ if [ "${exptype}" != "control" ] && [ "${exptype}" != "hist" ]; then
     echo "ERROR: unsupported experiment type: ${exptype}"
     exit 1
 fi
-export control_year=${control_year:-1979} # use 1850 for picontrol
+export control_year=${control_year:-2020} # use 1850 for picontrol
 # TODO: use ssp
 ssp="370"
 initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphere + hdext cold-started from scratch

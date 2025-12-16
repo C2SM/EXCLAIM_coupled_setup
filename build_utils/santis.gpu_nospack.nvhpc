@@ -72,7 +72,7 @@ LIBS="-Wl,--as-needed ${XML2_LIBS} ${BLAS_LAPACK_LIBS} ${SERIALBOX2_LIBS} ${FYAM
 CUDAARCHS='90'
 NVCC='nvcc'
 # -G seems to break the build, at least it does on tsa
-NVCFLAGS='-ccbin mpic++ -g -O3 -arch=sm_90'
+CUDAFLAGS='-ccbin mpic++ -g -O3 -arch=sm_90'
 # gt4py NVCFLAGS need to be frozen, since -I/path/to/external/cub is added for NVCFLAGS in configure, which will break the build for gt4py.
 
 MPI_LAUNCH=false
@@ -96,7 +96,7 @@ CPPFLAGS="$CPPFLAGS" \
 CXX="$CXX" \
 FC="$FC" \
 CUDAARCHS="$CUDAARCHS" \
-NVCFLAGS="$NVCFLAGS" \
+CUDAFLAGS="$CUDAFLAGS" \
 FCFLAGS="$FCFLAGS" \
 LDFLAGS="$LDFLAGS" \
 LIBS="$LIBS" \

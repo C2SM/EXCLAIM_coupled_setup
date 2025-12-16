@@ -9,7 +9,7 @@
 #SBATCH --output=LOG.EXCLAIM_COUPLED.%j
 #SBATCH --error=LOG.EXCLAIM_COUPLED.%j
 #SBATCH --time=00:15:00
-#SBATCH --nodes=10
+#SBATCH --nodes=4
 #SBATCH --gpus-per-node=4
 #SBATCH --mem=0
 #SBATCH --exclusive

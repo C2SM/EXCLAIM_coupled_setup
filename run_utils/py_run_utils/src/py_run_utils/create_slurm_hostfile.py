@@ -82,22 +82,30 @@ def create_slurm_hostfile_load_balanced():
 
     n_available_threads = {nid: tot_threads_per_node for nid in nodes}
 
-    with open(output_filepath, 'w') as file:
+    with open(output_filepath, 'w') as file, open(output_filepath+'.dbg', 'w') as file_dbg:
 
         # Atmosphere compute procs (4 GPUs per node; generally all nodes are filled)
         # Equal to SLURM's --distribution="plane=atm_comp_tasks_per_node"
+        n_task = 0
+        file_dbg.write('--------------------------------------\n')
         for nid in nodes:
             file.write((nid + '\n') * atm_comp_tasks_per_node)
+            for _ in range(atm_comp_tasks_per_node):
+                file_dbg.write(f'{nid} : {n_task} => atm compute\n')
+                n_task += 1
 
             n_available_threads[nid] -= atm_comp_tasks_per_node * threads_per_task
 
         # Atmosphere IO procs
         # Equal to SLURM's --distribution="cyclic"
+        file_dbg.write('--------------------------------------\n')
         for i in range(atm_io_tasks):
             nid = nodes[i % number_of_nodes]
             file.write(nid + '\n')
+            file_dbg.write(f'{nid} : {n_task} => atm io\n')
 
             n_available_threads[nid] -= 1 * threads_per_task
+            n_task += 1
 
         # Dry-run for ocean IO procs (to make sure we fill up to
         # tot_tasks_per_node with ocean compute procs)
@@ -108,17 +116,25 @@ def create_slurm_hostfile_load_balanced():
 
         # Ocean compute procs
         # Fill up to the number of still available cores
+        file_dbg.write('--------------------------------------\n')
         for nid in nodes:
             n_remaining_tasks = (n_available_threads[nid] // threads_per_task)
             file.write((nid + '\n') * n_remaining_tasks)
+            for _ in range(n_remaining_tasks):
+                file_dbg.write(f'{nid} : {n_task} => oce compute\n')
+                n_task += 1
 
             n_available_threads[nid] -= n_remaining_tasks
 
         # Ocean IO procs (avoid overlap with atmosphere IO procs)
         # Equal to SLURM's --distribution="cyclic"
+        file_dbg.write('--------------------------------------\n')
         for i in range(oce_io_tasks):
             nid = nodes[(atm_io_tasks + i) % number_of_nodes]
             file.write(nid + '\n')
+            file_dbg.write(f'{nid} : {n_task} => oce io\n')
+            n_task += 1
+        file_dbg.write('--------------------------------------\n')
 
 
 def create_slurm_hostfile_separate_io():
@@ -173,29 +189,41 @@ def create_slurm_hostfile_separate_io():
     n_available_threads = {nid: tot_threads_per_comp_node for nid in compute_nodes}
     n_available_threads.update({nid: max_threads_per_io_node for nid in io_nodes})
 
-    with open(output_filepath, 'w') as file:
+    with open(output_filepath, 'w') as file, open(output_filepath+'.dbg', 'w') as file_dbg:
 
         # Atmosphere compute procs (4 GPUs per compute node; generally all compute nodes are filled)
         # Equal to SLURM's --distribution="plane=atm_comp_tasks_per_node" over compute nodes
+        n_task = 0
+        file_dbg.write('--------------------------------------\n')
         for nid in compute_nodes:
             file.write((nid + '\n') * atm_comp_tasks_per_node)
+            for _ in range(atm_comp_tasks_per_node):
+                file_dbg.write(f'{nid} : {n_task} => atm compute\n')
+                n_task += 1
 
             n_available_threads[nid] -= atm_comp_tasks_per_node * threads_per_task
 
         # Atmosphere IO procs
         # Equal to SLURM's --distribution="plane=max_tasks_per_io_node", but less tasks on the last
         # node if atm_io_tasks is not divisible by max_tasks_per_io_node
+        file_dbg.write('--------------------------------------\n')
         for i in range(atm_io_tasks):
             nid = io_nodes[i // max_tasks_per_io_node]
             file.write(nid + '\n')
+            file_dbg.write(f'{nid} : {n_task} => atm io\n')
 
             n_available_threads[nid] -= 1 * threads_per_task
+            n_task += 1
 
         # Ocean compute procs
         # Fill up to the number of still available cores
+        file_dbg.write('--------------------------------------\n')
         for nid in compute_nodes:
             n_remaining_tasks = (n_available_threads[nid] // threads_per_task)
             file.write((nid + '\n') * n_remaining_tasks)
+            for _ in range(n_remaining_tasks):
+                file_dbg.write(f'{nid} : {n_task} => oce compute\n')
+                n_task += 1
 
             n_available_threads[nid] -= n_remaining_tasks
 
@@ -203,8 +231,12 @@ def create_slurm_hostfile_separate_io():
         # Equal to SLURM's --distribution="plane=max_tasks_per_io_node", but less tasks on the first
         # node if atm_io_tasks is not divisible by max_tasks_per_io_node and less tasks on the last
         # node if oce_io_tasks is not divisible by max_tasks_per_io_node
+        file_dbg.write('--------------------------------------\n')
         for i in range(oce_io_tasks):
             nid = io_nodes[(atm_io_tasks + i) // max_tasks_per_io_node]
             file.write(nid + '\n')
+            file_dbg.write(f'{nid} : {n_task} => oce io\n')
 
             n_available_threads[nid] -= 1 * threads_per_task
+            n_task += 1
+        file_dbg.write('--------------------------------------\n')

@@ -488,7 +488,7 @@ output_atm_mon2d(){
  output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
- ml_varlist              = 't_2m', 'sp_10m'
+ ml_varlist              = 't_2m', 'sp_10m', 'tqc_dia', 'tqi_dia', 't_g', 'qv_2m', 'h_ice', 't_ice'
 /
 EOF
 }
@@ -536,7 +536,7 @@ output_atm_mean(){
  output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
- ml_varlist              = 'pres_sfc', 'qv', 't_2m'
+ ml_varlist              = 'pres_sfc', 'qv', 't_2m', 'u_10m', 'v_10m' 
 
 /
 EOF
@@ -1809,7 +1809,7 @@ output_oce_flux(){
   ml_varlist       = 'HeatFlux_Total','atmos_fluxes_HeatFlux_ShortWave','atmos_fluxes_HeatFlux_LongWave',
                       'HeatFlux_ShortWave','HeatFlux_LongWave','HeatFlux_Sensible','HeatFlux_Latent',
                       'FrshFlux_Runoff','FrshFlux_Precipitation','FrshFlux_Evaporation','FrshFlux_SnowFall',
-                      'FrshFlux_TotalOcean','FrshFlux_VolumeIce'
+                      'FrshFlux_TotalOcean','FrshFlux_VolumeIce', 'FrshFlux_TotalSalt'
 /
 EOF
 }

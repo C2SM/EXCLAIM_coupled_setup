@@ -176,7 +176,8 @@ atmo_nml(){
 !
 &parallel_nml
  nproma                  = ${nproma_atm}
- nblocks_c               = ${nblocks_c}
+ nblocks_c               = ${nblocks_c_atm}
+ nblocks_e               = ${nblocks_e_atm}
  nproma_sub              = ${nproma_sub}
  p_test_run              = .false.
  !l_fast_sum              = .false.

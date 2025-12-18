@@ -25,14 +25,16 @@ atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets 
 case "${TARGET}" in
     "hybrid")
         # nproma_atm=83752
-        nproma_atm=0
-        nblocks_c=1
+        nproma_atm=${nproma_atm:-0}
+        nblocks_c_atm=${nblocks_c_atm:-1}
+        nblocks_e_atm=${nblocks_e_atm:-0}
         nproma_sub=10469
         ecrad_isolver=2  # (0 for CPU/vector, 2 for GPU)
         ;;
     "cpu" | "cpu-cpu")
-        nproma_atm=16
-        nblocks_c=0
+        nproma_atm=${nproma_atm:-16}
+        nblocks_c_atm=${nblocks_c_atm:-0}
+        nblocks_e_atm=${nblocks_e_atm:-0}
         nproma_sub=16
         ecrad_isolver=0  # (0 for CPU/vector, 2 for GPU)
         ;;

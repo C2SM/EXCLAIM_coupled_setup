@@ -550,7 +550,7 @@ stream="${EXPNAME}_energy_budget"
  output_start            = "${start_date}"
  output_end              = "${end_date}"
  output_interval         = "P1M"                     ! the output interval and
- file_interval           = "P1Y"                     ! the file interval
+ file_interval           = "P1M"                     ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode

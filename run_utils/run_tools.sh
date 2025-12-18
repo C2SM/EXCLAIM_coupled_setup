@@ -203,6 +203,10 @@ restart_model(){
     fi
 }
 
+archive_output(){
+    #PLACEHOLDER
+}
+
 set_ocean_vertical_coordinate(){
    if [[ "${VERT_COR}" == 0 ]] ; then
       vert_cor_type=0

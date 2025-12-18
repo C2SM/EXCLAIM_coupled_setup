@@ -60,6 +60,8 @@ if [ "$SEPARATE_IO" = true ] && [ "$TARGET" != "hybrid" ]; then
     exit 1
 fi
 
+export ARCHIVE=${ARCHIVE:-"fasle"}
+
 # Case settings - 1 
 # -----------------
 # Some main settings depend on case settings and vice-versa
@@ -277,6 +279,9 @@ if [ "${activate_output}" == "true" ]; then
     done
 fi
 
+# Check that file intervals are not greater than the restart interval
+[ "${ARCHIVE}" == "true" ] && check_file_interval "${atm_namelist}" "${oce_namelist}" "${restart_interval}"
+
 # ============================================================================
 # Executables
 ln -sf ${icon_cpu} icon_cpu
@@ -300,3 +305,7 @@ run_model
 # Restart
 # -------
 restart_model
+
+# Archive
+# -------
+[ "${ARCHIVE}" == "true" ] && archive_output

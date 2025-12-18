@@ -14,6 +14,7 @@ dependencies = ["isoduration"]
 date_add = "py_run_utils.dates:date_add"
 date_min = "py_run_utils.dates:date_min"
 date_cycle = "py_run_utils.dates:date_cycle"
+check_file_interval = "py_run_utils.dates:check_file_interval"
 create_slurm_hostfile_load_balanced = "py_run_utils.create_slurm_hostfile:create_slurm_hostfile_load_balanced"
 create_slurm_hostfile_separate_io = "py_run_utils.create_slurm_hostfile:create_slurm_hostfile_separate_io"
 

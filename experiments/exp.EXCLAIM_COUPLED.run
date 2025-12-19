@@ -60,8 +60,6 @@ if [ "$SEPARATE_IO" = true ] && [ "$TARGET" != "hybrid" ]; then
     exit 1
 fi
 
-export ARCHIVE=${ARCHIVE:-"fasle"}
-
 # Case settings - 1 
 # -----------------
 # Some main settings depend on case settings and vice-versa
@@ -119,15 +117,15 @@ fi
 lrestart=${lrestart:-.false.}
 export checkpoint_interval=${checkpoint_interval:-${restart_interval}}
 
-chunk_start_date=${chunk_start_date:-${start_date}}
-chunk_end_date=$(date_cycle "${chunk_start_date}" "${restart_interval}" "${end_date}")
+export chunk_start_date=${chunk_start_date:-${start_date}}
+export chunk_end_date=$(date_cycle "${chunk_start_date}" "${restart_interval}" "${end_date}")
 
 start_year=${start_date:0:4}
 chunk_start_year=${chunk_start_date:0:4}
 chunk_end_year=${chunk_end_date:0:4}
 
 if [ "${chunk_start_year}" !=  "${chunk_end_year}" ]; then
-    echo "ERROR: chunk ends in the different year than it starts"
+    echo "ERROR: chunk ends in a different year (${chunk_start_date}) than it starts (${chunk_end_date})"
     exit 1
 fi
 
@@ -142,6 +140,11 @@ export control_year=${control_year:-2020} # use 1850 for picontrol
 # TODO: use ssp
 ssp="370"
 initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphere + hdext cold-started from scratch
+
+# Archiving
+# ---------
+export ARCHIVE=${ARCHIVE:-"fasle"}
+export ARCHIVE_DIR=${ARCHIVE_DIR:-"/capstor/store/cscs/userlab/cwp07/${USER}/${EXPNAME}"}
 
 # namelist files
 # --------------
@@ -280,7 +283,7 @@ if [ "${activate_output}" == "true" ]; then
 fi
 
 # Check that file intervals are not greater than the restart interval
-[ "${ARCHIVE}" == "true" ] && check_file_interval "${atm_namelist}" "${oce_namelist}" "${restart_interval}"
+[ "${ARCHIVE}" == "true" ] && check_file_interval "${atm_namelist}" "${oce_namelist}" "${restart_interval}" || exit
 
 # ============================================================================
 # Executables
@@ -296,16 +299,18 @@ ldd ${icon_gpu}
 
 # Run environment
 # ---------------
+deactivate  # deactivate py_run_utils environment
+#           # which gets activated by `source ../run_utils/run_tools.sh`
 set_environment
 
 # MPI run
 # -------
 run_model
 
+# Archive
+# -------
+archive_output
+
 # Restart
 # -------
 restart_model
-
-# Archive
-# -------
-[ "${ARCHIVE}" == "true" ] && archive_output

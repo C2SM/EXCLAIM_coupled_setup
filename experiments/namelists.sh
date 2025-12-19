@@ -451,9 +451,11 @@ EOF
 
 output_atm_mon(){
   # monitoring file for atmos
-  stream="${EXPNAME}_atm_mon"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_atm_mon"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
+
 &output_nml
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  output_start            = "${start_date}"
@@ -465,7 +467,7 @@ output_atm_mon(){
  remap                   = 0                         ! 1: latlon,  0: native grid
  include_last            = .FALSE.                   ! flag whether to include the last time step
  output_grid             = .FALSE.                   ! flag whether grid information is added to output.
- filename_format         = "${stream}/${stream}_<datetime2>"
+ filename_format         = "${stream_dir}/${stream}_<datetime2>"
  ml_varlist              = 'tas_gmean','rsdt_gmean','rsut_gmean','rlut_gmean','radtop_gmean','prec_gmean','evap_gmean','pme_gmean'
 /
 EOF
@@ -473,9 +475,11 @@ EOF
 
 output_atm_mon2d(){
   # native time mean output 2-dim averaged over OUTPUT_INTERVAL:
-  stream="${EXPNAME}_atm_mon2d"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_atm_mon2d"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
+
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
@@ -485,7 +489,7 @@ output_atm_mon2d(){
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
- filename_format         = "${stream}/${stream}_<datetime2>"
+ filename_format         = "${stream_dir}/${stream}_<datetime2>"
  output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
@@ -496,9 +500,11 @@ EOF
 
 output_atm_mean3d(){
   # native time mean output 2-dim averaged over OUTPUT_INTERVAL:
-  stream="${EXPNAME}_atm_mean3d"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_atm_mean3d"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
+
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
@@ -508,22 +514,23 @@ output_atm_mean3d(){
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
- filename_format         = "${stream}/${stream}_<datetime2>"
+ filename_format         = "${stream_dir}/${stream}_<datetime2>"
  output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
  pl_varlist              = 'u', 'v',
  p_levels                = 100,200,300,500,700,1000,2000,3000,5000,7000,10000,12500,15000,17500,20000,22500,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,77500,80000,82500,85000,87500,90000,92500,95000,97500,100000
-
 /
 EOF
 }
 
 output_atm_mean(){
   # native time mean output 2-dim averaged over OUTPUT_INTERVAL:
-  stream="${EXPNAME}_atm_mean"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_atm_mean"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
+
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
@@ -533,20 +540,21 @@ output_atm_mean(){
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
- filename_format         = "${stream}/${stream}_<datetime2>"
+ filename_format         = "${stream_dir}/${stream}_<datetime2>"
  output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
  ml_varlist              = 'pres_sfc', 'qv', 't_2m', 'u_10m', 'v_10m' 
-
 /
 EOF
 }
 
 output_energy_budget(){
-stream="${EXPNAME}_energy_budget"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_energy_budget"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
+
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
@@ -556,7 +564,7 @@ stream="${EXPNAME}_energy_budget"
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
- filename_format         = "${stream}/${stream}_<datetime2>"
+ filename_format         = "${stream_dir}/${stream}_<datetime2>"
  output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  !reg_lon_def             = 0.,1.,360.
@@ -569,9 +577,11 @@ EOF
 
 output_atm_latlon(){
   # interpolated lat-lon output 2d and 3d:
-  stream="${EXPNAME}_atm_latlon"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_atm_latlon"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
+
 &output_nml       !! interpolated lat-lon output
  output_start            = "${start_date}"
  output_end              = "${end_date}"
@@ -581,7 +591,7 @@ output_atm_latlon(){
  dom                     = -1
  mode                    = 1                         ! 1: forecast mode (relative t-axis)
  include_last            = .FALSE.                   ! set to false for asynchron output
- filename_format         = "${stream}/${stream}_<datetime2>"
+ filename_format         = "${stream_dir}/${stream}_<datetime2>"
  output_grid             = .TRUE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  reg_lon_def             = 0.,1.,360.
@@ -600,9 +610,11 @@ EOF
 }
 
 output_jsb_2d(){
-  stream="${EXPNAME}_jsb_2d"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_jsb_2d"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
+
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
@@ -612,7 +624,7 @@ output_jsb_2d(){
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
- filename_format         = "${stream}/${stream}_<datetime2>"
+ filename_format         = "${stream_dir}/${stream}_<datetime2>"
  output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
@@ -622,9 +634,11 @@ EOF
 }
 
 output_lnd_mon(){
-  stream="${EXPNAME}_lnd_mon"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_lnd_mon"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
+
 &output_nml ! 'lnd_mon'
  output_start            = "${start_date}"
  output_end              = "${end_date}"
@@ -634,7 +648,7 @@ output_lnd_mon(){
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
- filename_format         = "${stream}/${stream}_<datetime2>"
+ filename_format         = "${stream_dir}/${stream}_<datetime2>"
  output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  operation               = "mean"                    ! works on icon grid only (remap=0)
@@ -646,15 +660,16 @@ output_lnd_mon(){
                  'hydro_weq_balance_err_gsum_box', 'pheno_lai_ta_gmean_box',
                  'pheno_fract_fpc_gmean_box', 'seb_t_gmean_box'
 /
-
 EOF
 }
 
 output_lnd_dbg(){
   # output lnd_dbg
-  stream="${EXPNAME}_lnd_dbg"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_lnd_dbg"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
+
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
@@ -664,7 +679,7 @@ output_lnd_dbg(){
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
- filename_format         = "${stream}/${stream}_<datetime2>"
+ filename_format         = "${stream_dir}/${stream}_<datetime2>"
  output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  !operation               = "mean"                    ! works on icon grid only (remap=0)
@@ -682,9 +697,11 @@ EOF
 }
 
 output_hyd_dbg(){
-  stream="${EXPNAME}_hyd_dbg"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_hyd_dbg"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
+
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
@@ -694,27 +711,27 @@ output_hyd_dbg(){
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
  include_last            = .FALSE.                   ! flag whether to include the last time step
- filename_format         = "${stream}/${stream}_<datetime2>"
+ filename_format         = "${stream_dir}/${stream}_<datetime2>"
  output_grid             = .FALSE.                    ! flag whether grid information is added to output.
  remap                   = 0                         ! 1: latlon,  0: native grid
  !operation               = "mean"                    ! works on icon grid only (remap=0)
  ml_varlist              = 'group:land_vars'
-
 /
 EOF
 }
 
 #DYAMOND output from PPK
 dyamond_stream_1_1(){
-    # FOR DYAMOND PROTOCOL # 3D Variables on native grid, 3 hourly (as per the
-    # Dyamond Protocol 6 hourly), 37 pressure levels.
-    # => This needs to be interpolated onto 10KM (25KM for Dyamond)
-    stream="${EXPNAME}_dyamond_atm_1_1"
-    mkdir -p "${stream}"
+  # FOR DYAMOND PROTOCOL # 3D Variables on native grid, 3 hourly (as per the
+  # Dyamond Protocol 6 hourly), 37 pressure levels.
+  # => This needs to be interpolated onto 10KM (25KM for Dyamond)
+  local stream="${EXPNAME}_dyamond_atm_1_1"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
     cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_1_1_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -730,15 +747,16 @@ EOF
 }
 
 dyamond_stream_1_2(){
-    # FOR DYAMOND PROTOCOL # 3D Variables on native grid, 3 hourly (as per the
-    # Dyamond Protocol 6 hourly), 37 pressure levels.
-    # => This needs to be interpolated onto 10KM (25KM for Dyamond)
-    stream="${EXPNAME}_dyamond_atm_1_2"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  # FOR DYAMOND PROTOCOL # 3D Variables on native grid, 3 hourly (as per the
+  # Dyamond Protocol 6 hourly), 37 pressure levels.
+  # => This needs to be interpolated onto 10KM (25KM for Dyamond)
+  local stream="${EXPNAME}_dyamond_atm_1_2"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_1_2_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -754,12 +772,13 @@ EOF
 }
 
 dyamond_stream_1_3(){
-    stream="${EXPNAME}_dyamond_atm_1_3"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_1_3"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_1_3_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -775,12 +794,13 @@ EOF
 }
 
 dyamond_stream_1_4(){
-    stream="${EXPNAME}_dyamond_atm_1_4"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_1_4"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_1_4_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -797,12 +817,13 @@ EOF
 
 
 dyamond_stream_1_5(){
-    stream="${EXPNAME}_dyamond_atm_1_5"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_1_5"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_1_5_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -818,12 +839,13 @@ EOF
 }
 
 dyamond_stream_2(){
-    stream="${EXPNAME}_dyamond_atm_2"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_2"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_2_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -838,12 +860,13 @@ EOF
 }
 
 dyamond_stream_3(){
-    stream="${EXPNAME}_dyamond_atm_3" 
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_3"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_3_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -858,12 +881,13 @@ EOF
 }
 
 dyamond_stream_4(){
-    stream="${EXPNAME}_dyamond_atm_4"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_4"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_4_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -879,12 +903,13 @@ EOF
 }
 
 dyamond_stream_5(){
-    stream="${EXPNAME}_dyamond_atm_5"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_5"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_5_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -899,12 +924,13 @@ EOF
 }
 
 dyamond_stream_6(){
-    stream="${EXPNAME}_dyamond_atm_6"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_6"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_6_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -925,12 +951,13 @@ EOF
 
 
 dyamond_stream_7(){
-    stream="${EXPNAME}_dyamond_atm_7"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_7"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_7_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -945,12 +972,13 @@ EOF
 }
 
 dyamond_stream_8(){
-    stream="${EXPNAME}_dyamond_atm_8"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_8"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_8_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -966,12 +994,13 @@ EOF
 }
 
 dyamond_stream_9(){
-    stream="${EXPNAME}_dyamond_atm_9"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_9"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_9_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -986,12 +1015,13 @@ EOF
 }
 
 dyamond_stream_10(){
-    stream="${EXPNAME}_dyamond_atm_10"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_10"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_10_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1006,12 +1036,13 @@ EOF
 }
 
 dyamond_stream_11(){
-    stream="${EXPNAME}_dyamond_atm_11"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_11"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_11_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1027,12 +1058,13 @@ EOF
 }
 
 dyamond_stream_12(){
-    stream="${EXPNAME}_dyamond_atm_12"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_12"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_12_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1047,12 +1079,14 @@ EOF
 }
 
 dyamond_stream_13(){
-    stream="${EXPNAME}_dyamond_atm_13"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_13"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  mkdir -p "${stream}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_13_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1068,12 +1102,13 @@ EOF
 }
 
 dyamond_stream_14(){
-    stream="${EXPNAME}_dyamond_atm_14"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_14"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_14_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1089,12 +1124,13 @@ EOF
 }
 
 dyamond_stream_15_1(){
-    stream="${EXPNAME}_dyamond_atm_15_1"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_15_1"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_15_1_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1110,12 +1146,13 @@ EOF
 }
 
 dyamond_stream_15_2(){
-    stream="${EXPNAME}_dyamond_atm_15_2"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_15_2"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_15_2_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1131,12 +1168,13 @@ EOF
 }
 
 dyamond_stream_15_3(){
-    stream="${EXPNAME}_dyamond_atm_15_3"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_15_3"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_15_3_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1152,12 +1190,13 @@ EOF
 }
 
 dyamond_stream_15_4(){
-    stream="${EXPNAME}_dyamond_atm_15_4"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_15_4"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_15_4_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1173,12 +1212,13 @@ EOF
 }
 
 dyamond_stream_15_5(){
-    stream="${EXPNAME}_dyamond_atm_15_5"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_15_5"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_15_5_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1194,12 +1234,13 @@ EOF
 }
 
 dyamond_stream_15_6(){
-    stream="${EXPNAME}_dyamond_atm_15_6"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_15_6"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_15_6_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1215,12 +1256,13 @@ EOF
 }
 
 dyamond_stream_15_7(){
-    stream="${EXPNAME}_dyamond_atm_15_7"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_15_7"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_15_7_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1236,12 +1278,13 @@ EOF
 }
 
 dyamond_stream_15_8(){
-    stream="${EXPNAME}_dyamond_atm_15_8"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_15_8"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_15_8_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1257,12 +1300,13 @@ EOF
 }
 
 dyamond_stream_15_9(){
-    stream="${EXPNAME}_dyamond_atm_15_9"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_15_9"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_15_9_<datetime2>"
+ filename_format = "${stream_dir}/${stresm}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1278,12 +1322,13 @@ EOF
 }
 
 dyamond_stream_15_10(){
-    stream="${EXPNAME}_dyamond_atm_15_10"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_15_10"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_15_10_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1299,12 +1344,13 @@ EOF
 }
 
 dyamond_stream_15_11(){
-    stream="${EXPNAME}_dyamond_atm_15_11"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_15_11"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_15_11_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1320,12 +1366,13 @@ EOF
 }
 
 dyamond_stream_15_12(){
-    stream="${EXPNAME}_dyamond_atm_15_12"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_15_12"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_15_12_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1341,12 +1388,13 @@ EOF
 }
 
 dyamond_stream_15_13(){
-    stream="${EXPNAME}_dyamond_atm_15_13"
-    mkdir -p "${stream}"
-    cat >> ${atm_namelist} << EOF
+  local stream="${EXPNAME}_dyamond_atm_15_13"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${atm_namelist} << EOF
 
 &output_nml
- filename_format = "${stream}/${EXPNAME}_out_15_13_<datetime2>"
+ filename_format = "${stream_dir}/${stream}_<datetime2>"
  filetype        = 5 ! NetCDF4
  output_start    = "${start_date}"
  output_end      = "${end_date}"
@@ -1696,12 +1744,13 @@ EOF
 # Ocean output
 
 output_oce_fx(){
-  stream="${EXPNAME}_oce_fx"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_oce_fx"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
  &output_nml
   filetype         =  5                               ! output format: 2=GRIB2, 4=NETCDFv2, 5=NETCDFv4
-  filename_format  = "${stream}/${stream}_<datetime2>"
+  filename_format  = "${stream_dir}/${stream}_<datetime2>"
   output_start     = "${start_fx}"                    ! start date in ISO-format
   output_end       = "${start_fx}"                    ! end date in ISO-format
   output_interval  = "P50Y"         ! interval in ISO-format
@@ -1722,12 +1771,13 @@ EOF
 }
 
 output_oce_3h(){
-  stream="${EXPNAME}_oce_3h"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_oce_3h"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
   filetype                   = 5
-  filename_format            = "${stream}/${stream}_<datetime2>"
+  filename_format            = "${stream_dir}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
   output_interval            = "PT3H"     ! interval in ISO-format
@@ -1746,12 +1796,13 @@ EOF
 }
 
 output_oce_day(){
-  stream="${EXPNAME}_oce_day"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_oce_day"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
   filetype                   = 5
-  filename_format            = "${stream}/${stream}_<datetime2>"
+  filename_format            = "${stream_dir}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
   output_interval            = "P1D"     ! interval in ISO-format
@@ -1768,8 +1819,9 @@ EOF
 }
 
 output_oce_ice(){
-  stream="${EXPNAME}_oce_ice"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_oce_ice"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
   filetype         = 5
@@ -1781,7 +1833,7 @@ output_oce_ice(){
   operation        = 'mean'                           ! mean over output interval
   include_last     = .FALSE.                          ! set to false for asynchron output
   output_grid      = .FALSE.
-  filename_format  = "${stream}/${stream}_<datetime2>"
+  filename_format  = "${stream_dir}/${stream}_<datetime2>"
   filetype         =  5                               ! output format: 2=GRIB2, 4=NETCDFv2, 5=NETCDFv4
   !m_levels                   = "1...25,29,34,41,44,51,55,60,65,69"  ! surface - 200m all levels, 300, 500, 800, 1000, 1500, 2000m, 3000m, 4000, 5000m
   ml_varlist       =  'draftave','hi','hs','conc','verticallyTotal_mass_flux_e', 'ice_u','ice_v',
@@ -1791,8 +1843,9 @@ EOF
 }
 
 output_oce_flux(){
-  stream="${EXPNAME}_oce_flux"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_oce_flux"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
   filetype         = 5
@@ -1804,7 +1857,7 @@ output_oce_flux(){
   operation        = 'mean'                           ! mean over output interval
   include_last     = .FALSE.                          ! set to false for asynchron output
   output_grid      = .FALSE.
-  filename_format  = "${stream}/${stream}_<datetime2>"
+  filename_format  = "${stream_dir}/${stream}_<datetime2>"
   filetype         =  5                               ! output format: 2=GRIB2, 4=NETCDFv2, 5=NETCDFv4
   m_levels                   = "1...25,29,34,41,44,51,55,60,65,69"  ! surface - 200m all levels, 300, 500, 800, 1000, 1500, 2000m, 3000m, 4000, 5000m
   ml_varlist       = 'HeatFlux_Total','atmos_fluxes_HeatFlux_ShortWave','atmos_fluxes_HeatFlux_LongWave',
@@ -1816,12 +1869,13 @@ EOF
 }
 
 output_oce_mon(){
-  stream="${EXPNAME}_oce_mon"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_oce_mon"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
   filetype                   = 5
-  filename_format            = "${stream}/${stream}_<datetime2>"
+  filename_format            = "${stream_dir}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
   output_interval            = "P1D"
@@ -1837,12 +1891,13 @@ EOF
 }
 
 output_oce_mon2d(){
-  stream="${EXPNAME}_oce_mon2d"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_oce_mon2d"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
   filetype                   = 5
-  filename_format            = "${stream}/${stream}_<datetime2>"
+  filename_format            = "${stream_dir}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
   output_interval            = "P1D"
@@ -1859,12 +1914,13 @@ EOF
 }
 
 output_oce_moc(){
-  stream="${EXPNAME}_oce_moc"
-  mkdir -p "${stream}"
+  local stream="${EXPNAME}_oce_moc"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
   filetype                   = 5
-  filename_format            = "${stream}/${stream}_<datetime2>"
+  filename_format            = "${stream_dir}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
   output_interval            = "P1D"
@@ -1878,5 +1934,3 @@ output_oce_moc(){
 /
 EOF
 }
-
-

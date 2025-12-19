@@ -71,6 +71,12 @@ if [[ "${CASE}" != "R02B07-R02B07" ]] && [[ "${CASE}" != "R02B08-R02B09" ]] && [
 fi
 source "settings_${CASE}.sh"
 
+# Settings checks
+if (( ((nproma_atm > 0) + (nblocks_c_atm > 0) + (nblocks_e_atm > 0)) != 1 )); then
+    echo "ERROR: one and only one of nproma_atm, nblocks_c_atm, nblocks_e_atm can be > 0"
+    exit 1
+fi
+
 # Load Auxiliary functions
 # ------------------------
 source ../run_utils/run_tools.sh

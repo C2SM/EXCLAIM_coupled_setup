@@ -217,7 +217,13 @@ export activate_output=${activate_output:-"true"}
 export activate_output_dyamond=${activate_output_dyamond:-"false"}
 if [ "${activate_output}" == "true" ]; then
     [ "${activate_output_dyamond}" == "true" ] && atm_streams+=( "${dyamond_streams[@]}" )
-    # For max parallelism, use 1 task per output stream
+    # For max parallelism, use 1 task per output stream, up to a maximum of one IO task per node
+    if [ ${#atm_streams[@]} -gt $SLURM_NNODES ]; then
+        export ATM_IO_TASKS=$SLURM_NNODES
+    fi
+    if [ ${#oce_streams[@]} -gt $SLURM_NNODES ]; then
+        export OCE_IO_TASKS=$SLURM_NNODES
+    fi
     export ATM_IO_TASKS=${ATM_IO_TASKS:-${#atm_streams[@]}}
     export OCE_IO_TASKS=${OCE_IO_TASKS:-${#oce_streams[@]}}
 else

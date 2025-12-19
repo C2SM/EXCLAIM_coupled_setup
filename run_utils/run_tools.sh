@@ -204,7 +204,12 @@ restart_model(){
 }
 
 archive_output(){
-    #PLACEHOLDER
+    if [ "${ARCHIVE}" == "true" ]; then
+        echo "submiting archiving job for the current chunk"
+        unset SLURM_HOSTFILE
+        unset SLURM_DISTRIBUTION
+        sbatch ./archive.sh
+    fi
 }
 
 set_ocean_vertical_coordinate(){

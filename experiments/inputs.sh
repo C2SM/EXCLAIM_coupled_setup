@@ -26,9 +26,16 @@ atm_inputs(){
             ln -sf "${datadir_aerosol_kinne}/bc_aeropt_kinne_lw_b16_coa.nc" .
             ln -sf "${datadir_aerosol_kinne}/bc_aeropt_kinne_sw_b14_coa.nc" .
             ln -sf "${datadir_aerosol_kinne}/bc_aeropt_kinne_sw_b14_fin_${control_year}.nc" ./bc_aeropt_kinne_sw_b14_fin.nc
+            
             # ozone constant historical value
-            ln -sf "${datadir_ozone}/bc_ozone_historical_${control_year}.nc" ./"bc_ozone_${chunk_start_year}.nc"
-            ln -sf "${datadir_ozone}/bc_ozone_historical_${control_year}.nc" ./"bc_ozone_$((chunk_start_year-1)).nc"
+            if (( control_year < 2014 )); then
+                year="${control_year}"
+            else
+                echo "WARNING: ozone will use constant 2014 values"
+                year="2014"
+            fi
+            ln -sf "${datadir_ozone}/bc_ozone_historical_${year}.nc" ./"bc_ozone_${chunk_start_year}.nc"
+            ln -sf "${datadir_ozone}/bc_ozone_historical_${year}.nc" ./"bc_ozone_$((chunk_start_year-1)).nc"
             # solar irradiance - from file with constant annual values. This file must be made for each control year. see datadir_rad
             ln -sf "${datadir_rad}/swflux_14band_cmip6_${control_year}ADconst_999-2301-v3.2.nc" ./bc_solar_irradiance_sw_b14.nc
             # GHGs from ighg1=2 and ighg2=3 - use values from vmr_{ghg} in radiation_nml

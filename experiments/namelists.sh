@@ -128,8 +128,7 @@ coupling:
     #weight_file_name: w_oce2atm.nc
   - <<: [ *oce2atm, *conserv_interp_stack ]
     coupling_period: ${atm_oce_coupling_timestep}
-    field: [eastward_sea_water_velocity,
-            northward_sea_water_velocity]
+    field: [surface_velocity_bundle]
     #weight_file_name: w_riv2oce.nc
   - <<: [ *atm2oce, *spmap_interp_stack ]
     coupling_period: ${atm_oce_coupling_timestep}

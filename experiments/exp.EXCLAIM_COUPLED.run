@@ -144,7 +144,7 @@ initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphe
 # Archiving
 # ---------
 export ARCHIVE=${ARCHIVE:-"fasle"}
-export ARCHIVE_DIR=${ARCHIVE_DIR:-"/capstor/store/cscs/userlab/cwp07/${USER}/${EXPNAME}"}
+export ARCHIVE_DIR=${ARCHIVE_DIR:-"/capstor/store1/cscs/userlab/cwp07/${USER}/${EXPNAME}"}
 
 # namelist files
 # --------------

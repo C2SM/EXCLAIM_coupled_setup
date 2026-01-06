@@ -143,7 +143,7 @@ initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphe
 
 # Archiving
 # ---------
-export ARCHIVE=${ARCHIVE:-"fasle"}
+export ARCHIVE=${ARCHIVE:-"false"}
 export ARCHIVE_DIR=${ARCHIVE_DIR:-"/capstor/store1/cscs/userlab/cwp07/${USER}/${EXPNAME}"}
 
 # namelist files
@@ -181,6 +181,7 @@ case "${exptype}" in
         ighg2=4    # greenhouse gases from external file
         ;;
 esac
+export msg_level=${msg_level:-10}
 
 # Ocean settings
 # --------------
@@ -309,7 +310,7 @@ run_model
 
 # Archive
 # -------
-archive_output
+[ $? == 0 ] && archive_output
 
 # Restart
 # -------

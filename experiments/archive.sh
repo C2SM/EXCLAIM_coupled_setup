@@ -13,4 +13,13 @@
 mkdir -p ${ARCHIVE_DIR}
 
 # rclone command
-rclone move --include "/${EXPNAME}*/${chunk_start_date}_${chunk_end_date}/**" --include "${EXPNAME}_restart_*_${chunk_start_date//[-:]}.nc" ./ ${ARCHIVE_DIR}/ 
+echo " ==> Transferring data"
+rclone move \
+    --verbose \
+    --multi-thread-streams=128 \
+    --include "/${EXPNAME}*/${chunk_start_date}_${chunk_end_date}/**" \
+    --include "/${EXPNAME}_restart_*_${chunk_end_date//[-:]}.nc/**" \
+    ./ ${ARCHIVE_DIR}/ 
+
+echo " ==> Accounting"
+sacct -j "${SLURM_JOB_ID}" --format "JobID, JobName, AllocCPUs, Elapsed, ElapsedRaw, CPUTimeRAW, ConsumedEnergyRaw, MaxRSS, MaxVMSize, AveRSS"

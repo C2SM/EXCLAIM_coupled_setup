@@ -77,7 +77,7 @@ oce_streams=(
     "output_oce_flux"
     "output_oce_mon"
     "output_oce_mon2d"
-    "output_oce_moc"    
+    "output_oce_moc"
 )
 dyamond_streams=(
     "dyamond_stream_1_1"

@@ -58,11 +58,9 @@ cd build-gpu && cao_rebuild && cd ..
 To directly do a clean build of the cpu and gpu executables, just execute
 
 ``` bash
-cd EXCLAIM_coupled_setup/build_utils
 BUILD_TYPE="SPACK" sbatch ./build_utils/full_build.sh 
 ```
-
-You can also use `BUILD_TYPE="NOSPACK"`.
+from the repository root. You can also use `BUILD_TYPE="NOSPACK"`.
 
 You can monitor the build with `tail -f full_build.o`. The build happens on `/dev/shm` on the login nodes. The icon clone will be retrieved at the end of the build as `icon-hybrid` containing the 2 `build-cpu` and `build-gpu` subdirectories. 
 

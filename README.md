@@ -56,7 +56,6 @@ cd build-gpu && cao_rebuild && cd ..
 ### Full build script
 
 To directly do a clean build of the cpu and gpu executables, just execute
-
 ``` bash
 BUILD_TYPE="SPACK" sbatch ./build_utils/full_build.sh 
 ```

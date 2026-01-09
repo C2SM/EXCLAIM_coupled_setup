@@ -5,4 +5,3 @@ experiments/*
 !experiments/inputs.sh
 !experiments/namelists.sh
 !experiments/settings*.sh
-r2b7_restart_test/*

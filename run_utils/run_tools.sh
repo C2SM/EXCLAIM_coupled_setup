@@ -145,7 +145,9 @@ run_model(){
             ../run_utils/run_wrappers/cpu_atm-oce_wrapper.sh ./icon_cpu
       ;;
    esac
+   status="$?"
    set +x
+   return $status
 }
 
 restart_model(){
@@ -185,7 +187,7 @@ restart_model(){
     echo
     echo
 
-    echo "Accounting"
+    echo " ==> Accounting"
     sacct -j "${SLURM_JOB_ID}" --format "JobID, JobName, AllocCPUs, Elapsed, ElapsedRaw, CPUTimeRAW, ConsumedEnergyRaw, MaxRSS, MaxVMSize, AveRSS"
 
     if [ "${atm_finish_status}" == "RESTART" ]; then
@@ -196,10 +198,22 @@ restart_model(){
         echo
         SBATCH_OPTIONS="--nodes=${SLURM_NNODES}"
         submit_cmd="sbatch ${SBATCH_OPTIONS} ${RUNSCRIPT_PATH} ${TARGET} ${RUN_OPTIONS[@]}"
-        echo "submitting next chunk starting at ${chunk_start_date} with ${submit_cmd}"
-        echo "${submit_cmd}"
+        echo " ==> submitting next chunk starting at ${chunk_start_date}"
+        set -x
         ${submit_cmd}
+        set +x
         rm -f ${atm_finish_status_file} ${oce_finish_status_file}
+    fi
+}
+
+archive_output(){
+    if [ "${ARCHIVE}" == "true" ]; then
+        echo " ==> submiting archiving job for the current chunk"
+        unset SLURM_HOSTFILE
+        unset SLURM_DISTRIBUTION
+        set -x
+        sbatch ./archive.sh
+        set +x
     fi
 }
 

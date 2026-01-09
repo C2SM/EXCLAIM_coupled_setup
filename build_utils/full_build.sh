@@ -35,7 +35,7 @@ CAO_ICON_DIR="icon-hybrid"
 if [ -n "${CAO_ICON_COMMIT}" ]; then
     git clone -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"
     pushd "${CAO_ICON_DIR}" 2>&1 >/dev/null
-    [ -n "${CAO_ICON_COMMIT}" ] && git reset --hard "${CAO_ICON_COMMIT}"
+    git reset --hard "${CAO_ICON_COMMIT}"
     git submodule update --init --depth 1
     popd 2>&1 >/dev/null
 else

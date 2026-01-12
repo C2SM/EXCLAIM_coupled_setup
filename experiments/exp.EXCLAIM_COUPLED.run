@@ -283,7 +283,6 @@ if [ "${activate_output}" == "true" ]; then
     done
 fi
 
-export ARCHIVE="true"
 # Check that file intervals are not greater than the restart interval
 if [ "${ARCHIVE}" == "true" ]; then 
 	check_file_interval "${atm_namelist}" "${oce_namelist}" "${restart_interval}" ||

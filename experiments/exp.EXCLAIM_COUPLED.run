@@ -9,7 +9,7 @@
 #SBATCH --output=LOG.EXCLAIM_COUPLED.%j
 #SBATCH --error=LOG.EXCLAIM_COUPLED.%j
 #SBATCH --time=00:15:00
-#SBATCH --nodes=4
+#SBATCH --nodes=12
 #SBATCH --gpus-per-node=4
 #SBATCH --mem=0
 #SBATCH --exclusive
@@ -284,7 +284,11 @@ if [ "${activate_output}" == "true" ]; then
 fi
 
 # Check that file intervals are not greater than the restart interval
-[ "${ARCHIVE}" == "true" ] && check_file_interval "${atm_namelist}" "${oce_namelist}" "${restart_interval}" || exit
+if [ "${ARCHIVE}" == "true" ]; then 
+	check_file_interval "${atm_namelist}" "${oce_namelist}" "${restart_interval}" ||
+	echo "set file intergvals to less than the restart interval to use the archive function"
+	exit 1
+fi
 
 # ============================================================================
 # Executables

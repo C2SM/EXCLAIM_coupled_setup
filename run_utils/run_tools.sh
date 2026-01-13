@@ -336,7 +336,7 @@ set_ocean_vertical_coordinate(){
 pushd ../run_utils/py_run_utils 2>&1 >/dev/null || exit
 
 if [ ${FIRST_RUN} == "true" ]; then
-    echo "Installing py_run_utils"
+    echo " ==> Installing py_run_utils"
     rm -rf .venv uv.lock
     uv venv --relocatable --python="$(which python)"
     source .venv/bin/activate

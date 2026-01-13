@@ -194,6 +194,7 @@ restart_model(){
         unset SLURM_HOSTFILE
         export lrestart=.true.
         export chunk_start_date="${chunk_end_date}"
+        export FIRST_RUN="false"
         [ -n "${SBATCH_TIMELIMIT}" ] && export SBATCH_TIMELIMIT
         echo
         SBATCH_OPTIONS="--nodes=${SLURM_NNODES}"
@@ -333,13 +334,15 @@ set_ocean_vertical_coordinate(){
 
 # Activate py_run_tools
 pushd ../run_utils/py_run_utils 2>&1 >/dev/null || exit
-if [ -f .venv/bin/activate ]; then
-    source .venv/bin/activate || exit
-else
+
+if [ ${FIRST_RUN} == "true" ]; then
+    echo "Installing py_run_utils"
     rm -rf .venv uv.lock
     uv venv --relocatable --python="$(which python)"
     source .venv/bin/activate
     uv sync --no-cache --link-mode=copy --compile-bytecode --active --no-editable --inexact || exit
+else
+    source .venv/bin/activate || exit
 fi
 popd 2>&1 >/dev/null || exit
 

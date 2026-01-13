@@ -24,7 +24,7 @@
 
 # ============================================================================
 # Settings
-export FIRST_RUN=${FIRST_RUN:-"true"}
+FIRST_RUN=${FIRST_RUN:-"true"}
 
 # Get runscript path
 # ------------------

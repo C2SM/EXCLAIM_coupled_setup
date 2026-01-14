@@ -49,6 +49,16 @@ set_environment(){
    ulimit -s unlimited
    ulimit -c 0
 
+   # Set up the broadcast of dynamic share libraries
+   # -----------------------------------------------
+   ../run_utils/lib_on_ram_disc.sh
+   cat ./bcast_files.sh
+   mpicc ../run_utils/mybcast.c -o mybcast
+   srun --ntasks-per-node=1 ./mybcast /dev/shm/$USER ./bcast_files.sh
+   ls -l /dev/shm/$USER
+   export LD_LIBRARY_PATH="/dev/shm/$USER:$LD_LIBRARY_PATH"
+   ldd ./icon_gpu
+
    # Dump SLURM environment variables
    # --------------------------------
    set | grep SLURM

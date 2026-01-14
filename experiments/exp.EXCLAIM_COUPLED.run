@@ -24,6 +24,7 @@
 
 # ============================================================================
 # Settings
+FIRST_RUN=${FIRST_RUN:-"true"}
 
 # Get runscript path
 # ------------------
@@ -284,7 +285,9 @@ if [ "${activate_output}" == "true" ]; then
 fi
 
 # Check that file intervals are not greater than the restart interval
-[ "${ARCHIVE}" == "true" ] && check_file_interval "${atm_namelist}" "${oce_namelist}" "${restart_interval}" || exit
+if [ "${ARCHIVE}" == "true" ]; then
+     check_file_interval "${atm_namelist}" "${oce_namelist}" "${restart_interval}" || exit
+fi
 
 # ============================================================================
 # Executables

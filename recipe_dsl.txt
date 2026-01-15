@@ -1,0 +1,15 @@
+-clone icon-exclaim repository
+-modify the spack recipes, e.g. jsbach needs to be activated
+-compile it
+-replace icon binary in gpu build with wrapper which sets GT4PY_BUILD_CACHE_DIR individual for each task (maybe not)
+-clone EXCLAIM_coupled_setup repository
+-modify experiments/exp.EXCLAIM_COUPLED.run
+  +comment out #SBATCH --uenv=icon/25.2:v3:/user-environment
+               #SBATCH --view=default
+   the uenv should not be loaded in the slurm script but only before outside the scripts
+      icon-dsl/25.12:2224326443
+  +include source /iopsstor/scratch/cscs/ajocksch/coupled_gt4py/icon-exclaim/santis_gpu_double_py_substitute/setting
+           source /user-environment/linux-sles15-neoverse_v2/gcc-13.3.0/icon4py-git.a76e26b94c4294c974007edf022c9257a2c31cc7_0.0.14-git.274-wsoewarixl4qcsivu7ydwigwqggpkuul/share/venv/bin/activate
+   before the run_model line, special attention has to be payed with Python two separate installations have to be used for preprocessing and the dsl since none of them contains all packages
+-use modified files coupling.yaml namelists.sh settings_R02B07-R02B07.sh in the experiments directory
+-run the model with the run_aj.sh script

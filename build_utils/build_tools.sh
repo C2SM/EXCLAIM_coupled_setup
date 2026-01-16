@@ -49,6 +49,8 @@ cao_init() {
         git clone --depth 1 --recurse-submodules --shallow-submodules -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"
     fi
 
+  git apply ${CAO_BUILD_UTILS_DIR}/gmean_acc.patch
+
   for config_file in "${CAO_CONFIG_FILES[@]}"; do
     cp ${CAO_BUILD_UTILS_DIR}/${config_file} ${CAO_ICON_DIR}/config/cscs/.
   done

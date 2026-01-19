@@ -30,12 +30,14 @@ atm_inputs(){
             # ozone constant historical value
             if (( control_year < 2014 )); then
                 year="${control_year}"
+                scenario="historical"
             else
-                echo "WARNING: ozone will use constant 2014 values"
-                year="2014"
+                echo "Using ozone from scenario: ssp${ssp}"
+                scenario="ssp${ssp}"
+                year="${control_year}"
             fi
-            ln -sf "${datadir_ozone}/bc_ozone_historical_${year}.nc" ./"bc_ozone_${chunk_start_year}.nc"
-            ln -sf "${datadir_ozone}/bc_ozone_historical_${year}.nc" ./"bc_ozone_$((chunk_start_year-1)).nc"
+            ln -sf "${datadir_ozone}/bc_ozone_${scenario}_${year}.nc" ./"bc_ozone_${chunk_start_year}.nc"
+            ln -sf "${datadir_ozone}/bc_ozone_${scenario}_${year}.nc" ./"bc_ozone_$((chunk_start_year-1)).nc"
             # solar irradiance - from file with constant annual values. This file must be made for each control year. see datadir_rad
             ln -sf "${datadir_rad}/swflux_14band_cmip6_${control_year}ADconst_999-2301-v3.2.nc" ./bc_solar_irradiance_sw_b14.nc
             # GHGs from ighg1=2 and ighg2=3 - use values from vmr_{ghg} in radiation_nml
@@ -56,7 +58,7 @@ atm_inputs(){
             else
                 echo "WARNING: volcanic aerosols will use constant 2014 values"
                 year=2014
-                prev_year=2013
+                prev_year=2014
             fi
             ln -sf "${datadir_aerosol_volcanic}/bc_aeropt_cmip6_volc_lw_b16_sw_b14_${year}.nc" "./bc_aeropt_cmip6_volc_lw_b16_sw_b14_${chunk_start_year}.nc"
             ln -sf "${datadir_aerosol_volcanic}/bc_aeropt_cmip6_volc_lw_b16_sw_b14_${prev_year}.nc" "./bc_aeropt_cmip6_volc_lw_b16_sw_b14_$((chunk_start_year-1)).nc"
@@ -67,12 +69,14 @@ atm_inputs(){
             # ozone depending on year
             if (( chunk_start_year < 2014 )); then
                 year="${chunk_start_year}"
+                scenario="historical"
             else
-                echo "WARNING: ozone will use constant 2014 values"
-                year="2014"
+                echo "Using ozone from scenario: ssp${ssp}"
+                year="${chunk_start_year}"
+                scenario="ssp${ssp}"
             fi
-            ln -sf "${datadir_ozone}/bc_ozone_historical_${year}.nc" "./bc_ozone_${chunk_start_year}.nc"
-            ln -sf "${datadir_ozone}/bc_ozone_historical_$((year-1)).nc" "./bc_ozone_$((chunk_start_year-1)).nc"
+            ln -sf "${datadir_ozone}/bc_ozone_${scenario}_${year}.nc" "./bc_ozone_${chunk_start_year}.nc"
+            ln -sf "${datadir_ozone}/bc_ozone_${scenario}_$((year-1)).nc" "./bc_ozone_$((chunk_start_year-1)).nc"
             # solar irradiance
             ln -sf "${datadir_rad}/swflux_14band_cmip6_1849-2299-v3.2.nc" ./bc_solar_irradiance_sw_b14.nc
             # GHGs with ighg1=4 and 1ghg2=4 - greenhouse gases from external file

@@ -1,9 +1,0 @@
-[CAO build] Using build scripts from /capstor/scratch/cscs/nbeech/coupled_setup/EXCLAIM_coupled_setup/build_utils
-[CAO build] Building in /dev/shm/nbeech/coupled_setup
-[CAO build] Getting ICON
-Cloning into 'icon-hybrid'...
-git@gitlab.dkrz.de: Permission denied (publickey).
-fatal: Could not read from remote repository.
-
-Please make sure you have the correct access rights
-and the repository exists.

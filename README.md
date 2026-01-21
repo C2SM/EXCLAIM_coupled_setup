@@ -10,7 +10,7 @@ To build the coupled setup follow these steps:
 
 ```bash
 # Start UENV
-uenv start --view=default icon/25.2:v3
+uenv start --view=default icon-dsl/25.12:2224326443
 
 # Create a base directory
 mkdir -p coupled-setup

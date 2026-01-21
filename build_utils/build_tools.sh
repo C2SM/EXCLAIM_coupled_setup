@@ -6,6 +6,9 @@ CAO_BASEDIR="$(pwd)"
 CAO_ICON_REPO='git@gitlab.dkrz.de:icon/icon-nwp.git'
 CAO_ICON_BRANCH='master'
 CAO_ICON_COMMIT='bb4e1d8dc67545860e365841fde94be77d91e234'
+CAO_ICON_REPO='https://github.com/C2SM/icon-exclaim'
+CAO_ICON_BRANCH='icon-dsl'
+CAO_ICON_COMMIT='2902a0412e6092be63bd048a438eaac2fb642d9b'
 
 CAO_BUILD_UTILS_DIR="${CAO_BASEDIR}/EXCLAIM_coupled_setup/build_utils/"
 CAO_ICON_DIR="${CAO_BASEDIR}/icon-hybrid"

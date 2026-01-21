@@ -53,7 +53,7 @@ set_environment(){
    # -----
    export CUDAARCHS=90
    export PYTHONOPTIMIZE=2
-   export GT4PY_BUILD_CACHE_DIR=$basedir/santis_gpu_double_py_substitute/bin
+   export GT4PY_BUILD_CACHE_DIR=$basedir/santis_gpu_nvhpc_py_substitute/bin
    export GT4PY_BUILD_CACHE_LIFETIME=persistent
    export GT4PY_UNSTRUCTURED_HORIZONTAL_HAS_UNIT_STRIDE=1
 

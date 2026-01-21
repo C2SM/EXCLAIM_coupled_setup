@@ -3,7 +3,7 @@
 # ============================================================================
 #SBATCH --account=cwp07
 #SBATCH --partition=tier0
-#SBATCH --uenv=icon/25.2:v3:/user-environment
+#SBATCH --uenv=icon-dsl/25.12:2224326443:/user-environment
 #SBATCH --view=default
 #SBATCH --job-name=EXCLAIM_COUPLED
 #SBATCH --output=LOG.EXCLAIM_COUPLED.%j

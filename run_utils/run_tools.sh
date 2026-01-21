@@ -49,6 +49,14 @@ set_environment(){
    ulimit -s unlimited
    ulimit -c 0
 
+   # Gt4Py
+   # -----
+   export CUDAARCHS=90
+   export PYTHONOPTIMIZE=2
+   export GT4PY_BUILD_CACHE_DIR=$basedir/santis_gpu_double_py_substitute/bin
+   export GT4PY_BUILD_CACHE_LIFETIME=persistent
+   export GT4PY_UNSTRUCTURED_HORIZONTAL_HAS_UNIT_STRIDE=1
+
    # Dump SLURM environment variables
    # --------------------------------
    set | grep SLURM

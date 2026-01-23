@@ -30,13 +30,13 @@ pushd icon-hybrid/build-cpu && cao_build cpu && popd
 pushd icon-hybrid/build-gpu-py-substitute && cao_build gpu && popd
 ```
 
-Otherwise, if you want to build without Spack, but using our custom build scripts you can run the following instead:
-
-```bash
-# Build CPU and GPU without Spack
-pushd icon-hybrid/build-cpu && cao_build cpu_nospack && popd
-pushd icon-hybrid/build-gpu-py-substitute && cao_build gpu_nospack && popd
-```
+%Otherwise, if you want to build without Spack, but using our custom build scripts you can run the following instead:
+%
+%```bash
+%# Build CPU and GPU without Spack
+%pushd icon-hybrid/build-cpu && cao_build cpu_nospack && popd
+%pushd icon-hybrid/build-gpu-py-substitute && cao_build gpu_nospack && popd
+%```
 
 If you only want to rebuild (e.g. after you made some changes in the code), enter the build directories and run
 `cao_rebuild`.

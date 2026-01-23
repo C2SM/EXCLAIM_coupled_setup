@@ -61,6 +61,8 @@ cao_init() {
     config_name=${config_name%%.*}
     cp ${CAO_BUILD_UTILS_DIR}/${spack_yaml_file} ${CAO_ICON_DIR}/config/cscs/spack/santis_${config_name}_double/spack.yaml
   done
+  cp ${CAO_BASEDIR}/EXCLAIM_coupled_setup/spack/santis_cpu_double/spack.yaml ${CAO_ICON_DIR}/config/cscs/spack/santis_cpu_double/spack.yaml
+  cp ${CAO_BASEDIR}/EXCLAIM_coupled_setup/spack/santis_gpu_double_py_substitute/spack.yaml ${CAO_ICON_DIR}/config/cscs/spack/santis_gpu_double_py_substitute/spack.yaml
 
   pushd ${CAO_ICON_DIR}
     for build_dir in "${CAO_BUILD_DIRS[@]}"; do

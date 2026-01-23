@@ -23,6 +23,10 @@
 # - Only initialiseOcean="fromClimatology" case
 
 # ============================================================================
+#
+export PATH=$PATH:/user-environment/linux-sles15-neoverse_v2/gcc-13.3.0/uv-0.9.4-433hgpzs5kyl4kowwpxeydlhufh7p3wr/bin
+#
+# ============================================================================
 # Settings
 FIRST_RUN=${FIRST_RUN:-"true"}
 
@@ -95,7 +99,7 @@ export basedir=${basedir:-"${RUNSCRIPT_DIR}/../../icon-hybrid"}
 # Executables
 # -----------
 export icon_cpu=${icon_cpu:-"${basedir}/build-cpu/bin/icon"}
-export icon_gpu=${icon_gpu:-"${basedir}/build-gpu/bin/icon"}
+export icon_gpu=${icon_gpu:-"${basedir}/build-gpu-py-substitute/bin/icon"}
 
 # Input data directories
 # ----------------------

@@ -7,12 +7,12 @@ export SBATCH_TIMELIMIT="01:00:00"
 export CPUS_PER_TASK=16
 export TOT_TASKS_PER_COMP_NODE=16
 export MAX_TASKS_PER_IO_NODE=4
-export basedir="../../icon-exclaim"
+#export basedir="../../icon-exclaim"
 # export basedir="../../icon-xpp"
 #export icon_cpu="../../icon-exclaim/build-cpu/bin/icon"
 #export icon_gpu="../../icon-exclaim/build-gpu-py-substitute/bin/icon"
 
-export PATH=$PATH:/user-environment/linux-sles15-neoverse_v2/gcc-13.3.0/uv-0.9.4-433hgpzs5kyl4kowwpxeydlhufh7p3wr/bin
+#export PATH=$PATH:/user-environment/linux-sles15-neoverse_v2/gcc-13.3.0/uv-0.9.4-433hgpzs5kyl4kowwpxeydlhufh7p3wr/bin
 
 #export PYTHONPATH=$PYTHONPATH:/user-environment/linux-sles15-neoverse_v2/gcc-13.3.0/py-cffi-1.17.1-w7rl2ld75dk5yfozbbv6vhuxuewg46rd/lib/python3.11/site-packages
 

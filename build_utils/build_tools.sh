@@ -15,7 +15,7 @@ CAO_ICON_DIR="${CAO_BASEDIR}/icon-hybrid"
 
 CAO_BUILD_DIRS=(
   'build-cpu'
-  'build-gpu'
+  'build-gpu-py-substitute'
 )
 
 CAO_CONFIG_FILES=(
@@ -73,10 +73,18 @@ cao_init() {
 
 cao_build() {
   if [[ "$(pwd)" == "${CAO_ICON_DIR}" ]]; then
-    ./config/cscs/santis.${1}.nvhpc
+    if [[ "${1}" == "cpu" ]]; then
+      ./config/cscs/santis.${1}.nvhpc
+    else
+      ./config/cscs/santis.${1}.nvhpc.py.substitute
+    fi
     CONFIG_STATUS=$?
   else
-    ../config/cscs/santis.${1}.nvhpc
+    if [[ "${1}" == "cpu" ]]; then
+      ../config/cscs/santis.${1}.nvhpc
+    else
+      ../config/cscs/santis.${1}.nvhpc.py.substitute
+    fi
     CONFIG_STATUS=$?
   fi
 

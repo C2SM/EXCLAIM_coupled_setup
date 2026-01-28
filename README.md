@@ -17,6 +17,9 @@ mkdir -p coupled-setup
 
 # Clone this repository in the base directory
 cd coupled-setup && git clone git@github.com:C2SM/EXCLAIM_coupled_setup.git
+cd EXCLAIM_coupled_setup
+git checkout coupled_dsl
+cd ..
 
 # Copy the build_tools into the base directory
 cp EXCLAIM_coupled_setup/build_utils/build_tools.sh .

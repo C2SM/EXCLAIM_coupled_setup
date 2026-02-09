@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 
 #SBATCH --account=cwd01
+#SBATCH --partition=tier0
 #SBATCH --time=02:00:00
 #SBATCH --uenv=icon/25.2:v3
 #SBATCH --view=default
@@ -8,7 +9,7 @@
 
 set -e
 
-BUILD_TYPE="${BUILD_TYPE:-NOSPACK}"
+BUILD_TYPE="${BUILD_TYPE:-SPACK}"
 CAO_BUILD_DIR="${CAO_BUILD_DIR:-/dev/shm/${USER}/coupled_setup}"
 
 # Get script dir
@@ -37,6 +38,9 @@ if [ -n "${CAO_ICON_COMMIT}" ]; then
     pushd "${CAO_ICON_DIR}" 2>&1 >/dev/null
     git reset --hard "${CAO_ICON_COMMIT}"
     git submodule update --init --depth 1
+    pushd externals/jsbach 2>&1 >/dev/null
+    git apply "${SCRIPT_DIR}/mo_hsm_class.f90.patch"
+    popd 2>&1 >/dev/null
     popd 2>&1 >/dev/null
 else
     git clone --depth 1 --recurse-submodules --shallow-submodules -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"

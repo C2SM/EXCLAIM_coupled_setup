@@ -14,7 +14,7 @@ mkdir -p ${ARCHIVE_DIR}
 
 # rclone command
 echo " ==> Transferring data"
-rclone move \
+rclone ${ARCHIVE_TYPE} \
     --verbose \
     --multi-thread-streams=128 \
     --include "/${EXPNAME}*/${chunk_start_date}_${chunk_end_date}/**" \

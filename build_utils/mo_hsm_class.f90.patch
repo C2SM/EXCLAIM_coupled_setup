@@ -1,0 +1,18 @@
+diff --git a/src/base/mo_hsm_class.f90 b/src/base/mo_hsm_class.f90
+index ff0913d4..1cebb9db 100644
+--- a/src/base/mo_hsm_class.f90
++++ b/src/base/mo_hsm_class.f90
+@@ -1050,9 +1050,10 @@ CONTAINS
+ 
+ #ifdef _OPENACC
+       IF (this%use_multiple_queues .AND. original_stream /= -1) THEN
+-        DO stream = original_stream+1, acc_stream
+-          !$ACC WAIT(stream) ASYNC(original_stream)
+-        ENDDO
++        ! DO stream = original_stream+1, acc_stream
++        !   !$ACC WAIT(stream) ASYNC(original_stream)
++        ! ENDDO
++        !$ACC WAIT
+         ! Dummy kernel for the faster graph dependency resolution
+         !$ACC PARALLEL ASYNC(original_stream)
+         dummy = 1

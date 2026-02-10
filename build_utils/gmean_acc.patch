@@ -1,0 +1,88 @@
+diff --git a/src/atm_phy_nwp/mo_nwp_diagnosis.f90 b/src/atm_phy_nwp/mo_nwp_diagnosis.f90
+index 7f57327804..047d60623e 100644
+--- a/src/atm_phy_nwp/mo_nwp_diagnosis.f90
++++ b/src/atm_phy_nwp/mo_nwp_diagnosis.f90
+@@ -2778,6 +2778,8 @@ CONTAINS
+           & pt_patch%cells%owned_no_boundary, &
+           & tas_gmean, lopenacc=.TRUE.)
+       prm_diag%tas_gmean = tas_gmean
++      ! Here the prm_diag%tas_gmean needs to be updated from CPU to GPU
++      !$ACC UPDATE DEVICE(prm_diag%tas_gmean)
+     END IF
+ 
+     ! global mean toa incident shortwave radiation, rsdt
+@@ -2789,6 +2791,7 @@ CONTAINS
+           & pt_patch%cells%owned_no_boundary, &
+           & rsdt_gmean, lopenacc=.TRUE.)
+       prm_diag%rsdt_gmean = rsdt_gmean
++      !$ACC UPDATE DEVICE(prm_diag%rsdt_gmean)
+     END IF
+ 
+     ! global mean toa outgoing shortwave radiation, rsut
+@@ -2800,6 +2803,7 @@ CONTAINS
+           & pt_patch%cells%owned_no_boundary, &
+           & rsut_gmean, lopenacc=.TRUE.)
+       prm_diag%rsut_gmean = rsut_gmean
++      !$ACC UPDATE DEVICE(prm_diag%rsut_gmean)
+     END IF
+ 
+     ! global mean toa outgoing longwave radiation, rlut
+@@ -2810,6 +2814,7 @@ CONTAINS
+           & pt_patch%cells%owned_no_boundary, &
+           & rlut_gmean, lopenacc=.TRUE.)
+       prm_diag%rlut_gmean = rlut_gmean
++      !$ACC UPDATE DEVICE(prm_diag%rlut_gmean)
+     END IF
+ 
+     ! global mean precipitation flux, prec
+@@ -2820,6 +2825,7 @@ CONTAINS
+           & pt_patch%cells%owned_no_boundary, &
+           & prec_gmean, lopenacc=.TRUE.)
+       prm_diag%prec_gmean = prec_gmean
++      !$ACC UPDATE DEVICE(prm_diag%prec_gmean)
+     END IF
+ 
+     ! global mean evaporation flux, evap
+@@ -2830,6 +2836,7 @@ CONTAINS
+           & pt_patch%cells%owned_no_boundary, &
+           & evap_gmean, lopenacc=.TRUE.)
+       prm_diag%evap_gmean = evap_gmean
++      !$ACC UPDATE DEVICE(prm_diag%evap_gmean)
+     END IF
+ 
+     ! global mean P-E, derived from prec and evap
+@@ -2838,6 +2845,7 @@ CONTAINS
+         var_in_output%evap_gmean) THEN
+       prm_diag%pme_gmean = prm_diag%prec_gmean + &
+                            prm_diag%evap_gmean
++      !$ACC UPDATE DEVICE(prm_diag%pme_gmean)
+     ENDIF
+ 
+     ! global mean toa total radiation, radtop, derived variable
+@@ -2896,6 +2904,7 @@ CONTAINS
+ 
+       NULLIFY(field)
+       prm_diag%radtop_gmean = radtop_gmean
++      !$ACC UPDATE DEVICE(prm_diag%radtop_gmean)
+     END IF
+ 
+   END SUBROUTINE nwp_diag_global
+diff --git a/src/atm_phy_nwp/mo_nwp_gpu_util.f90 b/src/atm_phy_nwp/mo_nwp_gpu_util.f90
+index c43740cfca..564664c8d2 100644
+--- a/src/atm_phy_nwp/mo_nwp_gpu_util.f90
++++ b/src/atm_phy_nwp/mo_nwp_gpu_util.f90
+@@ -433,6 +433,14 @@ MODULE mo_nwp_gpu_util
+     !$ACC   HOST(prm_diag%clcl) &
+     !$ACC   HOST(prm_diag%clcm) &
+     !$ACC   HOST(prm_diag%clch) &
++    !$ACC   HOST(prm_diag%tas_gmean) &
++    !$ACC   HOST(prm_diag%rsdt_gmean) &
++    !$ACC   HOST(prm_diag%rsut_gmean) &
++    !$ACC   HOST(prm_diag%rlut_gmean) &
++    !$ACC   HOST(prm_diag%prec_gmean) &
++    !$ACC   HOST(prm_diag%evap_gmean) &
++    !$ACC   HOST(prm_diag%pme_gmean) &
++    !$ACC   HOST(prm_diag%radtop_gmean) &
+     !$ACC   ASYNC(1)
+ 
+     !$ACC UPDATE &

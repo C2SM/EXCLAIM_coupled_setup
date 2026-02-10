@@ -483,8 +483,8 @@ output_atm_mon2d(){
 &output_nml
  output_start            = "${start_date}"
  output_end              = "${end_date}"
- output_interval         = "P1D"                     ! the output interval and
- file_interval           = "P1D"                     ! the file interval
+ output_interval         = "P1M"                     ! the output interval and
+ file_interval           = "P1M"                     ! the file interval
  filetype                = 5                         ! output format: 2=GRIB2, 4=NETCDFv2
  dom                     = -1
  mode                    =  1                        ! 1: forecast mode (relative t-axis); 2: climate mode
@@ -1900,8 +1900,8 @@ output_oce_mon2d(){
   filename_format            = "${stream_dir}/${stream}_<datetime2>"
   output_start               = "${start_date}"                  ! start in ISO-format
   output_end                 = "${end_date}"                    ! end in ISO-format
-  output_interval            = "P1D"
-  file_interval              = "P1D"
+  output_interval            = "P1M"
+  file_interval              = "P1M"
   mode                       = 1                               ! 1: forecast mode (relative t-axis)
                                                                 ! 2: climate mode (absolute t-axis)
   include_last               = .FALSE.

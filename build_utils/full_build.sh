@@ -39,6 +39,7 @@ if [ -n "${CAO_ICON_COMMIT}" ]; then
     git reset --hard "${CAO_ICON_COMMIT}"
     git submodule update --init --depth 1
     pushd externals/jsbach 2>&1 >/dev/null
+    echo "[CAO build] applying patch ${SCRIPT_DIR}/mo_hsm_class.f90.patch"
     git apply "${SCRIPT_DIR}/mo_hsm_class.f90.patch"
     popd 2>&1 >/dev/null
     popd 2>&1 >/dev/null
@@ -79,7 +80,7 @@ fi
 popd 2>&1 >/dev/null
 
 echo "[CAO build] retreiving build from ${CAO_BUILD_DIR}"
-rsync -a "${CAO_BUILD_DIR}/${CAO_ICON_DIR}" .
+rsync -a --delete "${CAO_BUILD_DIR}/${CAO_ICON_DIR}/" "${CAO_ICON_DIR}/"
 
 echo "[CAO build] cleaning ${CAO_BUILD_DIR}"
 rm -rf "${CAO_BUILD_DIR}/${CAO_ICON_DIR}"

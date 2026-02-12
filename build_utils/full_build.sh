@@ -42,9 +42,15 @@ if [ -n "${CAO_ICON_COMMIT}" ]; then
     echo "[CAO build] applying patch ${SCRIPT_DIR}/mo_hsm_class.f90.patch"
     git apply "${SCRIPT_DIR}/mo_hsm_class.f90.patch"
     popd 2>&1 >/dev/null
+    echo "[CAO build] applying patch ${SCRIPT_DIR}/gmean_acc.patch"
+    git apply ${SCRIPT_DIR}/gmean_acc.patch
     popd 2>&1 >/dev/null
 else
     git clone --depth 1 --recurse-submodules --shallow-submodules -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"
+    pushd ${CAO_ICON_DIR}/externals/jsbach 2>&1 >/dev/null
+    echo "[CAO build] applying patch ${SCRIPT_DIR}/mo_hsm_class.f90.patch"
+    git apply "${SCRIPT_DIR}/mo_hsm_class.f90.patch"
+    popd 2>&1 >/dev/null
 fi
 
 # Build

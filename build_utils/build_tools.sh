@@ -45,15 +45,19 @@ done
 
 
 cao_init() {
-    if [ -n "${CAO_ICON_COMMIT}" ]; then
-        git clone -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"
-        pushd "${CAO_ICON_DIR}" 2>&1 >/dev/null
-        git reset --hard "${CAO_ICON_COMMIT}"
-        git submodule update --init --depth 1
-        popd 2>&1 >/dev/null
-    else
-        git clone --depth 1 --recurse-submodules --shallow-submodules -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"
-    fi
+  if [ -n "${CAO_ICON_COMMIT}" ]; then
+    git clone -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"
+    pushd "${CAO_ICON_DIR}" 2>&1 >/dev/null
+    git reset --hard "${CAO_ICON_COMMIT}"
+    git submodule update --init --depth 1
+    popd 2>&1 >/dev/null
+  else
+    git clone --depth 1 --recurse-submodules --shallow-submodules -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"
+  fi
+
+  pushd ${CAO_ICON_DIR}/externals/jsbach
+  git apply "${CAO_BUILD_UTILS_DIR}/mo_hsm_class.f90.patch"
+  popd
 
   pushd ${CAO_ICON_DIR}
     git apply ${CAO_BUILD_UTILS_DIR}/gmean_acc.patch

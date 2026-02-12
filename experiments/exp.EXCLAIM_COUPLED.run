@@ -2,7 +2,7 @@
 
 # ============================================================================
 #SBATCH --account=cwd01
-##SBATCH --partition=tier0
+#SBATCH --partition=tier0
 #SBATCH --uenv=icon-dsl/25.12:2224326443:/user-environment
 #SBATCH --view=default
 #SBATCH --job-name=EXCLAIM_COUPLED
@@ -154,6 +154,13 @@ initialiseOcean="fromClimatology"    # ocean is setup from climatology, atmosphe
 # ---------
 export ARCHIVE=${ARCHIVE:-"false"}
 export ARCHIVE_DIR=${ARCHIVE_DIR:-"/capstor/store1/cscs/userlab/cwp07/${USER}/${EXPNAME}"}
+export ARCHIVE_TYPE=${ARCHIVE_TYPE:-"move"}
+
+valid_archive_types="move sync"
+if [[ ! " ${valid_archive_types} " =~ " ${ARCHIVE_TYPE} " ]]; then
+    echo "ERROR: ARCHIVE_TYPE can only be one of ${valid_archive_types}, got ${ARCHIVE_TYPE}"
+    exit 1
+fi
 
 # namelist files
 # --------------

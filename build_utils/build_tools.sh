@@ -11,10 +11,12 @@ CAO_BASEDIR="$(pwd)"
 # dsl case
 CAO_ICON_REPO='git@github.com:C2SM/icon-exclaim.git'
 CAO_ICON_BRANCH='icon-dsl'
-CAO_ICON_COMMIT='2902a0412e6092be63bd048a438eaac2fb642d9b'
+# CAO_ICON_COMMIT='2902a0412e6092be63bd048a438eaac2fb642d9b'
 
 CAO_BUILD_UTILS_DIR="${CAO_BASEDIR}/EXCLAIM_coupled_setup/build_utils/"
 CAO_ICON_DIR="${CAO_BASEDIR}/icon-hybrid"
+
+GPU_MODE="${GPU_MODE:-py-substitute}"
 
 CAO_BUILD_DIRS=(
   'build-cpu'
@@ -27,8 +29,8 @@ CAO_CONFIG_FILES=(
 )
 
 CAO_SPACK_YAML_FILES=(
-  'spack_cpu.yaml'
-  'spack_gpu.yaml'
+  'spack_cpu_double.yaml'
+  'spack_gpu_double.yaml'
 )
 
 CAO_CONFIG_NAMES=()

@@ -3,7 +3,7 @@
 # ============================================================================
 #SBATCH --account=cwd01
 #SBATCH --partition=tier0
-#SBATCH --uenv=icon-dsl/25.12:2224326443:/user-environment
+#SBATCH --uenv=icon-dsl/25.12:2346172108:/user-environment
 #SBATCH --view=default
 #SBATCH --job-name=EXCLAIM_COUPLED
 #SBATCH --output=LOG.EXCLAIM_COUPLED.%j
@@ -22,8 +22,17 @@
 # - Only initialiseOcean="fromClimatology" case
 
 # ============================================================================
-#
-export PATH=$PATH:/user-environment/linux-sles15-neoverse_v2/gcc-13.3.0/uv-0.9.4-433hgpzs5kyl4kowwpxeydlhufh7p3wr/bin
+
+# Try to add uv to the path
+if ! which uv >/dev/null 2>&1; then
+    UV_PATH_PATTERN='/user-environment/linux-sles15-neoverse_v2/gcc-13.3.0/uv*/bin'
+    if [ -d ${UV_PATH_PATTERN} ]; then
+        export PATH=$PATH:$(realpath ${UV_PATH_PATTERN})
+    else
+        echo "ERROR: uv not found"
+        exit 1
+    fi
+fi
 #
 # ============================================================================
 # Settings
@@ -64,6 +73,8 @@ if [ "$SEPARATE_IO" = true ] && [ "$TARGET" != "hybrid" ]; then
     exit 1
 fi
 
+export GPU_MODE="${GPU_MODE:-py-substitute}"
+
 # Case settings - 1 
 # -----------------
 # Some main settings depend on case settings and vice-versa
@@ -103,7 +114,7 @@ export basedir=${basedir:-"${RUNSCRIPT_DIR}/../../icon-hybrid"}
 # Executables
 # -----------
 export icon_cpu=${icon_cpu:-"${basedir}/build-cpu/bin/icon"}
-export icon_gpu=${icon_gpu:-"${basedir}/build-gpu-py-substitute/bin/icon"}
+export icon_gpu=${icon_gpu:-"${basedir}/build-gpu-${GPU_MODE}/bin/icon"}
 
 # Input data directories
 # ----------------------
@@ -127,7 +138,7 @@ lrestart=${lrestart:-.false.}
 export checkpoint_interval=${checkpoint_interval:-${restart_interval}}
 
 export chunk_start_date=${chunk_start_date:-${start_date}}
-export chunk_end_date=$(date_cycle "${chunk_start_date}" "${restart_interval}" "${end_date}")
+export chunk_end_date=$(uv run date_cycle "${chunk_start_date}" "${restart_interval}" "${end_date}")
 
 start_year=${start_date:0:4}
 chunk_start_year=${chunk_start_date:0:4}
@@ -259,7 +270,7 @@ compute_task_distribution_variables
 create_multiprog_file
 
 if [ "$SEPARATE_IO" = true ]; then
-    create_slurm_hostfile_separate_io \
+    uv run create_slurm_hostfile_separate_io \
         --output_filepath "./hostfile-${SLURM_JOB_ID}" \
         --tot_tasks_per_comp_node "${TOT_TASKS_PER_COMP_NODE}" \
         --max_tasks_per_io_node "${MAX_TASKS_PER_IO_NODE}" \
@@ -269,7 +280,7 @@ if [ "$SEPARATE_IO" = true ]; then
         --threads_per_task "${CPUS_PER_TASK}" \
         --max_threads_per_node "$(grep -c ^processor /proc/cpuinfo)" || exit
 else
-    create_slurm_hostfile_load_balanced \
+    uv run create_slurm_hostfile_load_balanced \
         --output_filepath "./hostfile-${SLURM_JOB_ID}" \
         --tot_tasks_per_node "${TOT_TASKS_PER_NODE}" \
         --atm_comp_tasks_per_node "${ATM_COMP_TASKS_PER_NODE}" \
@@ -301,7 +312,7 @@ fi
 
 # Check that file intervals are not greater than the restart interval
 if [ "${ARCHIVE}" == "true" ]; then
-     check_file_interval "${atm_namelist}" "${oce_namelist}" "${restart_interval}" || exit
+     uv run check_file_interval "${atm_namelist}" "${oce_namelist}" "${restart_interval}" || exit
 fi
 
 # ============================================================================

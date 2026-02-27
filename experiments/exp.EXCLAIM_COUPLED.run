@@ -84,11 +84,6 @@ if [[ "${CASE}" != "R02B07-R02B07" ]] && [[ "${CASE}" != "R02B08-R02B09" ]] && [
     echo "ERROR: CASE must be either 'R02B07-R02B07', 'R02B08-R02B09' or 'R02B10-R02B10'"
     exit 1
 fi
-
-# settings for dsl
-export nblocks_e_atm=1
-export nblocks_c_atm=0
-
 source "settings_${CASE}.sh"
 
 # Settings checks

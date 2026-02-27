@@ -12,8 +12,7 @@ export CPUS_PER_TASK=16
 export MAX_TASKS_PER_IO_NODE=4
 
 export GPU_MODE="py-substitute"
-# Choose your icon basedir
-# export basedir="$(realpath icon-hybrid-py-substitute)"
+export basedir=$(realpath "icon-hybrid-${GPU_MODE}")
 
 export activate_output="false"
 export activate_output_dyamond="true"

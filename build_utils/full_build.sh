@@ -33,7 +33,7 @@ echo "[CAO build] ... Getting ICON"
 CAO_ICON_REPO='git@github.com:C2SM/icon-exclaim.git'
 CAO_ICON_BRANCH='icon-dsl'
 # CAO_ICON_COMMIT='2902a0412e6092be63bd048a438eaac2fb642d9b'
-CAO_ICON_DIR="icon-hybrid"
+CAO_ICON_DIR="icon-hybrid-${GPU_MODE}"
 
 if [ -n "${CAO_ICON_COMMIT}" ]; then
     git clone -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"

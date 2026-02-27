@@ -20,7 +20,7 @@ spack:
     - icon4py@main%gcc
     - icon-exclaim @develop %nvhpc
       ~aes +ecrad +jsbach +ocean +coupling ~rte-rrtmgp
-      dsl=substitute gpu=nvidia-90 +mpi-gpu +realloc-buf +cuda-graphs +pgi-inlib
+      dsl=substitute gpu=nvidia-90 ~mpi-gpu +realloc-buf +cuda-graphs +pgi-inlib
       fflags="-traceback"
   view: true
   concretizer:

@@ -26,8 +26,8 @@ case "${TARGET}" in
     "hybrid")
         # nproma_atm=40000
         nproma_atm=${nproma_atm:-0}
-        nblocks_c_atm=${nblocks_c_atm:-1}
-        nblocks_e_atm=${nblocks_e_atm:-0}
+        nblocks_c_atm=${nblocks_c_atm:-0}
+        nblocks_e_atm=${nblocks_e_atm:-1}
         nproma_sub=6000
         ecrad_isolver=2  # (0 for CPU/vector, 2 for GPU)
         ;;

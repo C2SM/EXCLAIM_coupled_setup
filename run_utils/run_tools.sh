@@ -63,7 +63,7 @@ set_environment(){
 
    # MPICH
    # -----
-   if [[ "${TARGET}" == "hybrid" ]]; then
+   if [ "${TARGET}" == "hybrid" ]; then
       export MPICH_GPU_SUPPORT_ENABLED=1
       # export MPICH_GPU_IPC_ENABLED=0
       export MPICH_RDMA_ENABLED_CUDA=1
@@ -74,7 +74,7 @@ set_environment(){
 
    # NVHPC/CUDA
    # ----------
-   if [[ "${TARGET}" == "hybrid" ]]; then
+   if [ "${TARGET}" == "hybrid" ]; then
       export NVCOMPILER_ACC_SYNCHRONOUS=0
       export NVCOMPILER_ACC_DEFER_UPLOADS=1
       export NVCOMPILER_ACC_USE_GRAPH=1  # Harmless if cuda-graphs is disabled
@@ -82,6 +82,19 @@ set_environment(){
       export NVCOMPILER_TERM=trace
       export CUDA_BUFFER_PAGE_IN_THRESHOLD_MS=0.001
       # export CRAY_CUDA_MPS=1  # Only needed if we oversubscribe the GPU
+   fi
+   
+   # Gt4Py
+   # -----
+   if [ "${GPU_MODE}" == "py-substitute" ]; then
+       export CUDAARCHS=90
+       export PYTHONOPTIMIZE=2
+       export GT4PY_BUILD_CACHE_DIR="$(dirname ${icon_gpu})"
+       export CUPY_CACHE_DIR="${SCRATCH}/cupy-cache"
+       export GT4PY_BUILD_CACHE_LIFETIME=persistent
+       export GT4PY_UNSTRUCTURED_HORIZONTAL_HAS_UNIT_STRIDE=1
+       export DACE_compiler_cuda_block_size_limit=256
+       export PY2FGEN_LOG_LEVEL=WARNING
    fi
 
    # OpenMP
@@ -332,17 +345,13 @@ set_ocean_vertical_coordinate(){
    fi
 }
 
-# Activate py_run_tools
-pushd ../run_utils/py_run_utils 2>&1 >/dev/null || exit
-
+# Create py_run_tools venv
 if [ ${FIRST_RUN} == "true" ]; then
     echo " ==> Installing py_run_utils"
     rm -rf .venv uv.lock
-    uv venv --relocatable --python="$(which python)"
+    uv venv --relocatable --python="$(which python)" .venv
     source .venv/bin/activate
-    uv sync --no-cache --link-mode=copy --compile-bytecode --active --no-editable --inexact || exit
-else
-    source .venv/bin/activate || exit
+    uv sync --no-cache --link-mode=copy --compile-bytecode --active --no-editable --inexact --project ../run_utils/py_run_utils || exit
+    deactivate
 fi
-popd 2>&1 >/dev/null || exit
 

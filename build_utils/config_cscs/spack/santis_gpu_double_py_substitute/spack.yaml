@@ -1,0 +1,27 @@
+# ICON
+#
+# ------------------------------------------
+# Copyright (C) 2004-2025, DWD, MPI-M, DKRZ, KIT, ETH, MeteoSwiss
+# Contact information: icon-model.org
+# See AUTHORS.TXT for a list of authors
+# See LICENSES/ for license information
+# SPDX-License-Identifier: BSD-3-Clause
+# ------------------------------------------
+
+spack:
+  packages:
+    all:
+      variants: +cuda cuda_arch=90
+    mpi:
+      require: [cray-mpich@8.1.30%nvhpc]
+  specs:
+    - hdf5%nvhpc +szip +hl +fortran +mpi 
+    - netcdf-c@4.9.2%nvhpc
+    - icon4py@main%gcc
+    - icon-exclaim @develop %nvhpc
+      ~aes +ecrad +jsbach +ocean +coupling ~rte-rrtmgp
+      dsl=substitute gpu=nvidia-90 +mpi-gpu +realloc-buf +cuda-graphs +pgi-inlib
+      fflags="-traceback"
+  view: true
+  concretizer:
+    unify: true

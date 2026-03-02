@@ -6,7 +6,7 @@ export end_date="1979-01-02T00:00:00Z"
 export restart_interval="P1D"
 export control_year=1979
 
-export SBATCH_TIMELIMIT="24:00:00"
+export SBATCH_TIMELIMIT="01:00:00"
 N_NODES=16
 export CPUS_PER_TASK=16
 export MAX_TASKS_PER_IO_NODE=4

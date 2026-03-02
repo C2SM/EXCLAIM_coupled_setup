@@ -58,15 +58,12 @@ set_environment(){
    export FI_CXI_SAFE_DEVMEM_COPY_THRESHOLD=0
    export FI_CXI_RX_MATCH_MODE=software
    export FI_MR_CACHE_MONITOR=disabled
-   export FI_MR_CACHE_MAX_COUNT=0
-   export FI_CXI_OFLOW_BUF_COUNT=10
 
    # MPICH
    # -----
    if [ "${TARGET}" == "hybrid" ]; then
       export MPICH_GPU_SUPPORT_ENABLED=1
-      # export MPICH_GPU_IPC_ENABLED=0
-      export MPICH_RDMA_ENABLED_CUDA=1
+      export MPICH_GPU_IPC_ENABLED=1
       export MPICH_OFI_NIC_POLICY=GPU
    else
       export MPICH_OFI_NIC_POLICY=NUMA

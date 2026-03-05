@@ -10,7 +10,7 @@ set -e
 BUILD_TYPE="${BUILD_TYPE:-SPACK}"
 GPU_MODE="${GPU_MODE:-py-substitute}"
 CAO_BUILD_DIR="${CAO_BUILD_DIR:-/dev/shm/${USER}/coupled_setup}"
-UENV=${UENV:-"icon-dsl/25.12:2362082589"}
+UENV=${UENV:-"icon-dsl/25.12:v1"}
 
 # Set cloning urls with token
 # ---------------------------

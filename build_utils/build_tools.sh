@@ -11,7 +11,7 @@ CAO_BASEDIR="$(pwd)"
 # dsl case
 CAO_ICON_REPO='git@github.com:C2SM/icon-exclaim.git'
 CAO_ICON_BRANCH='icon-dsl'
-# CAO_ICON_COMMIT='2902a0412e6092be63bd048a438eaac2fb642d9b'
+CAO_ICON_COMMIT='5c5b742a969af2bd491e26cd0a05a35838f121c4'
 
 CAO_BUILD_UTILS_DIR="${CAO_BASEDIR}/EXCLAIM_coupled_setup/build_utils/"
 CAO_ICON_DIR="${CAO_BASEDIR}/icon-hybrid"

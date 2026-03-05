@@ -1,0 +1,21 @@
+# ICON
+#
+# ------------------------------------------
+# Copyright (C) 2004-2025, DWD, MPI-M, DKRZ, KIT, ETH, MeteoSwiss
+# Contact information: icon-model.org
+# See AUTHORS.TXT for a list of authors
+# See LICENSES/ for license information
+# SPDX-License-Identifier: BSD-3-Clause
+# ------------------------------------------
+
+spack:
+  packages:
+    mpi:
+      require: [cray-mpich@8.1.30%nvhpc]
+  specs:
+    - hdf5%nvhpc +szip +hl +fortran +mpi 
+    - netcdf-c@4.9.2%nvhpc
+    - icon-exclaim @develop %nvhpc +ecrad ~aes +jsbach +ocean +coupling ~rte-rrtmgp
+  view: true
+  concretizer:
+    unify: true

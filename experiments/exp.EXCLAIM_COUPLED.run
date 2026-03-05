@@ -3,7 +3,7 @@
 # ============================================================================
 #SBATCH --account=cwd01
 #SBATCH --partition=tier0
-#SBATCH --uenv=icon-dsl/25.12:2346172108:/user-environment
+#SBATCH --uenv=icon-dsl/25.12:2362082589:/user-environment
 #SBATCH --view=default
 #SBATCH --job-name=EXCLAIM_COUPLED
 #SBATCH --output=LOG.EXCLAIM_COUPLED.%j
@@ -21,19 +21,6 @@
 # CAUTION
 # - Only initialiseOcean="fromClimatology" case
 
-# ============================================================================
-
-# Try to add uv to the path
-if ! which uv >/dev/null 2>&1; then
-    UV_PATH_PATTERN='/user-environment/linux-sles15-neoverse_v2/gcc-13.3.0/uv*/bin'
-    if [ -d ${UV_PATH_PATTERN} ]; then
-        export PATH=$PATH:$(realpath ${UV_PATH_PATTERN})
-    else
-        echo "ERROR: uv not found"
-        exit 1
-    fi
-fi
-#
 # ============================================================================
 # Settings
 FIRST_RUN=${FIRST_RUN:-"true"}

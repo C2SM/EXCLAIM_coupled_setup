@@ -342,6 +342,17 @@ set_ocean_vertical_coordinate(){
    fi
 }
 
+# Try to add uv to the path
+if ! which uv >/dev/null 2>&1; then
+    UV_PATH_PATTERN='/user-environment/linux-sles15-neoverse_v2/gcc-13.3.0/uv*/bin'
+    if [ -d ${UV_PATH_PATTERN} ]; then
+        export PATH=$PATH:$(realpath ${UV_PATH_PATTERN})
+    else
+        echo "ERROR: uv not found"
+        exit 1
+    fi
+fi
+
 # Create py_run_tools venv
 if [ ${FIRST_RUN} == "true" ]; then
     echo " ==> Installing py_run_utils"

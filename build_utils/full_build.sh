@@ -3,14 +3,40 @@
 #SBATCH --account=cwd01
 #SBATCH --partition=tier0
 #SBATCH --time=02:00:00
-#SBATCH --output="full_build.o"
+#SBATCH --output="full_build.%j.o"
 
 set -e
 
 BUILD_TYPE="${BUILD_TYPE:-SPACK}"
 GPU_MODE="${GPU_MODE:-py-substitute}"
 CAO_BUILD_DIR="${CAO_BUILD_DIR:-/dev/shm/${USER}/coupled_setup}"
-UENV="icon-dsl/25.12:2346172108"
+UENV=${UENV:-"icon-dsl/25.12:2362082589"}
+
+# Set cloning urls with token
+# ---------------------------
+if [ -z "${GITLAB_DKRZ_TOKEN}" ] || [ -z "${GITHUB_TOKEN}" ]; then
+    echo "ERROR: GITLAB_DKRZ_TOKEN and/or GITHUB_TOKEN unset"
+    exit 1
+fi
+GIT_CONFIG_COUNT=2
+GIT_CONFIG_KEY_0="url.https://oauth2:${GITLAB_DKRZ_TOKEN}@gitlab.dkrz.de/.insteadOf"
+GIT_CONFIG_VALUE_0="git@gitlab.dkrz.de:"
+GIT_CONFIG_KEY_1="url.https://oauth2:${GITHUB_TOKEN}@github.com/.insteadOf"
+GIT_CONFIG_VALUE_1="git@github.com:"
+
+# Set targets
+# -----------
+build_cpu="true"
+build_gpu="true"
+OPTIONS="$@"
+if [ -n "${OPTIONS}" ]; then
+    case "${OPTIONS}" in
+        "--cpu-only") build_gpu="false" ;;
+        "--gpu-only") build_cpu="false" ;;
+        *) echo "ERROR: unrecognized argument ${OPTIONS}"; exit 1;;
+    esac
+fi
+          
 
 # Get script dir
 # --------------
@@ -32,7 +58,7 @@ pushd "${CAO_BUILD_DIR}" 2>&1 >/dev/null
 echo "[CAO build] ... Getting ICON"
 CAO_ICON_REPO='git@github.com:C2SM/icon-exclaim.git'
 CAO_ICON_BRANCH='icon-dsl'
-# CAO_ICON_COMMIT='2902a0412e6092be63bd048a438eaac2fb642d9b'
+CAO_ICON_COMMIT='5c5b742a969af2bd491e26cd0a05a35838f121c4'
 CAO_ICON_DIR="icon-hybrid-${GPU_MODE}"
 
 if [ -n "${CAO_ICON_COMMIT}" ]; then
@@ -66,39 +92,47 @@ echo "[CAO build] ...... Customizing build settings and scripts"
 rsync -av "${SCRIPT_DIR}/config_cscs/" "${CAO_ICON_DIR}/config/cscs/"
 
 if [ "${BUILD_TYPE}" ==  "SPACK" ]; then
-    
-    echo "[CAO build] ...... Building cpu"
-    pushd "${CPU_BUILD_DIR}" >/dev/null 2>&1
-    uenv run ${UENV} --view default -- ../config/cscs/santis.cpu.nvhpc
-    popd >/dev/null 2>&1
-    
-    echo "[CAO build] ...... Building gpu-${GPU_MODE}"
-    pushd "${GPU_BUILD_DIR}" >/dev/null 2>&1
-    if [ "${GPU_MODE}" == "acc" ]; then
-        uenv run ${UENV} --view default -- ../config/cscs/santis.gpu.nvhpc
-    elif [ "${GPU_MODE}" == "py-substitute" ]; then
-        uenv run ${UENV} --view default -- ../config/cscs/santis.gpu.nvhpc.py.substitute
-    else
-        echo "[CAO build] ERROR: unknown GPU_MODE ${GPU_MODE}"
-        exit 1
+
+    if [ "${build_cpu}" == "true" ]; then
+        echo "[CAO build] ...... Building cpu"
+        pushd "${CPU_BUILD_DIR}" >/dev/null 2>&1
+        uenv run ${UENV} --view default -- ../config/cscs/santis.cpu.nvhpc
+        popd >/dev/null 2>&1
     fi
-    popd >/dev/null 2>&1
+
+    if [ "${build_gpu}" == "true" ]; then
+        echo "[CAO build] ...... Building gpu-${GPU_MODE}"
+        pushd "${GPU_BUILD_DIR}" >/dev/null 2>&1
+        if [ "${GPU_MODE}" == "acc" ]; then
+            uenv run ${UENV} --view default -- ../config/cscs/santis.gpu.nvhpc
+        elif [ "${GPU_MODE}" == "py-substitute" ]; then
+            uenv run ${UENV} --view default -- ../config/cscs/santis.gpu.nvhpc.py.substitute
+        else
+            echo "[CAO build] ERROR: unknown GPU_MODE ${GPU_MODE}"
+            exit 1
+        fi
+        popd >/dev/null 2>&1
+    fi
     
 elif [ "${BUILD_TYPE}" ==  "NOSPACK" ]; then
 
-    if [ "${GPU_MODE}" != "acc" ]; then
-        echo "[CAO build] ERROR: only 'acc' GPU_MODE is available for NOSPACK build, got ${GPU_MODE}"
-        exit 1
+    if [ "${build_cpu}" == "true" ]; then
+        echo "[CAO build] ...... Building cpu"
+        pushd "${CPU_BUILD_DIR}" >/dev/null 2>&1
+        uenv run ${UENV} --view default -- ../config/cscs/santis.cpu_nospack.nvhpc && make -j 24
+        popd >/dev/null 2>&1
     fi
-    echo "[CAO build] ...... Building cpu"
-    pushd "${CPU_BUILD_DIR}" >/dev/null 2>&1
-    uenv run ${UENV} --view default -- ../config/cscs/santis.cpu_nospack.nvhpc && make -j 24
-    popd >/dev/null 2>&1
-    
-    echo "[CAO build] ...... Building gpu-${GPU_MODE}"
-    pushd "${GPU_BUILD_DIR}" >/dev/null 2>&1
-    uenv run ${UENV} --view default -- ../config/cscs/santis.gpu_nospack.nvhpc && make -j 24
-    popd >/dev/null 2>&1
+
+    if [ "${build_gpu}" == "true" ]; then
+        if [ "${GPU_MODE}" != "acc" ]; then
+            echo "[CAO build] ERROR: only 'acc' GPU_MODE is available for NOSPACK build, got ${GPU_MODE}"
+            exit 1
+        fi
+        echo "[CAO build] ...... Building gpu-${GPU_MODE}"
+        pushd "${GPU_BUILD_DIR}" >/dev/null 2>&1
+        uenv run ${UENV} --view default -- ../config/cscs/santis.gpu_nospack.nvhpc && make -j 24
+        popd >/dev/null 2>&1
+    fi
 
 else
     

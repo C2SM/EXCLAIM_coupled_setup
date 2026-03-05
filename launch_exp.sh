@@ -1,8 +1,10 @@
 #!/bin/bash
 
+# Example run script for a 2 days simulation with daily restarts
+
 export CASE="R02B07-R02B07"
 export start_date="1979-01-01T00:00:00Z"
-export end_date="1979-01-02T00:00:00Z"
+export end_date="1979-01-03T00:00:00Z"
 export restart_interval="P1D"
 export control_year=1979
 

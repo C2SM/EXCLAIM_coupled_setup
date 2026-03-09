@@ -86,7 +86,7 @@ set_environment(){
    if [ "${GPU_MODE}" == "py-substitute" ]; then
        export CUDAARCHS=90
        export PYTHONOPTIMIZE=2
-       export GT4PY_BUILD_CACHE_DIR="$(dirname ${icon_gpu})"
+       export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"$(dirname ${icon_gpu})"}
        export CUPY_CACHE_DIR=${CUPY_CACHE_DIR:-"${SCRATCH}/.cupy-cache"}
        export GT4PY_BUILD_CACHE_LIFETIME=persistent
        export GT4PY_UNSTRUCTURED_HORIZONTAL_HAS_UNIT_STRIDE=1

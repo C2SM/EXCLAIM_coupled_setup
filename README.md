@@ -4,66 +4,22 @@ Collection of utility scripts to build and run the EXCLAIM coupled atmosphere-oc
 
 ## Build
 
-### Step by step
-
-To build the coupled setup follow these steps:
-
-```bash
-# Start UENV
-uenv start --view=default icon/25.2:v3
-
-# Create a base directory
-mkdir -p coupled-setup
-
-# Clone this repository in the base directory
-cd coupled-setup && git clone git@github.com:C2SM/EXCLAIM_coupled_setup.git
-
-# Copy the build_tools into the base directory
-cp EXCLAIM_coupled_setup/build_utils/build_tools.sh .
-
-# Source the build_tools and initialize
-source build_tools.sh
-cao_init
-
-# Build CPU and GPU with Spack
-pushd icon-hybrid/build-cpu && cao_build cpu && popd
-pushd icon-hybrid/build-gpu && cao_build gpu && popd
-```
-
-Otherwise, if you want to build without Spack, but using our custom build scripts you can run the following instead:
-
-```bash
-# Build CPU and GPU without Spack
-pushd icon-hybrid/build-cpu && cao_build cpu_nospack && popd
-pushd icon-hybrid/build-gpu && cao_build gpu_nospack && popd
-```
-
-If you only want to rebuild (e.g. after you made some changes in the code), enter the build directories and run
-`cao_rebuild`.
-
-```bash
-# Make sure your UENV is active first
-uenv status
-
-# Rebuild CPU and GPU executables
-cd build-cpu && cao_rebuild && cd ..
-cd build-gpu && cao_rebuild && cd ..
-```
-
-> Note that to have the build utilities (e.g. `cao_init`, `cao_build`, `cao_rebuild`, ...) available you should source
-*build_tools.sh* in all new shells.
-
-### Full build script
-
-To directly do a clean build of the cpu and gpu executables, just execute
+To directly do a clean build of the cpu and gpu executables, just execute from the repository root
 ``` bash
-BUILD_TYPE="SPACK" sbatch ./build_utils/full_build.sh 
+sbatch ./build_utils/full_build.sh 
 ```
-from the repository root. You can also use `BUILD_TYPE="NOSPACK"`.
+By default:
+  - the script will compile the `cpu` and `gpu` targets. `--cpu-only` or `--gpu-only` can be used if needed.
+  - the gpu variant is `GPU_MODE="py-substitute"` (compiling with `icon4py` granules). It can be otherwise set with to `GPU_MODE="acc"` for pure fortran OpenACC implementation.
+  - the build type is set to `BUILD_TYPE="SPACK"`. A `BUILD_TYPE="NOSPACK"` option is also available but not with `GPU_MODE="py-substitute"`.
+  
+`BUILD_TYPE` and `GPU_MODE` can be exported or set on the same line as the `sbatch` command.
 
-You can monitor the build with `tail -f full_build.o`. The build happens on `/dev/shm` on the login nodes. The icon clone will be retrieved at the end of the build as `icon-hybrid` containing the 2 `build-cpu` and `build-gpu` subdirectories. 
+You can monitor the build with `tail -f full_build.<jobid>.o`. The build happens on `/dev/shm` on the compute nodes. The icon repo will be retrieved at the end of the build as `icon-hybrid` containing the 2 `build-cpu` and `build-gpu-${GPU_MODE}` subdirectories. 
 
 ## Run
+
+### Basic runs
 
 To run the coupled setup follow these steps:
 
@@ -93,3 +49,7 @@ You can add these options at the end of the `sbatch` command in any order. All o
 ```bash
 jid=$(sbatch --parsable exp.EXCLAIM_COUPLED.run hybrid --profile)
 ```
+
+### Example script
+
+In order to keep a clean git history an example `launch_exp.sh` script is provided. It contains some of the possible settings (case, nodes, walltime, period, restart interval, etc ...). Copy it and modify at will.

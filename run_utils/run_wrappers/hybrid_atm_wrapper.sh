@@ -21,6 +21,16 @@ export CUDA_VISIBLE_DEVICES=$NUMA_NODE
 export OMP_NUM_THREADS=1
 export ICON_THREADS=1
 
+if [ "${GPU_MODE}" == "py-substitute" ]; then
+    ICON4PY_ACTIVATE_PATTERN='/user-environment/linux-sles15-neoverse_v2/gcc-13.3.0/icon4py*/share/venv/bin/activate'
+    if [ -f ${ICON4PY_ACTIVATE_PATTERN} ]; then
+        source "$(realpath ${ICON4PY_ACTIVATE_PATTERN})"
+    else
+        echo "ERROR: ICON4PY venv not found"
+        exit 1
+    fi
+fi
+
 if [ "$PROFILE" = true ]; then
     NSYS_WRAPPER_PATH="$(cd $(dirname $0)/../; pwd)/nsys_wrapper.sh"
 

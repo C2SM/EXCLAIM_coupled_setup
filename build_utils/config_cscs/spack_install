@@ -65,6 +65,10 @@ else
   spack develop --path $ICON_DIR $SPACK_PKG
 fi
 
+if [[ "${VARIANT}" == *py* ]]; then
+    spack develop --build-directory "${ICON_DIR}/../icon4py" --path "${ICON_DIR}/../icon4py" "icon4py@0.0.15%gcc"
+fi
+
 spack install -v  -j $BUILD_THREADS
 
 $SCRIPT_DIR/create_sh_env $VARIANT $BUILD_DIR

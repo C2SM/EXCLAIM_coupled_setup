@@ -2,15 +2,18 @@
 
 #SBATCH --account=cwd01
 #SBATCH --partition=tier0
-#SBATCH --time=02:00:00
+#SBATCH --time=01:00:00
 #SBATCH --output="full_build.%j.o"
+#SBATCH --partition="shared"
+#SBATCH --gpus-per-node=1
 
 set -e
 
 BUILD_TYPE="${BUILD_TYPE:-SPACK}"
 GPU_MODE="${GPU_MODE:-py-substitute}"
 CAO_BUILD_DIR="${CAO_BUILD_DIR:-/dev/shm/${USER}/coupled_setup}"
-UENV=${UENV:-"icon-dsl/25.12:v1"}
+# UENV=${UENV:-"icon-dsl/25.12:v1"}
+UENV=${UENV:-"icon-dsl/25.12:v2"}
 
 # Set cloning urls with token
 # ---------------------------
@@ -61,6 +64,14 @@ CAO_ICON_BRANCH='icon-dsl'
 CAO_ICON_COMMIT='5c5b742a969af2bd491e26cd0a05a35838f121c4'
 CAO_ICON_DIR="icon-hybrid-${GPU_MODE}"
 
+CAO_ICON4PY_REPO='git@github.com:C2SM/icon4py.git'
+CAO_ICON4PY_BRANCH='main'
+CAO_ICON4PY_COMMIT='9a7f7d68f0e8be18f746044879c49e4d87e20ff6'
+CAO_ICON4PY_DIR="icon4py"
+
+rm -rf "${CAO_ICON_DIR}" "${CAO_ICON4PY_DIR}"
+
+echo "[CAO build] ...... Getting icon-exclaim"
 if [ -n "${CAO_ICON_COMMIT}" ]; then
     git clone -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"
     pushd "${CAO_ICON_DIR}" >/dev/null 2>&1
@@ -70,6 +81,12 @@ if [ -n "${CAO_ICON_COMMIT}" ]; then
 else
     git clone --depth 1 --recurse-submodules --shallow-submodules -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"
 fi
+
+echo "[CAO build] ...... Getting icon4py"
+git clone -b "${CAO_ICON4PY_BRANCH}" "${CAO_ICON4PY_REPO}" "${CAO_ICON4PY_DIR}"
+pushd "${CAO_ICON4PY_DIR}" >/dev/null 2>&1
+git reset --hard "${CAO_ICON4PY_COMMIT}"
+popd >/dev/null 2>&1
 
 # Apply patches
 # -------------

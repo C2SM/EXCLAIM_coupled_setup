@@ -91,7 +91,7 @@ export EXPNAME=${EXPNAME:-"EXCLAIM_coupled_${CASE}_${TARGET}"}
 
 # Base ICON directory
 # -------------------
-export basedir=${basedir:-"${RUNSCRIPT_DIR}/../../icon-hybrid"}
+export basedir=${basedir:-"${RUNSCRIPT_DIR}/../../icon-hybrid-${GPU_MODE}"}
 
 # Executables
 # -----------

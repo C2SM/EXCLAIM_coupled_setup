@@ -128,8 +128,7 @@ coupling:
     #weight_file_name: w_oce2atm.nc
   - <<: [ *oce2atm, *conserv_interp_stack ]
     coupling_period: ${atm_oce_coupling_timestep}
-    field: [eastward_sea_water_velocity,
-            northward_sea_water_velocity]
+    field: [surface_velocity_bundle]
     #weight_file_name: w_riv2oce.nc
   - <<: [ *atm2oce, *spmap_interp_stack ]
     coupling_period: ${atm_oce_coupling_timestep}
@@ -1417,6 +1416,7 @@ lnd_nml(){
   cat > ${lnd_namelist} << EOF
 &jsb_model_nml
   usecase              = 'jsbach_pfts'
+  npft                 = ${npft}
   use_lakes            = .TRUE.
   fract_filename       = '${jsbach_lnd_frac}'
   !output_tiles         = ${output_tiles}     ! List of tiles to output

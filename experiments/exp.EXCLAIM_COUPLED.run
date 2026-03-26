@@ -3,7 +3,7 @@
 # ============================================================================
 #SBATCH --account=cwd01
 #SBATCH --partition=tier0
-#SBATCH --uenv=icon-dsl/25.12:v1:/user-environment
+#SBATCH --uenv=icon-dsl/25.12:2410652750:/user-environment
 #SBATCH --view=default
 #SBATCH --job-name=EXCLAIM_COUPLED
 #SBATCH --output=LOG.EXCLAIM_COUPLED.%j
@@ -91,7 +91,7 @@ export EXPNAME=${EXPNAME:-"EXCLAIM_coupled_${CASE}_${TARGET}"}
 
 # Base ICON directory
 # -------------------
-export basedir=${basedir:-"${RUNSCRIPT_DIR}/../../icon-hybrid"}
+export basedir=${basedir:-"${RUNSCRIPT_DIR}/../../icon-hybrid-${GPU_MODE}"}
 
 # Executables
 # -----------

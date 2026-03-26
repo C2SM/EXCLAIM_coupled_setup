@@ -17,7 +17,6 @@ spack:
   specs:
     - hdf5%nvhpc +szip +hl +fortran +mpi 
     - netcdf-c@4.9.2%nvhpc
-    - icon4py@0.0.15%gcc
     - icon-exclaim @develop %nvhpc
       ~aes +ecrad +jsbach +ocean +coupling ~rte-rrtmgp
       dsl=substitute gpu=nvidia-90 ~mpi-gpu +realloc-buf +cuda-graphs +pgi-inlib

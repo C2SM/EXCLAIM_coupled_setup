@@ -2,15 +2,23 @@
 
 #SBATCH --account=cwd01
 #SBATCH --partition=tier0
-#SBATCH --time=02:00:00
+#SBATCH --time=01:00:00
 #SBATCH --output="full_build.%j.o"
+#SBATCH --partition="shared"
+#SBATCH --gpus-per-node=1
 
 set -e
+
+elpased(){
+    local seconds=$((stop - start))
+    printf '%02d:%02d:%02d\n' $((seconds/3600)) $((seconds%3600/60)) $((seconds%60))
+}
+
 
 BUILD_TYPE="${BUILD_TYPE:-SPACK}"
 GPU_MODE="${GPU_MODE:-py-substitute}"
 CAO_BUILD_DIR="${CAO_BUILD_DIR:-/dev/shm/${USER}/coupled_setup}"
-UENV=${UENV:-"icon-dsl/25.12:v1"}
+UENV=${UENV:-"icon-dsl/25.12:2410652750"}
 
 # Set cloning urls with token
 # ---------------------------
@@ -41,8 +49,10 @@ fi
 # Get script dir
 # --------------
 if [ -n "${SLURM_JOB_ID:-}" ]; then
+    ON_COMPUTE_NODE="true"
     SCRIPT_PATH=$(scontrol show job "${SLURM_JOB_ID}" | awk -F= '/Command=/{print $2}')
 else
+    ON_COMPUTE_NODE="false"
     SCRIPT_PATH=$(realpath "${BASH_SOURCE[0]}")
 fi
 SCRIPT_PATH="$(realpath "${SCRIPT_PATH}")"
@@ -50,15 +60,18 @@ SCRIPT_DIR=$(dirname "${SCRIPT_PATH}")
 echo "[CAO build] ... Using build scripts from ${SCRIPT_DIR}"
 echo "[CAO build] ... Building in ${CAO_BUILD_DIR}"
 
-mkdir -p "${CAO_BUILD_DIR}"
+rm -rf "${CAO_BUILD_DIR}"
+mkdir "${CAO_BUILD_DIR}"
 pushd "${CAO_BUILD_DIR}" 2>&1 >/dev/null
 
 # Get ICON
 # --------
+start=$(date +%s)
 echo "[CAO build] ... Getting ICON"
+
 CAO_ICON_REPO='git@github.com:C2SM/icon-exclaim.git'
 CAO_ICON_BRANCH='icon-dsl'
-CAO_ICON_COMMIT='5c5b742a969af2bd491e26cd0a05a35838f121c4'
+# CAO_ICON_COMMIT='5c5b742a969af2bd491e26cd0a05a35838f121c4'
 CAO_ICON_DIR="icon-hybrid-${GPU_MODE}"
 
 if [ -n "${CAO_ICON_COMMIT}" ]; then
@@ -70,20 +83,25 @@ if [ -n "${CAO_ICON_COMMIT}" ]; then
 else
     git clone --depth 1 --recurse-submodules --shallow-submodules -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"
 fi
+stop=$(date +%s)
+echo "[CAO build] ... Getting ICON => done in $(elpased)"
 
 # Apply patches
 # -------------
-echo "[CAO build] ... Applying patches"
-pushd "${CAO_ICON_DIR}" >/dev/null 2>&1
-git apply ${SCRIPT_DIR}/patches/gmean_acc.patch
-pushd externals/jsbach >/dev/null 2>&1
-git apply "${SCRIPT_DIR}/patches/mo_hsm_class.f90.patch"
-popd >/dev/null 2>&1
-popd >/dev/null 2>&1
+# echo "[CAO build] ... Applying patches"
+# pushd "${CAO_ICON_DIR}" >/dev/null 2>&1
+# git apply ${SCRIPT_DIR}/patches/gmean_acc.patch
+# # - ML - Not sur this is still a good idea after the upgrade
+# # pushd externals/jsbach >/dev/null 2>&1
+# # git apply "${SCRIPT_DIR}/patches/mo_hsm_class.f90.patch"
+# # popd >/dev/null 2>&1
+# popd >/dev/null 2>&1
 
 # Build
 # -----
+start=$(date +%s)
 echo "[CAO build] ... Building ICON"
+
 CPU_BUILD_DIR="${CAO_ICON_DIR}/build-cpu"
 GPU_BUILD_DIR="${CAO_ICON_DIR}/build-gpu-${GPU_MODE}" 
 mkdir -p ${CPU_BUILD_DIR} ${GPU_BUILD_DIR}
@@ -96,7 +114,7 @@ if [ "${BUILD_TYPE}" ==  "SPACK" ]; then
     if [ "${build_cpu}" == "true" ]; then
         echo "[CAO build] ...... Building cpu"
         pushd "${CPU_BUILD_DIR}" >/dev/null 2>&1
-        uenv run ${UENV} --view default -- ../config/cscs/santis.cpu.nvhpc
+        uenv run ${UENV} --view default -- time ../config/cscs/santis.cpu.nvhpc
         popd >/dev/null 2>&1
     fi
 
@@ -104,9 +122,9 @@ if [ "${BUILD_TYPE}" ==  "SPACK" ]; then
         echo "[CAO build] ...... Building gpu-${GPU_MODE}"
         pushd "${GPU_BUILD_DIR}" >/dev/null 2>&1
         if [ "${GPU_MODE}" == "acc" ]; then
-            uenv run ${UENV} --view default -- ../config/cscs/santis.gpu.nvhpc
+            uenv run ${UENV} --view default -- time ../config/cscs/santis.gpu.nvhpc
         elif [ "${GPU_MODE}" == "py-substitute" ]; then
-            uenv run ${UENV} --view default -- ../config/cscs/santis.gpu.nvhpc.py.substitute
+            uenv run ${UENV} --view default -- time ../config/cscs/santis.gpu.nvhpc.py.substitute
         else
             echo "[CAO build] ERROR: unknown GPU_MODE ${GPU_MODE}"
             exit 1
@@ -141,14 +159,25 @@ else
     
 fi
 
-popd >/dev/null 2>&1
+stop=$(date +%s)
+echo "[CAO build] ... Building ICON => done in $(elpased)"
 
 # Retreive and clean
 # ------------------
+start=$(date +%s)
 echo "[CAO build] ... retreiving build from ${CAO_BUILD_DIR}"
-rsync -a --delete "${CAO_BUILD_DIR}/${CAO_ICON_DIR}/" "${CAO_ICON_DIR}/"
+
+popd >/dev/null 2>&1
+time rsync -a --delete "${CAO_BUILD_DIR}/${CAO_ICON_DIR}/" "${CAO_ICON_DIR}/"
+
+stop=$(date +%s)
+echo "[CAO build] ... retreiving => done in $(elpased)"
 
 echo "[CAO build] ... cleaning ${CAO_BUILD_DIR}"
 rm -rf "${CAO_BUILD_DIR}/${CAO_ICON_DIR}"
 
 echo "[CAO build] ... build complete"
+
+if [ "${ON_COMPUTE_NODE}" == "true" ]; then
+    sacct -j "${SLURM_JOB_ID}" --format "JobID, JobName, AllocCPUs, Elapsed, ElapsedRaw, CPUTimeRAW, ConsumedEnergyRaw, MaxRSS, MaxVMSize, AveRSS"
+fi

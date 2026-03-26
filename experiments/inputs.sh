@@ -131,6 +131,9 @@ lnd_inputs(){
         "hist") year="${chunk_start_year}" ;;
         *) echo "ERROR: unsupported experiment type: ${exptype}"; exit 1 ;;
     esac
+    
+    npft=11
+    pft_file_tag="${npft}pfts_"
     jsbach_lnd_frac="bc_land_frac_11pfts_${year}.nc"
     ln -sf "${datadir_land}/${jsbach_lnd_frac}" .
 

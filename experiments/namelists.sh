@@ -1417,6 +1417,7 @@ lnd_nml(){
   cat > ${lnd_namelist} << EOF
 &jsb_model_nml
   usecase              = 'jsbach_pfts'
+  npft                 = ${npft}
   use_lakes            = .TRUE.
   fract_filename       = '${jsbach_lnd_frac}'
   !output_tiles         = ${output_tiles}     ! List of tiles to output

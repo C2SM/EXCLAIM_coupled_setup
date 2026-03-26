@@ -9,8 +9,8 @@
 
 set -e
 
-elpased(){
-    local seconds=$((stop - start))
+elapsed(){
+    local seconds=$(($2 - $1))
     printf '%02d:%02d:%02d\n' $((seconds/3600)) $((seconds%3600/60)) $((seconds%60))
 }
 
@@ -84,7 +84,7 @@ else
     git clone --depth 1 --recurse-submodules --shallow-submodules -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"
 fi
 stop=$(date +%s)
-echo "[CAO build] ... Getting ICON => done in $(elpased)"
+echo "[CAO build] ... Getting ICON => done in $(elapsed $start $stop)"
 
 # Apply patches
 # -------------
@@ -113,13 +113,17 @@ if [ "${BUILD_TYPE}" ==  "SPACK" ]; then
 
     if [ "${build_cpu}" == "true" ]; then
         echo "[CAO build] ...... Building cpu"
+        start_cpu=$(date +%s)
         pushd "${CPU_BUILD_DIR}" >/dev/null 2>&1
         uenv run ${UENV} --view default -- time ../config/cscs/santis.cpu.nvhpc
         popd >/dev/null 2>&1
+        stop_cpu=$(date +%s)
+        echo "[CAO build] ...... Building cpu => done in $(elapsed $start_cpu $stop_cpu)"
     fi
 
     if [ "${build_gpu}" == "true" ]; then
         echo "[CAO build] ...... Building gpu-${GPU_MODE}"
+        start_gpu=$(date +%s)
         pushd "${GPU_BUILD_DIR}" >/dev/null 2>&1
         if [ "${GPU_MODE}" == "acc" ]; then
             uenv run ${UENV} --view default -- time ../config/cscs/santis.gpu.nvhpc
@@ -130,15 +134,20 @@ if [ "${BUILD_TYPE}" ==  "SPACK" ]; then
             exit 1
         fi
         popd >/dev/null 2>&1
+        stop_gpu=$(date +%s)
+        echo "[CAO build] ...... Building gpu-${GPU_MODE} => done in $(elapsed $start_gpu $stop_gpu)"
     fi
     
 elif [ "${BUILD_TYPE}" ==  "NOSPACK" ]; then
 
     if [ "${build_cpu}" == "true" ]; then
         echo "[CAO build] ...... Building cpu"
+        start_cpu=$(date +%s)
         pushd "${CPU_BUILD_DIR}" >/dev/null 2>&1
-        uenv run ${UENV} --view default -- ../config/cscs/santis.cpu_nospack.nvhpc && make -j 24
+        uenv run ${UENV} --view default -- time ../config/cscs/santis.cpu_nospack.nvhpc && make -j 24
         popd >/dev/null 2>&1
+        stop_cpu=$(date +%s)
+        echo "[CAO build] ...... Building cpu => done in $(elapsed $start_cpu $stop_cpu)"
     fi
 
     if [ "${build_gpu}" == "true" ]; then
@@ -147,9 +156,12 @@ elif [ "${BUILD_TYPE}" ==  "NOSPACK" ]; then
             exit 1
         fi
         echo "[CAO build] ...... Building gpu-${GPU_MODE}"
+        start_gpu=$(date +%s)
         pushd "${GPU_BUILD_DIR}" >/dev/null 2>&1
-        uenv run ${UENV} --view default -- ../config/cscs/santis.gpu_nospack.nvhpc && make -j 24
+        uenv run ${UENV} --view default -- time ../config/cscs/santis.gpu_nospack.nvhpc && make -j 24
         popd >/dev/null 2>&1
+        stop_gpu=$(date +%s)
+        echo "[CAO build] ...... Building gpu-${GPU_MODE} => done in $(elapsed $start_gpu $stop_gpu)"
     fi
 
 else
@@ -160,7 +172,7 @@ else
 fi
 
 stop=$(date +%s)
-echo "[CAO build] ... Building ICON => done in $(elpased)"
+echo "[CAO build] ... Building ICON => done in $(elapsed $start $stop)"
 
 # Retreive and clean
 # ------------------
@@ -171,7 +183,7 @@ popd >/dev/null 2>&1
 time rsync -a --delete "${CAO_BUILD_DIR}/${CAO_ICON_DIR}/" "${CAO_ICON_DIR}/"
 
 stop=$(date +%s)
-echo "[CAO build] ... retreiving => done in $(elpased)"
+echo "[CAO build] ... retreiving => done in $(elapsed $start $stop)"
 
 echo "[CAO build] ... cleaning ${CAO_BUILD_DIR}"
 rm -rf "${CAO_BUILD_DIR}/${CAO_ICON_DIR}"

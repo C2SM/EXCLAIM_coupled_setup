@@ -61,7 +61,7 @@ echo "[CAO build] ... Using build scripts from ${SCRIPT_DIR}"
 echo "[CAO build] ... Building in ${CAO_BUILD_DIR}"
 
 rm -rf "${CAO_BUILD_DIR}"
-mkdir "${CAO_BUILD_DIR}"
+mkdir -p "${CAO_BUILD_DIR}"
 pushd "${CAO_BUILD_DIR}" 2>&1 >/dev/null
 
 # Get ICON
@@ -70,7 +70,8 @@ start=$(date +%s)
 echo "[CAO build] ... Getting ICON"
 
 CAO_ICON_REPO='git@github.com:C2SM/icon-exclaim.git'
-CAO_ICON_BRANCH='icon-dsl'
+# CAO_ICON_BRANCH='icon-dsl'
+CAO_ICON_BRANCH='cuda_mempool'
 # CAO_ICON_COMMIT='5c5b742a969af2bd491e26cd0a05a35838f121c4'
 CAO_ICON_DIR="icon-hybrid-${GPU_MODE}"
 

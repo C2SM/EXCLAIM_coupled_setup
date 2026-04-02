@@ -70,7 +70,7 @@ echo "[CAO build] ... Getting ICON"
 
 CAO_ICON_REPO='git@github.com:C2SM/icon-exclaim.git'
 # CAO_ICON_BRANCH='icon-dsl'
-CAO_ICON_BRANCH='cuda_mempool'
+CAO_ICON_BRANCH='cuda_mempool_int_exchanges'
 ALT_CPU="true"
 CAO_ICON_BRANCH_ALT_CPU='icon-dsl'
 # CAO_ICON_COMMIT='5c5b742a969af2bd491e26cd0a05a35838f121c4'

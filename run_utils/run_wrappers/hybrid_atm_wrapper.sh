@@ -29,6 +29,9 @@ if [ "${GPU_MODE}" == "py-substitute" ]; then
         echo "ERROR: ICON4PY venv not found"
         exit 1
     fi
+    export NV_ACC_CUDA_MEMALLOCASYNC=1
+    export NV_ACC_CUDA_MEMALLOCASYNC_POOLSIZE=500000000000
+    export ICON4PY_WAIT_FOR_COMPILATION=1
 fi
 
 if [ "$PROFILE" = true ]; then

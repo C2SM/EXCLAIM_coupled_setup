@@ -4,9 +4,11 @@ Collection of utility scripts to build and run the EXCLAIM coupled atmosphere-oc
 
 ## Build
 
-To directly do a clean build of the cpu and gpu executables, just execute from the repository root
+To directly do a clean build of the cpu and gpu executables:
+1. get tokens for github.com and gitlab.dkrz.de that give you read access to all icon-exclaim + submodules repos 
+2.  Execute from the repository root
 ``` bash
-sbatch ./build_utils/full_build.sh 
+GITLAB_DKRZ_TOKEN="$(cat path/to/gitlab_dkrz_token)" GITHUB_TOKEN="$(cat path/to/github_token)" sbatch build_utils/full_build.sh 
 ```
 By default:
   - the script will compile the `cpu` and `gpu` targets. `--cpu-only` or `--gpu-only` can be used if needed.
@@ -15,7 +17,7 @@ By default:
   
 `BUILD_TYPE` and `GPU_MODE` can be exported or set on the same line as the `sbatch` command.
 
-You can monitor the build with `tail -f full_build.<jobid>.o`. The build happens on `/dev/shm` on the compute nodes. The icon repo will be retrieved at the end of the build as `icon-hybrid` containing the 2 `build-cpu` and `build-gpu-${GPU_MODE}` subdirectories. 
+You can monitor the build with `tail -f full_build.<jobid>.o`. The build happens on `/dev/shm` on the compute nodes. The icon repo will be retrieved at the end of the build as `icon-hybrid-${GPU_MODE}` containing the 2 `build-cpu` and `build-gpu-${GPU_MODE}` subdirectories.
 
 ## Run
 

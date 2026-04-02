@@ -1,7 +1,6 @@
 #!/usr/bin/bash
 
 #SBATCH --account=cwd01
-#SBATCH --partition=tier0
 #SBATCH --time=01:00:00
 #SBATCH --output="full_build.%j.o"
 #SBATCH --partition="shared"
@@ -72,17 +71,24 @@ echo "[CAO build] ... Getting ICON"
 CAO_ICON_REPO='git@github.com:C2SM/icon-exclaim.git'
 # CAO_ICON_BRANCH='icon-dsl'
 CAO_ICON_BRANCH='cuda_mempool'
+ALT_CPU="true"
+CAO_ICON_BRANCH_ALT_CPU='icon-dsl'
 # CAO_ICON_COMMIT='5c5b742a969af2bd491e26cd0a05a35838f121c4'
-CAO_ICON_DIR="icon-hybrid-${GPU_MODE}"
+CAO_ICON_DIRNAME="icon-hybrid-${GPU_MODE}"
 
 if [ -n "${CAO_ICON_COMMIT}" ]; then
-    git clone -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"
-    pushd "${CAO_ICON_DIR}" >/dev/null 2>&1
+    git clone -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIRNAME}"
+    pushd "${CAO_ICON_DIRNAME}" >/dev/null 2>&1
     git reset --hard "${CAO_ICON_COMMIT}"
     git submodule update --init --depth 1
     popd >/dev/null 2>&1
 else
-    git clone --depth 1 --recurse-submodules --shallow-submodules -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIR}"
+    git clone --depth 1 --recurse-submodules --shallow-submodules -b "${CAO_ICON_BRANCH}" "${CAO_ICON_REPO}" "${CAO_ICON_DIRNAME}"
+fi
+
+if [ "${ALT_CPU}" == "true" ]; then  # Hugly hack for cpu build
+    CAO_ICON_DIRNAME_ALT_CPU="icon-hybrid-alt-cpu"
+    git clone --depth 1 --recurse-submodules --shallow-submodules -b "${CAO_ICON_BRANCH_ALT_CPU}" "${CAO_ICON_REPO}" "${CAO_ICON_DIRNAME_ALT_CPU}"
 fi
 stop=$(date +%s)
 echo "[CAO build] ... Getting ICON => done in $(elapsed $start $stop)"
@@ -90,7 +96,7 @@ echo "[CAO build] ... Getting ICON => done in $(elapsed $start $stop)"
 # Apply patches
 # -------------
 # echo "[CAO build] ... Applying patches"
-# pushd "${CAO_ICON_DIR}" >/dev/null 2>&1
+# pushd "${CAO_ICON_DIRNAME}" >/dev/null 2>&1
 # git apply ${SCRIPT_DIR}/patches/gmean_acc.patch
 # # - ML - Not sur this is still a good idea after the upgrade
 # # pushd externals/jsbach >/dev/null 2>&1
@@ -103,12 +109,15 @@ echo "[CAO build] ... Getting ICON => done in $(elapsed $start $stop)"
 start=$(date +%s)
 echo "[CAO build] ... Building ICON"
 
-CPU_BUILD_DIR="${CAO_ICON_DIR}/build-cpu"
-GPU_BUILD_DIR="${CAO_ICON_DIR}/build-gpu-${GPU_MODE}" 
+CPU_BUILD_DIR="${CAO_ICON_DIRNAME}/build-cpu"
+GPU_BUILD_DIR="${CAO_ICON_DIRNAME}/build-gpu-${GPU_MODE}" 
 mkdir -p ${CPU_BUILD_DIR} ${GPU_BUILD_DIR}
 
 echo "[CAO build] ...... Customizing build settings and scripts"
-rsync -av "${SCRIPT_DIR}/config_cscs/" "${CAO_ICON_DIR}/config/cscs/"
+rsync -av "${SCRIPT_DIR}/config_cscs/" "${CAO_ICON_DIRNAME}/config/cscs/"
+if [ "${ALT_CPU}" == "true" ]; then  # Hugly hack for cpu build
+    rsync -av "${SCRIPT_DIR}/config_cscs/" "${CAO_ICON_DIRNAME_ALT_CPU}/config/cscs/"
+fi
 
 if [ "${BUILD_TYPE}" ==  "SPACK" ]; then
 
@@ -116,7 +125,11 @@ if [ "${BUILD_TYPE}" ==  "SPACK" ]; then
         echo "[CAO build] ...... Building cpu"
         start_cpu=$(date +%s)
         pushd "${CPU_BUILD_DIR}" >/dev/null 2>&1
-        uenv run ${UENV} --view default -- time ../config/cscs/santis.cpu.nvhpc
+        if [ "${ALT_CPU}" == "true" ]; then  # Hugly hack for cpu build
+            uenv run ${UENV} --view default -- time ../../${CAO_ICON_DIRNAME_ALT_CPU}/config/cscs/santis.cpu.nvhpc
+        else
+            uenv run ${UENV} --view default -- time ../config/cscs/santis.cpu.nvhpc
+        fi
         popd >/dev/null 2>&1
         stop_cpu=$(date +%s)
         echo "[CAO build] ...... Building cpu => done in $(elapsed $start_cpu $stop_cpu)"
@@ -181,13 +194,13 @@ start=$(date +%s)
 echo "[CAO build] ... retreiving build from ${CAO_BUILD_DIR}"
 
 popd >/dev/null 2>&1
-time rsync -a --delete "${CAO_BUILD_DIR}/${CAO_ICON_DIR}/" "${CAO_ICON_DIR}/"
+time rsync -a --delete "${CAO_BUILD_DIR}/${CAO_ICON_DIRNAME}/" "${CAO_ICON_DIRNAME}/"
 
 stop=$(date +%s)
 echo "[CAO build] ... retreiving => done in $(elapsed $start $stop)"
 
 echo "[CAO build] ... cleaning ${CAO_BUILD_DIR}"
-rm -rf "${CAO_BUILD_DIR}/${CAO_ICON_DIR}"
+rm -rf "${CAO_BUILD_DIR}/${CAO_ICON_DIRNAME}"
 
 echo "[CAO build] ... build complete"
 

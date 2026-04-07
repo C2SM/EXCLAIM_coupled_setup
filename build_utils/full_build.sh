@@ -3,7 +3,7 @@
 #SBATCH --account=cwd01
 #SBATCH --time=01:00:00
 #SBATCH --output="full_build.%j.o"
-#SBATCH --partition="shared"
+#SBATCH --partition="normal"
 #SBATCH --gpus-per-node=1
 
 set -e
@@ -17,7 +17,7 @@ elapsed(){
 BUILD_TYPE="${BUILD_TYPE:-SPACK}"
 GPU_MODE="${GPU_MODE:-py-substitute}"
 CAO_BUILD_DIR="${CAO_BUILD_DIR:-/dev/shm/${USER}/coupled_setup}"
-UENV=${UENV:-"icon-dsl/25.12:2410652750"}
+UENV=${UENV:-"icon-dsl/25.12:2410652750@santis"}
 
 # Set cloning urls with token
 # ---------------------------

@@ -62,6 +62,7 @@ echo "[CAO build] ... Building in ${CAO_BUILD_DIR}"
 
 rm -rf "${CAO_BUILD_DIR}"
 mkdir -p "${CAO_BUILD_DIR}"
+ORIGINAL_DIR="$(pwd)"
 pushd "${CAO_BUILD_DIR}" 2>&1 >/dev/null
 
 # Get ICON
@@ -134,6 +135,9 @@ if [ "${BUILD_TYPE}" ==  "SPACK" ]; then
         popd >/dev/null 2>&1
         stop_cpu=$(date +%s)
         echo "[CAO build] ...... Building cpu => done in $(elapsed $start_cpu $stop_cpu)"
+        echo "[CAO build] ...... Copying cpu build to persistent storage"
+        mkdir -p "${ORIGINAL_DIR}/${CAO_ICON_DIRNAME}/build-cpu"
+        rsync -a "${CAO_BUILD_DIR}/${CAO_ICON_DIRNAME}/build-cpu/" "${ORIGINAL_DIR}/${CAO_ICON_DIRNAME}/build-cpu/"
     fi
 
     if [ "${build_gpu}" == "true" ]; then
@@ -151,6 +155,9 @@ if [ "${BUILD_TYPE}" ==  "SPACK" ]; then
         popd >/dev/null 2>&1
         stop_gpu=$(date +%s)
         echo "[CAO build] ...... Building gpu-${GPU_MODE} => done in $(elapsed $start_gpu $stop_gpu)"
+        echo "[CAO build] ...... Copying gpu-${GPU_MODE} build to persistent storage"
+        mkdir -p "${ORIGINAL_DIR}/${CAO_ICON_DIRNAME}/build-gpu-${GPU_MODE}"
+        rsync -a "${CAO_BUILD_DIR}/${CAO_ICON_DIRNAME}/build-gpu-${GPU_MODE}/" "${ORIGINAL_DIR}/${CAO_ICON_DIRNAME}/build-gpu-${GPU_MODE}/"
     fi
     
 elif [ "${BUILD_TYPE}" ==  "NOSPACK" ]; then
@@ -163,6 +170,9 @@ elif [ "${BUILD_TYPE}" ==  "NOSPACK" ]; then
         popd >/dev/null 2>&1
         stop_cpu=$(date +%s)
         echo "[CAO build] ...... Building cpu => done in $(elapsed $start_cpu $stop_cpu)"
+        echo "[CAO build] ...... Copying cpu build to persistent storage"
+        mkdir -p "${ORIGINAL_DIR}/${CAO_ICON_DIRNAME}/build-cpu"
+        rsync -a "${CAO_BUILD_DIR}/${CAO_ICON_DIRNAME}/build-cpu/" "${ORIGINAL_DIR}/${CAO_ICON_DIRNAME}/build-cpu/"
     fi
 
     if [ "${build_gpu}" == "true" ]; then
@@ -177,6 +187,9 @@ elif [ "${BUILD_TYPE}" ==  "NOSPACK" ]; then
         popd >/dev/null 2>&1
         stop_gpu=$(date +%s)
         echo "[CAO build] ...... Building gpu-${GPU_MODE} => done in $(elapsed $start_gpu $stop_gpu)"
+        echo "[CAO build] ...... Copying gpu-${GPU_MODE} build to persistent storage"
+        mkdir -p "${ORIGINAL_DIR}/${CAO_ICON_DIRNAME}/build-gpu-${GPU_MODE}"
+        rsync -a "${CAO_BUILD_DIR}/${CAO_ICON_DIRNAME}/build-gpu-${GPU_MODE}/" "${ORIGINAL_DIR}/${CAO_ICON_DIRNAME}/build-gpu-${GPU_MODE}/"
     fi
 
 else

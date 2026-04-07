@@ -123,6 +123,7 @@ run_model(){
                --hint="nomultithread" \
                --ntasks="${TOT_TASKS}" \
                --cpus-per-task="${CPUS_PER_TASK}" \
+               --mpi=cray_shasta \
                --multi-prog multi-prog.conf
          else
             srun \
@@ -133,6 +134,7 @@ run_model(){
                --ntasks="${TOT_TASKS}" \
                --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
                --cpus-per-task="${CPUS_PER_TASK}" \
+               --mpi=cray_shasta \
                --multi-prog multi-prog.conf
          fi
       ;;
@@ -145,6 +147,7 @@ run_model(){
             --ntasks="${TOT_TASKS}" \
             --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
             --cpus-per-task="${CPUS_PER_TASK}" \
+            --mpi=cray_shasta \
             --multi-prog multi-prog.conf
       ;;
       "cpu")
@@ -156,6 +159,7 @@ run_model(){
             --ntasks="${TOT_TASKS}" \
             --ntasks-per-node="${TOT_TASKS_PER_NODE}" \
             --cpus-per-task="${CPUS_PER_TASK}" \
+            --mpi=cray_shasta \
             ../run_utils/run_wrappers/cpu_atm-oce_wrapper.sh ./icon_cpu
       ;;
    esac

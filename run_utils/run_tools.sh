@@ -93,6 +93,7 @@ set_environment(){
        export CUPY_CACHE_IN_MEMORY=1
        export GT4PY_BUILD_CACHE_LIFETIME=persistent
        export GT4PY_UNSTRUCTURED_HORIZONTAL_HAS_UNIT_STRIDE=1
+       export ICON4PY_WAIT_FOR_COMPILATION=1
        export DACE_compiler_cuda_block_size_limit=256
        export PY2FGEN_LOG_LEVEL=WARNING
    fi

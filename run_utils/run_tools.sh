@@ -96,6 +96,10 @@ set_environment(){
        export ICON4PY_WAIT_FOR_COMPILATION=1
        export DACE_compiler_cuda_block_size_limit=256
        export PY2FGEN_LOG_LEVEL=WARNING
+       export HWMALLOC_LARGE_LIMIT=$((1 << 26)) # 64 MiB, default 2 MiB
+       export HWMALLOC_LARGE_SEGMENT_SIZE=$((1 << 26)) # 64 MiB, default 2 MiB
+       export HWMALLOC_NEVER_FREE=1 # This should make sure that even if halos are bigger than the above options, the allocations are still kept around 
+       export MPICH_GPU_IPC_CACHE_MAX_SIZE=100 # default 50, shouldn't really make a difference, but you never know
    fi
 
    # OpenMP

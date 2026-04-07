@@ -115,6 +115,15 @@ CPU_BUILD_DIR="${CAO_ICON_DIRNAME}/build-cpu"
 GPU_BUILD_DIR="${CAO_ICON_DIRNAME}/build-gpu-${GPU_MODE}" 
 mkdir -p ${CPU_BUILD_DIR} ${GPU_BUILD_DIR}
 
+if [ "${build_cpu}" == "true" ] && [ -x "${ORIGINAL_DIR}/${CAO_ICON_DIRNAME}/build-cpu/bin/icon" ]; then
+    echo "[CAO build] ...... Skipping cpu build: executable already exists in persistent storage"
+    build_cpu="false"
+fi
+if [ "${build_gpu}" == "true" ] && [ -x "${ORIGINAL_DIR}/${CAO_ICON_DIRNAME}/build-gpu-${GPU_MODE}/bin/icon" ]; then
+    echo "[CAO build] ...... Skipping gpu-${GPU_MODE} build: executable already exists in persistent storage"
+    build_gpu="false"
+fi
+
 echo "[CAO build] ...... Customizing build settings and scripts"
 rsync -av "${SCRIPT_DIR}/config_cscs/" "${CAO_ICON_DIRNAME}/config/cscs/"
 if [ "${ALT_CPU}" == "true" ]; then  # Hugly hack for cpu build

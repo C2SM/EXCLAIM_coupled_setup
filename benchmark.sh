@@ -15,7 +15,7 @@ submit_bench(){
 
 export CASE="R02B10-R02B10"
 export start_date="1979-01-01T00:00:00Z"
-export end_date="1979-01-01T01:00:00Z"
+export end_date="1979-01-02T00:00:00Z"
 export restart_interval="P1D"
 export control_year=1979
 
@@ -28,16 +28,16 @@ export ARCHIVE="false"
 
 #NODES=("200" "400" "800")
 NODES=("160")
-for N_NODES in ${NODES[@]}; do
-    export activate_output="false"
-    export GPU_MODE="py-substitute"
-    submit_bench "NOIO_fill_cache"
-    export activate_output="true"
-    ((N_NODES += 8))
-    submit_bench "IO_fill_cache"
-done
 
-export end_date="1979-01-02T00:00:00Z"
+#for N_NODES in ${NODES[@]}; do
+#    export activate_output="false"
+#    export GPU_MODE="py-substitute"
+#    submit_bench "NOIO_fill_cache"
+#    export activate_output="true"
+#    ((N_NODES += 8))
+#    submit_bench "IO_fill_cache"
+#done
+
 for N_NODES in ${NODES[@]}; do
     # no IO
     # -----
@@ -54,16 +54,16 @@ for N_NODES in ${NODES[@]}; do
     submit_bench "NOIO"
     # activate IO
     # -----------
-    export activate_output="true"
-    ((N_NODES += 8))
-    # py-substitute
-    export GPU_MODE="py-substitute"
-    export nblocks_c_atm=0
-    export nblocks_e_atm=1
-    submit_bench "IO"
-    # acc
-    export GPU_MODE="acc"
-    export nblocks_c_atm=1
-    export nblocks_e_atm=0
-    submit_bench "IO"
+  # export activate_output="true"
+  # ((N_NODES += 8))
+  # # py-substitute
+  # export GPU_MODE="py-substitute"
+  # export nblocks_c_atm=0
+  # export nblocks_e_atm=1
+  # submit_bench "IO"
+  # # acc
+  # export GPU_MODE="acc"
+  # export nblocks_c_atm=1
+  # export nblocks_e_atm=0
+  # submit_bench "IO"
 done

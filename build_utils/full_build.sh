@@ -3,7 +3,8 @@
 #SBATCH --account=cwd01
 #SBATCH --time=01:00:00
 #SBATCH --output="full_build.%j.o"
-#SBATCH --partition="normal"
+#SBATCH --partition=normal
+#SBATCH --reservation=gb_res1
 #SBATCH --gpus-per-node=1
 
 set -e

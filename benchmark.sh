@@ -47,11 +47,11 @@ for N_NODES in ${NODES[@]}; do
     export nblocks_c_atm=0
     export nblocks_e_atm=1
     submit_bench "NOIO"
-    # acc
-    export GPU_MODE="acc"
-    export nblocks_c_atm=1
-    export nblocks_e_atm=0
-    submit_bench "NOIO"
+    # acc (after build finished)
+  # export GPU_MODE="acc"
+  # export nblocks_c_atm=1
+  # export nblocks_e_atm=0
+  # submit_bench "NOIO"
     # activate IO
     # -----------
   # export activate_output="true"

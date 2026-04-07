@@ -14,8 +14,8 @@ export restart_interval=${restart_interval:-"P1M"}
 
 # Time steps
 # ----------
-atmTimeStep="PT20S"            #10s from dyamonds runs # atmos time step (for coupler)  (same as dtime!!)
-dtime=20                       # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
+atmTimeStep="PT20S"             # atmos time step (for coupler)  (same as dtime!!)
+dtime=20                        # NWP atmospheric timestep (s)   (same as in atmTimeStep!!)
 dt_rad=600.                     # NWP radiation timestep (s) - must match coupling/ocean time step
 oceTimeStep="PT2M"              # corresponds to "fromClimatology" case, ocean time step (20min for r2b7)
 atm_oce_coupling_timestep="PT10M"     # coupling time step atm<->oce (for ocets pt20m and atmts=PT450S)

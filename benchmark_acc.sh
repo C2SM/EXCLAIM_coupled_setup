@@ -9,7 +9,7 @@ submit_bench(){
     echo "submitting ${EXP}"
     rsync -a --delete "experiments/" "${EXP}/"
     pushd ${EXP} 2>&1 >/dev/null
-    sbatch --nodes=${N_NODES} exp.EXCLAIM_COUPLED.run hybrid --separate-io
+    sbatch --nodes=${N_NODES} --job-name=${EXP} exp.EXCLAIM_COUPLED.run hybrid --separate-io
     popd 2>&1 >/dev/null
 }
 

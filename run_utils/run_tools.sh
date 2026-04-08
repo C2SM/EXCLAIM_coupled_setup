@@ -88,7 +88,9 @@ set_environment(){
    if [ "${GPU_MODE}" == "py-substitute" ]; then
        export CUDAARCHS=90
        export PYTHONOPTIMIZE=2
-       export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/${SLURM_JOB_ID}"}
+       #export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/${SLURM_JOB_ID}"}
+       #export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/1815966"} # 400 nodes
+       export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/1816020"} # 800 nodes
        export CUPY_CACHE_DIR=${CUPY_CACHE_DIR:-"${SCRATCH}/.cupy-cache"}
        export CUPY_CACHE_IN_MEMORY=1
        export GT4PY_BUILD_CACHE_LIFETIME=persistent

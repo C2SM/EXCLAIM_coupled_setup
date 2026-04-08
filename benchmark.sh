@@ -27,7 +27,7 @@ export activate_output_dyamond="true"
 export ARCHIVE="false"
 
 #NODES=("200" "400" "800")
-NODES=("160")
+NODES=("800")
 
 #for N_NODES in ${NODES[@]}; do
 #    export activate_output="false"

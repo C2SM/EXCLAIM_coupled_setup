@@ -4,7 +4,7 @@
 #SBATCH --time=01:00:00
 #SBATCH --output="full_build.%j.o"
 #SBATCH --partition=normal
-#SBATCH --reservation=gb_res1
+#SBATCH --reservation=gb_res4
 #SBATCH --gpus-per-node=1
 
 set -e

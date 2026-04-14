@@ -2,9 +2,8 @@
 
 # ============================================================================
 #SBATCH --account=cwd01
-#SBATCH --partition=normal
-#SBATCH --reservation=gb_res4
-#SBATCH --uenv=icon-dsl/25.12:2410652750@santis
+#SBATCH --partition=tier0
+#SBATCH --uenv=icon-dsl/25.12:2410652750
 #SBATCH --view=default
 #SBATCH --job-name=EXCLAIM_COUPLED
 #SBATCH --output=LOG.EXCLAIM_COUPLED.%j
@@ -12,7 +11,6 @@
 #SBATCH --time=03:00:00
 #SBATCH --gpus-per-node=4
 #SBATCH --exclusive
-#SBATCH --exclude=nid005193,nid005263,nid005976,nid005226,nid007591,nid005665,nid006070,nid006442
 # ============================================================================
 
 # set -x

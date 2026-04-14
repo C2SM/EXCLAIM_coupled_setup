@@ -88,14 +88,14 @@ set_environment(){
    if [ "${GPU_MODE}" == "py-substitute" ]; then
        export CUDAARCHS=90
        export PYTHONOPTIMIZE=2
-       #export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/${SLURM_JOB_ID}"}
+       export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/${SLURM_JOB_ID}"}
        #export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/1815966"} # 400 nodes
-       export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/1816020"} # 800 nodes
+       #export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/1816020"} # 800 nodes
        export CUPY_CACHE_DIR=${CUPY_CACHE_DIR:-"${SCRATCH}/.cupy-cache"}
        export CUPY_CACHE_IN_MEMORY=1
        export GT4PY_BUILD_CACHE_LIFETIME=persistent
        export GT4PY_UNSTRUCTURED_HORIZONTAL_HAS_UNIT_STRIDE=1
-       export ICON4PY_WAIT_FOR_COMPILATION=1
+       #export ICON4PY_WAIT_FOR_COMPILATION=1
        export DACE_compiler_cuda_block_size_limit=256
        export PY2FGEN_LOG_LEVEL=WARNING
        export PMI_MMAP_SYNC_WAIT_TIME=300

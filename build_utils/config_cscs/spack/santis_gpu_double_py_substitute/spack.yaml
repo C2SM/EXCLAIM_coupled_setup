@@ -13,7 +13,7 @@ spack:
     all:
       variants: +cuda cuda_arch=90
     mpi:
-      require: [cray-mpich@8.1.30%nvhpc]
+      require: [cray-mpich%nvhpc]
   specs:
     - hdf5%nvhpc +szip +hl +fortran +mpi 
     - netcdf-c@4.9.2%nvhpc

@@ -18,14 +18,14 @@ elapsed(){
 BUILD_TYPE="${BUILD_TYPE:-SPACK}"
 GPU_MODE="${GPU_MODE:-py-substitute}"
 CAO_BUILD_DIR="${CAO_BUILD_DIR:-/dev/shm/${USER}/coupled_setup}"
-UENV=${UENV:-"icon-dsl/25.12:2410652750@santis"}
+UENV=${UENV:-"icon-dsl/25.12:2454892898@santis"}
 
 # Set cloning urls with token
 # ---------------------------
-if [ -z "${GITLAB_DKRZ_TOKEN}" ] || [ -z "${GITHUB_TOKEN}" ]; then
-    echo "ERROR: GITLAB_DKRZ_TOKEN and/or GITHUB_TOKEN unset"
-    exit 1
-fi
+#if [ -z "${GITLAB_DKRZ_TOKEN}" ] || [ -z "${GITHUB_TOKEN}" ]; then
+#    echo "ERROR: GITLAB_DKRZ_TOKEN and/or GITHUB_TOKEN unset"
+#    exit 1
+#fi
 GIT_CONFIG_COUNT=2
 GIT_CONFIG_KEY_0="url.https://oauth2:${GITLAB_DKRZ_TOKEN}@gitlab.dkrz.de/.insteadOf"
 GIT_CONFIG_VALUE_0="git@gitlab.dkrz.de:"

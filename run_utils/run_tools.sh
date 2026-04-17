@@ -60,6 +60,8 @@ set_environment(){
    export FI_CXI_SAFE_DEVMEM_COPY_THRESHOLD=0
    export FI_CXI_RX_MATCH_MODE=software
    export FI_MR_CACHE_MONITOR=disabled
+   export FI_PROVIDER=cxi 
+   export FI_LOG_LEVEL=warn
 
    # MPICH
    # -----
@@ -88,7 +90,8 @@ set_environment(){
    if [ "${GPU_MODE}" == "py-substitute" ]; then
        export CUDAARCHS=90
        export PYTHONOPTIMIZE=2
-       export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/${SLURM_JOB_ID}"}
+       export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"/iopsstor/scratch/cscs/nbeech/.gt4py-cache/"}
+       #export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/${SLURM_JOB_ID}"}
        #export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/1815966"} # 400 nodes
        #export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/1816020"} # 800 nodes
        export CUPY_CACHE_DIR=${CUPY_CACHE_DIR:-"${SCRATCH}/.cupy-cache"}

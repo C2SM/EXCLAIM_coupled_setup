@@ -8,13 +8,13 @@ import math
 def expand(nodelist):
 
     if '[' not in nodelist:
-        raise ValueError("Invalid nodelist format: missing opening '[' in '{nodelist}'!")
+        raise ValueError(f"Invalid nodelist format: missing opening '[' in '{nodelist}'!")
 
     tmp = re.split('\[', nodelist)
     base_string = tmp[0]
 
     if tmp[1][-1] != ']':
-        raise ValueError("Invalid nodelist format: missing closing ']' in '{nodelist}'!")
+        raise ValueError(f"Invalid nodelist format: missing closing ']' in '{nodelist}'!")
 
     main_string = tmp[1][:-1]
 

@@ -90,7 +90,8 @@ set_environment(){
    if [ "${GPU_MODE}" == "py-substitute" ]; then
        export CUDAARCHS=90
        export PYTHONOPTIMIZE=2
-       export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"/iopsstor/scratch/cscs/nbeech/.gt4py-cache/"}
+       export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"/iopsstor/scratch/cscs/nbeech/.new_gt4py-cache/"}
+       #export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"/iopsstor/scratch/cscs/nbeech/.gt4py-cache/"}
        #export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/${SLURM_JOB_ID}"}
        #export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/1815966"} # 400 nodes
        #export GT4PY_BUILD_CACHE_DIR=${GT4PY_BUILD_CACHE_DIR:-"${SCRATCH}/.gt4py-cache/1816020"} # 800 nodes
@@ -223,6 +224,11 @@ restart_model(){
         export lrestart=.true.
         export chunk_start_date="${chunk_end_date}"
         export FIRST_RUN="false"
+
+        # Persist chunk state so manual restarts can pick up correctly
+        echo "chunk_start_date=${chunk_start_date}" > .chunk_state
+        echo " ==> Saved chunk state to .chunk_state (chunk_start_date=${chunk_start_date})"
+
         [ -n "${SBATCH_TIMELIMIT}" ] && export SBATCH_TIMELIMIT
         echo
         SBATCH_OPTIONS="--nodes=${SLURM_NNODES}"
@@ -232,6 +238,9 @@ restart_model(){
         ${submit_cmd}
         set +x
         rm -f ${atm_finish_status_file} ${oce_finish_status_file}
+    else
+        # Simulation complete — remove chunk state file
+        rm -f .chunk_state
     fi
 }
 

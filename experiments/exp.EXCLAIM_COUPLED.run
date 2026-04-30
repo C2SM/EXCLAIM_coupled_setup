@@ -3,7 +3,7 @@
 # ============================================================================
 #SBATCH --account=cwd01
 #SBATCH --partition=tier0
-#SBATCH --uenv=icon-dsl/25.12:2410652750
+#SBATCH --uenv=icon-dsl/25.12:2454892898
 #SBATCH --view=default
 #SBATCH --job-name=EXCLAIM_COUPLED
 #SBATCH --output=LOG.EXCLAIM_COUPLED.%j
@@ -114,20 +114,32 @@ else
     export end_date=${end_date:-"2020-01-01T02:00:00Z"}
 fi
 
-lrestart=${lrestart:-.false.}
-export checkpoint_interval=${checkpoint_interval:-${restart_interval}}
+# Determine restart state from .chunk_state file or environment
+# -------------------------------------------------------------
+# Priority: 1) environment variable (from automatic restart_model resubmission)
+#           2) .chunk_state file (persisted after each successful chunk)
+#           3) start_date (fresh simulation)
+if [ -z "${chunk_start_date:-}" ] && [ -f ".chunk_state" ]; then
+    source .chunk_state
+    echo " ==> Resuming from .chunk_state: chunk_start_date=${chunk_start_date}"
+fi
 
 export chunk_start_date=${chunk_start_date:-${start_date}}
+
+# Derive restart flag: if we're past the start, this is a restart
+if [ "${chunk_start_date}" != "${start_date}" ]; then
+    lrestart=.true.
+    FIRST_RUN="false"
+else
+    lrestart=${lrestart:-.false.}
+fi
+
+export checkpoint_interval=${checkpoint_interval:-${restart_interval}}
 export chunk_end_date=$(uv run date_cycle "${chunk_start_date}" "${restart_interval}" "${end_date}")
 
 start_year=${start_date:0:4}
 chunk_start_year=${chunk_start_date:0:4}
 chunk_end_year=${chunk_end_date:0:4}
-
-if [ "${chunk_start_year}" !=  "${chunk_end_year}" ]; then
-    echo "ERROR: chunk ends in a different year (${chunk_start_date}) than it starts (${chunk_end_date})"
-    exit 1
-fi
 
 # Type of experiment
 # ------------------

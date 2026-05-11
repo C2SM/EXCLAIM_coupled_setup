@@ -9,6 +9,7 @@
 #SBATCH --output=LOG.EXCLAIM_COUPLED.%j
 #SBATCH --error=LOG.EXCLAIM_COUPLED.%j
 #SBATCH --time=03:00:00
+#SBATCH --nodes=16
 #SBATCH --gpus-per-node=4
 #SBATCH --exclusive
 # ============================================================================
@@ -64,9 +65,9 @@ export GPU_MODE="${GPU_MODE:-py-substitute}"
 # -----------------
 # Some main settings depend on case settings and vice-versa
 # so we need to source the case settings twice
-export CASE="${CASE:-R02B07-R02B07}"
-if [[ "${CASE}" != "R02B07-R02B07" ]] && [[ "${CASE}" != "R02B08-R02B09" ]] && [[ "${CASE}" != "R02B10-R02B10" ]]; then
-    echo "ERROR: CASE must be either 'R02B07-R02B07', 'R02B08-R02B09' or 'R02B10-R02B10'"
+export CASE="${CASE:-R02B09-R02B09}"
+if [[ "${CASE}" != "R02B07-R02B07" ]] && [[ "${CASE}" != "R02B08-R02B09" ]] && [[ "${CASE}" != "R02B09-R02B09" ]] && [[ "${CASE}" != "R02B10-R02B10" ]]; then
+    echo "ERROR: CASE must be either 'R02B07-R02B07', 'R02B08-R02B09', 'R02B09-R02B09' or 'R02B10-R02B10'"
     exit 1
 fi
 source "settings_${CASE}.sh"

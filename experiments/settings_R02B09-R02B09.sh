@@ -2,7 +2,7 @@
 
 # Grids
 # -----
-atmos_gridID="0015"             #  icon-nwp r2b9 grid
+atmos_gridID="0055"             #  icon-nwp r2b9 grid
 atmos_refinement="R02B09"
 atmos_refinement_short="r2b8"
 ocean_gridID="0016"             #  icon-oce r2b9 grid

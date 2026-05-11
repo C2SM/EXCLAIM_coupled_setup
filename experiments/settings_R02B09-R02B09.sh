@@ -53,7 +53,7 @@ initial_state_sub_path="interpolated/icon_L72_spinup_r2b9.nc"
 
 # Land settings
 # --------------
-extpar_tag="20250708"
+extpar_tag="20240726"
 
 # Output Streams
 # --------------

@@ -1795,6 +1795,31 @@ output_oce_3h(){
 EOF
 }
 
+output_oce_6h(){
+  local stream="${EXPNAME}_oce_6h"
+  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  mkdir -p "${stream_dir}"
+  cat >> ${oce_namelist} << EOF
+&output_nml
+  filetype                   = 5
+  filename_format            = "${stream_dir}/${stream}_<datetime2>"
+  output_start               = "${start_date}"                  ! start in ISO-format
+  output_end                 = "${end_date}"                    ! end in ISO-format
+  output_interval            = "PT6H"     ! interval in ISO-format
+  file_interval              = "P1D"
+  mode                       = 1                                ! 1: forecast mode (relative t-axis)
+                                                                ! 2: climate mode (absolute t-axis)
+  include_last               = .FALSE.
+  output_grid                = .FALSE.
+  operation                  = "mean"
+  !m_levels                   = "1"
+  m_levels                   = "1...25,29,34,41,44,51,55,60,65,69"  ! surface - 200m all levels, 300, 500, 800, 1000, 1500, 2000m, 3000m, 4000, 5000m
+
+  ml_varlist                 = 'u', 'v', 'w'
+/
+EOF
+}
+
 output_oce_day(){
   local stream="${EXPNAME}_oce_day"
   local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"

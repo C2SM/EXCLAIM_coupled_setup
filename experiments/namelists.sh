@@ -451,7 +451,7 @@ EOF
 output_atm_mon(){
   # monitoring file for atmos
   local stream="${EXPNAME}_atm_mon"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -475,7 +475,7 @@ EOF
 output_atm_mon2d(){
   # native time mean output 2-dim averaged over OUTPUT_INTERVAL:
   local stream="${EXPNAME}_atm_mon2d"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -500,7 +500,7 @@ EOF
 output_atm_mean3d(){
   # native time mean output 2-dim averaged over OUTPUT_INTERVAL:
   local stream="${EXPNAME}_atm_mean3d"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -526,7 +526,7 @@ EOF
 output_atm_mean(){
   # native time mean output 2-dim averaged over OUTPUT_INTERVAL:
   local stream="${EXPNAME}_atm_mean"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -550,7 +550,7 @@ EOF
 
 output_energy_budget(){
   local stream="${EXPNAME}_energy_budget"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -577,7 +577,7 @@ EOF
 output_atm_latlon(){
   # interpolated lat-lon output 2d and 3d:
   local stream="${EXPNAME}_atm_latlon"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -610,7 +610,7 @@ EOF
 
 output_jsb_2d(){
   local stream="${EXPNAME}_jsb_2d"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -634,7 +634,7 @@ EOF
 
 output_lnd_mon(){
   local stream="${EXPNAME}_lnd_mon"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -665,7 +665,7 @@ EOF
 output_lnd_dbg(){
   # output lnd_dbg
   local stream="${EXPNAME}_lnd_dbg"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -697,7 +697,7 @@ EOF
 
 output_hyd_dbg(){
   local stream="${EXPNAME}_hyd_dbg"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -725,7 +725,7 @@ dyamond_stream_1_1(){
   # Dyamond Protocol 6 hourly), 37 pressure levels.
   # => This needs to be interpolated onto 10KM (25KM for Dyamond)
   local stream="${EXPNAME}_dyamond_atm_1_1"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
     cat >> ${atm_namelist} << EOF
 
@@ -750,7 +750,7 @@ dyamond_stream_1_2(){
   # Dyamond Protocol 6 hourly), 37 pressure levels.
   # => This needs to be interpolated onto 10KM (25KM for Dyamond)
   local stream="${EXPNAME}_dyamond_atm_1_2"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -772,7 +772,7 @@ EOF
 
 dyamond_stream_1_3(){
   local stream="${EXPNAME}_dyamond_atm_1_3"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -794,7 +794,7 @@ EOF
 
 dyamond_stream_1_4(){
   local stream="${EXPNAME}_dyamond_atm_1_4"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -817,7 +817,7 @@ EOF
 
 dyamond_stream_1_5(){
   local stream="${EXPNAME}_dyamond_atm_1_5"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -839,7 +839,7 @@ EOF
 
 dyamond_stream_2(){
   local stream="${EXPNAME}_dyamond_atm_2"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -860,7 +860,7 @@ EOF
 
 dyamond_stream_3(){
   local stream="${EXPNAME}_dyamond_atm_3"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -881,7 +881,7 @@ EOF
 
 dyamond_stream_4(){
   local stream="${EXPNAME}_dyamond_atm_4"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -903,7 +903,7 @@ EOF
 
 dyamond_stream_5(){
   local stream="${EXPNAME}_dyamond_atm_5"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -924,7 +924,7 @@ EOF
 
 dyamond_stream_6(){
   local stream="${EXPNAME}_dyamond_atm_6"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -951,7 +951,7 @@ EOF
 
 dyamond_stream_7(){
   local stream="${EXPNAME}_dyamond_atm_7"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -972,7 +972,7 @@ EOF
 
 dyamond_stream_8(){
   local stream="${EXPNAME}_dyamond_atm_8"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -994,7 +994,7 @@ EOF
 
 dyamond_stream_9(){
   local stream="${EXPNAME}_dyamond_atm_9"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1015,7 +1015,7 @@ EOF
 
 dyamond_stream_10(){
   local stream="${EXPNAME}_dyamond_atm_10"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1036,7 +1036,7 @@ EOF
 
 dyamond_stream_11(){
   local stream="${EXPNAME}_dyamond_atm_11"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1058,7 +1058,7 @@ EOF
 
 dyamond_stream_12(){
   local stream="${EXPNAME}_dyamond_atm_12"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1079,7 +1079,7 @@ EOF
 
 dyamond_stream_13(){
   local stream="${EXPNAME}_dyamond_atm_13"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   mkdir -p "${stream}"
   cat >> ${atm_namelist} << EOF
@@ -1102,7 +1102,7 @@ EOF
 
 dyamond_stream_14(){
   local stream="${EXPNAME}_dyamond_atm_14"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1124,7 +1124,7 @@ EOF
 
 dyamond_stream_15_1(){
   local stream="${EXPNAME}_dyamond_atm_15_1"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1146,7 +1146,7 @@ EOF
 
 dyamond_stream_15_2(){
   local stream="${EXPNAME}_dyamond_atm_15_2"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1168,7 +1168,7 @@ EOF
 
 dyamond_stream_15_3(){
   local stream="${EXPNAME}_dyamond_atm_15_3"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1190,7 +1190,7 @@ EOF
 
 dyamond_stream_15_4(){
   local stream="${EXPNAME}_dyamond_atm_15_4"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1212,7 +1212,7 @@ EOF
 
 dyamond_stream_15_5(){
   local stream="${EXPNAME}_dyamond_atm_15_5"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1234,7 +1234,7 @@ EOF
 
 dyamond_stream_15_6(){
   local stream="${EXPNAME}_dyamond_atm_15_6"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1256,7 +1256,7 @@ EOF
 
 dyamond_stream_15_7(){
   local stream="${EXPNAME}_dyamond_atm_15_7"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1278,7 +1278,7 @@ EOF
 
 dyamond_stream_15_8(){
   local stream="${EXPNAME}_dyamond_atm_15_8"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1300,7 +1300,7 @@ EOF
 
 dyamond_stream_15_9(){
   local stream="${EXPNAME}_dyamond_atm_15_9"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1322,7 +1322,7 @@ EOF
 
 dyamond_stream_15_10(){
   local stream="${EXPNAME}_dyamond_atm_15_10"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1344,7 +1344,7 @@ EOF
 
 dyamond_stream_15_11(){
   local stream="${EXPNAME}_dyamond_atm_15_11"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1366,7 +1366,7 @@ EOF
 
 dyamond_stream_15_12(){
   local stream="${EXPNAME}_dyamond_atm_15_12"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1388,7 +1388,7 @@ EOF
 
 dyamond_stream_15_13(){
   local stream="${EXPNAME}_dyamond_atm_15_13"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${atm_namelist} << EOF
 
@@ -1745,7 +1745,7 @@ EOF
 
 output_oce_fx(){
   local stream="${EXPNAME}_oce_fx"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
  &output_nml
@@ -1772,7 +1772,7 @@ EOF
 
 output_oce_3h(){
   local stream="${EXPNAME}_oce_3h"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
@@ -1797,7 +1797,7 @@ EOF
 
 output_oce_6h(){
   local stream="${EXPNAME}_oce_6h"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
@@ -1822,7 +1822,7 @@ EOF
 
 output_oce_day(){
   local stream="${EXPNAME}_oce_day"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
@@ -1845,7 +1845,7 @@ EOF
 
 output_oce_ice(){
   local stream="${EXPNAME}_oce_ice"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
@@ -1869,7 +1869,7 @@ EOF
 
 output_oce_flux(){
   local stream="${EXPNAME}_oce_flux"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
@@ -1895,7 +1895,7 @@ EOF
 
 output_oce_mon(){
   local stream="${EXPNAME}_oce_mon"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
@@ -1917,7 +1917,7 @@ EOF
 
 output_oce_mon2d(){
   local stream="${EXPNAME}_oce_mon2d"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml
@@ -1940,7 +1940,7 @@ EOF
 
 output_oce_moc(){
   local stream="${EXPNAME}_oce_moc"
-  local stream_dir="${stream}/${chunk_start_date}_${chunk_end_date}"
+  local stream_dir="${stream}"
   mkdir -p "${stream_dir}"
   cat >> ${oce_namelist} << EOF
 &output_nml

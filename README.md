@@ -3,13 +3,24 @@
 Collection of utility scripts to build and run the EXCLAIM coupled atmosphere-ocean setup.
 
 ## Build
-
 To directly do a clean build of the cpu and gpu executables:
+### With sbatch and github tokens
 1. get tokens for github.com and gitlab.dkrz.de that give you read access to all icon-exclaim + submodules repos 
 2.  Execute from the repository root
 ``` bash
 GITLAB_DKRZ_TOKEN="$(cat path/to/gitlab_dkrz_token)" GITHUB_TOKEN="$(cat path/to/github_token)" sbatch build_utils/full_build.sh 
 ```
+### From the login node 
+1. Create ssh keys for github.com and gitlab.dkrz.de that give you read access to all icon-exclaim + submodules repos and add them with
+``` bash
+eval `ssh-agent`
+ssh-add /path/to/your/key
+```
+2. Execute from the repository root. Ensure the kill switch for a missing github token is commented (by default in this branch)
+``` bash
+./build_utils/full_build.sh
+```
+
 By default:
   - the script will compile the `cpu` and `gpu` targets. `--cpu-only` or `--gpu-only` can be used if needed.
   - the gpu variant is `GPU_MODE="py-substitute"` (compiling with `icon4py` granules). It can be otherwise set with to `GPU_MODE="acc"` for pure fortran OpenACC implementation.

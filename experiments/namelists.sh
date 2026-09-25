@@ -871,7 +871,7 @@ dyamond_stream_3(){
  output_end      = "${end_date}"
  output_interval = "PT1H"
  file_interval   = "P1D"
- ml_varlist      = 'pres_sfc','pres_msl','u_10m','v_10m','qv_2m','t_2m','tqc','tqi','tqv','tqr','h_snow','gust10'
+ ml_varlist      = 'tqc','tqi','tqv','tqr','h_snow'
  include_last    = .false.
  output_grid     = .FALSE.
  mode            = 1
